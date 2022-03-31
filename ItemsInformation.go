@@ -53,7 +53,7 @@ func (item Item) getTotalCost() float32 {
 	return totalCost
 }
 
-func main() {
+/*func main() {
 	fmt.Println("Hello There")
 	var totalFinalCostOfAllItems float32
 
@@ -89,7 +89,7 @@ func main() {
 	}
 
 	fmt.Println("Total Cost of all Items Including Taxes are: ", totalFinalCostOfAllItems)
-}
+}*/
 
 //function to get all item related information from the user
 func getItemInput() (string, float32, int, string) {

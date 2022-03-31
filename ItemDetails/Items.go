@@ -11,11 +11,11 @@ type Item struct {
 }
 
 //Map for item types
-var itemTypeMap map[string]int = map[string]int{
+/*var itemTypeMap map[string]int = map[string]int{
 	"raw":          1,
 	"manufactured": 2,
 	"imported":     3,
-}
+}*/
 
 //Logic for Calculation of Taxes
 func (item Item) taxCalulationLogic(totalCost float32) float32 {
