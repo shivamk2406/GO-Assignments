@@ -1,13 +1,9 @@
 package main
 
-import(
-	"fmt"
-	item "github.com/Blaezy/GO-Assignments/ItemDetails"
-	user "github.com/Blaezy/GO-Assignments/Users"
-
+import (
+	query "github.com/Blaezy/GO-Assignments/FirstPage"
 )
 
-func main()
-{
-	fmt.Println()
+func main() {
+	query.QueryScreen()
 }
