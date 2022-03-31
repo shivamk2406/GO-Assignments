@@ -13,7 +13,7 @@ var itemTypeMap map[string]int = map[string]int{
 	"imported":     3,
 }
 
-func getItemInput() (string, float32, int, string) {
+func GetItemInput() (string, float32, int, string) {
 
 	var name string
 	var price float32

@@ -4,10 +4,10 @@ import "fmt"
 
 //Basic structure for an item
 type Item struct {
-	itemName     string
-	itemPrice    float32
-	itemQuantity int
-	itemType     string
+	ItemName     string
+	ItemPrice    float32
+	ItemQuantity int
+	ItemType     string
 }
 
 //Map for item types
@@ -18,15 +18,15 @@ type Item struct {
 }*/
 
 //Logic for Calculation of Taxes
-func (item Item) taxCalulationLogic(totalCost float32) float32 {
-	switch item.itemType {
+func (item Item) TaxCalulationLogic(totalCost float32) float32 {
+	switch item.ItemType {
 	case "raw":
-		totalCost = totalCost + 0.125*item.itemPrice*float32(item.itemQuantity)
+		totalCost = totalCost + 0.125*item.ItemPrice*float32(item.ItemQuantity)
 	case "manufactured":
-		totalCost = totalCost + 0.125*item.itemPrice*float32(item.itemQuantity)
-		totalCost = totalCost + 0.02*(item.itemPrice+0.125*item.itemPrice)
+		totalCost = totalCost + 0.125*item.ItemPrice*float32(item.ItemQuantity)
+		totalCost = totalCost + 0.02*(item.ItemPrice+0.125*item.ItemPrice)
 	case "imported":
-		totalCost = totalCost + 0.1*item.itemPrice
+		totalCost = totalCost + 0.1*item.ItemPrice
 		if totalCost <= 100 {
 			totalCost = totalCost + 5
 		} else if totalCost > 100 && totalCost <= 200 {
@@ -39,13 +39,13 @@ func (item Item) taxCalulationLogic(totalCost float32) float32 {
 }
 
 //Total Cost before and after Tax Calculation
-func (item Item) getTotalCost() float32 {
+func (item Item) GetTotalCost() float32 {
 
 	var totalCost float32
-	totalCost = item.itemPrice * float32(item.itemQuantity)
+	totalCost = item.ItemPrice * float32(item.ItemQuantity)
 	fmt.Printf("Cost  for the item without Taxes %f \n", totalCost)
 
-	totalCost = item.taxCalulationLogic(totalCost)
+	totalCost = item.TaxCalulationLogic(totalCost)
 	fmt.Printf("Cost  for the item after Taxes %f \n", totalCost)
 	return totalCost
 }
@@ -55,10 +55,10 @@ func itemCreated(name string, price float32, quantity int, typeItem string) Item
 
 	newItem := Item{}
 
-	newItem.itemName = name
-	newItem.itemPrice = price
-	newItem.itemQuantity = quantity
-	newItem.itemType = typeItem
+	newItem.ItemName = name
+	newItem.ItemPrice = price
+	newItem.ItemQuantity = quantity
+	newItem.ItemType = typeItem
 
 	return newItem
 }
