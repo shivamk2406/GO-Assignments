@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	itemdetails "github.com/Blaezy/GO-Assignments/ItemDetails"
-	users "github.com/Blaezy/GO-Assignments/Users"
+	itemdetails "github.com/shivamk2406/GO-Assignments/ItemDetails"
+	users "github.com/shivamk2406/GO-Assignments/Users"
 )
 
 func QueryScreen() {
