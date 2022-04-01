@@ -42,6 +42,7 @@ func GetItemInput() (string, float64, int, string) {
 	_, errorType := fmt.Scan(&itemtype)
 	if errorType != nil {
 		fmt.Println(errorType)
+
 	}
 
 	//All type of lower case and Upper case are converted to lower case in order to map to right category

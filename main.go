@@ -1,7 +1,7 @@
 package main
 
 import (
-	query "github.com/Blaezy/GO-Assignments/FirstPage"
+	query "github.com/shivamk2406/GO-Assignments/FirstPage"
 )
 
 func main() {
