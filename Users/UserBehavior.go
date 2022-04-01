@@ -1,7 +1,10 @@
 package users
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
+	"os"
 	"strings"
 	//itemDet "github.com/Blaezy/GO-Assignments/ItemDetails"
 )
@@ -13,25 +16,25 @@ var itemTypeMap map[string]int = map[string]int{
 	"imported":     3,
 }
 
-func GetItemInput() (string, float32, int, string) {
+func GetItemInput() (string, float64, int, string) {
 
 	var name string
-	var price float32
+	var price float64
 	var quantity int
 	var itemtype string
 	fmt.Println("Enter Item Details: ")
-	fmt.Println("Enter First Name of Item")
-	_, errorName := fmt.Scan(&name)
+	//fmt.Println("Enter First Name of Item")
+	name, errorName := getItemName()
 	if errorName != nil {
 		fmt.Println(errorName)
 	}
-	fmt.Println("Enter Price of Item")
-	_, errorPrice := fmt.Scan(&price)
+	//fmt.Println("Enter Price of Item")
+	price, errorPrice := getItemPrice()
 	if errorPrice != nil {
 		fmt.Println(errorPrice)
 	}
-	fmt.Println("Enter Quantity of Item")
-	_, errorQuantity := fmt.Scanln(&quantity)
+	//fmt.Println("Enter Quantity of Item")
+	quantity, errorQuantity := getItemQuantity()
 	if errorQuantity != nil {
 		fmt.Println(errorQuantity)
 	}
@@ -55,4 +58,41 @@ func GetItemInput() (string, float32, int, string) {
 		}
 	}
 	return name, price, quantity, itemtype
+}
+
+func getItemName() (string, error) {
+	scanner := bufio.NewScanner(os.Stdin)
+
+	var name string
+	fmt.Println("Enter First Name of Item")
+	scanner.Scan()
+	name = scanner.Text()
+	isValidName := strings.Contains(name, " ")
+
+	if isValidName {
+		return "", errors.New("Please Enter First Name only")
+	}
+	return name, nil
+}
+
+func getItemPrice() (float64, error) {
+	var price float64
+	fmt.Println("Enter Price of an Item")
+	fmt.Scan(&price)
+
+	if price < 0 {
+		return 0, errors.New("Negative Price Value not Allowed")
+	}
+	return price, nil
+}
+
+func getItemQuantity() (int, error) {
+	var quantity int
+	fmt.Println("Enter Quantity of item")
+	fmt.Scan(&quantity)
+
+	if quantity < 0 {
+		return 0, errors.New("Negative Quantity Values not Allowed")
+	}
+	return quantity, nil
 }

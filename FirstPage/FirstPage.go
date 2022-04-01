@@ -12,7 +12,7 @@ func QueryScreen() {
 	fmt.Println("Hello There")
 
 	fmt.Println("Hello There")
-	var totalFinalCostOfAllItems float32
+	var totalFinalCostOfAllItems float64
 
 	//User Response variable is used to store response corresponding to next item addition
 	var userResponse string

@@ -1,11 +1,11 @@
-package itemdetails
+package ItemDetails
 
 import "fmt"
 
 //Basic structure for an item
 type Item struct {
 	ItemName     string
-	ItemPrice    float32
+	ItemPrice    float64
 	ItemQuantity int
 	ItemType     string
 }
@@ -18,12 +18,12 @@ type Item struct {
 }*/
 
 //Logic for Calculation of Taxes
-func (item Item) TaxCalulationLogic(totalCost float32) float32 {
+func (item Item) TaxCalulationLogic(totalCost float64) float64 {
 	switch item.ItemType {
 	case "raw":
-		totalCost = totalCost + 0.125*item.ItemPrice*float32(item.ItemQuantity)
+		totalCost = totalCost + 0.125*item.ItemPrice*float64(item.ItemQuantity)
 	case "manufactured":
-		totalCost = totalCost + 0.125*item.ItemPrice*float32(item.ItemQuantity)
+		totalCost = totalCost + 0.125*item.ItemPrice*float64(item.ItemQuantity)
 		totalCost = totalCost + 0.02*(item.ItemPrice+0.125*item.ItemPrice)
 	case "imported":
 		totalCost = totalCost + 0.1*item.ItemPrice
@@ -39,10 +39,10 @@ func (item Item) TaxCalulationLogic(totalCost float32) float32 {
 }
 
 //Total Cost before and after Tax Calculation
-func (item Item) GetTotalCost() float32 {
+func (item Item) GetTotalCost() float64 {
 
-	var totalCost float32
-	totalCost = item.ItemPrice * float32(item.ItemQuantity)
+	var totalCost float64
+	totalCost = item.ItemPrice * float64(item.ItemQuantity)
 	fmt.Printf("Cost  for the item without Taxes %f \n", totalCost)
 
 	totalCost = item.TaxCalulationLogic(totalCost)
@@ -51,7 +51,7 @@ func (item Item) GetTotalCost() float32 {
 }
 
 //New Item Generation
-func itemCreated(name string, price float32, quantity int, typeItem string) Item {
+func itemCreated(name string, price float64, quantity int, typeItem string) Item {
 
 	newItem := Item{}
 
