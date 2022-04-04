@@ -61,3 +61,13 @@ func GetCourses() []string {
 	return courses
 
 }
+
+func DisplayUserDetails(user User)
+{
+	fmt.Println("User Details are: ")
+	fmt.Println("Full Name ",user.FullName)
+	fmt.Println("Age",user.Age)
+	fmt.Println("Address",user.Address)
+	fmt.Println("Courses",user.Courses)
+	fmt.Println("Roll Number",user.RollNumber)
+}
