@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
+	Qscreen "github.com/shivamk2406/GO-Assignments/tree/Assignment-2/Functionalities"
 )
 
 func main() {
-	fmt.Println("Hello World")
+	Qscreen.QueryScreen()
 
 }
