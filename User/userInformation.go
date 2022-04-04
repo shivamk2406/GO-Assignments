@@ -24,11 +24,11 @@ func GetUserName() string {
 	return name
 }
 
-func GetUserAge() int {
+func GetUserAge() uint {
 	fmt.Println("Enter Your Age:")
 	scanner := bufio.NewScanner(os.Stdin)
-	input, _ := strconv.ParseInt(scanner.Text(), 10, 64)
-	return int(input)
+	input, _ := strconv.ParseUint(scanner.Text(), 10, 64)
+	return uint(input)
 }
 
 func GetAddress() string {
@@ -62,12 +62,11 @@ func GetCourses() []string {
 
 }
 
-func DisplayUserDetails(user User)
-{
+func DisplayUserDetails(user User) {
 	fmt.Println("User Details are: ")
-	fmt.Println("Full Name ",user.FullName)
-	fmt.Println("Age",user.Age)
-	fmt.Println("Address",user.Address)
-	fmt.Println("Courses",user.Courses)
-	fmt.Println("Roll Number",user.RollNumber)
+	fmt.Println("Full Name ", user.FullName)
+	fmt.Println("Age", user.Age)
+	fmt.Println("Address", user.Address)
+	fmt.Println("Courses", user.Courses)
+	fmt.Println("Roll Number", user.RollNumber)
 }
