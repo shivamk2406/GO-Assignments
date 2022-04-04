@@ -1,19 +1,18 @@
-package main
+package functionalities
 
 import (
 	"fmt"
 )
 
-func main() {
-	fmt.Println("Hello World")
+func QueryScreen() {
 	var choice int
-
 	for choice != 5 {
 		fmt.Println("1.  Add User details.")
 		fmt.Println("2.  Display User details.")
 		fmt.Println("3.  Delete User details")
 		fmt.Println("4.  Save User details.")
 		fmt.Println("5.  Exit")
+
 		fmt.Println("Enter Your Choice:")
 		fmt.Scan(&choice)
 
@@ -33,5 +32,4 @@ func main() {
 		}
 
 	}
-
 }

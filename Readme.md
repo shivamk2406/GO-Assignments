@@ -1,6 +1,6 @@
 Write a menu driven command line go program that provides the following menu options:
 1.  Add User details.
-2.   Display User details.
+2.  Display User details.
 3.  Delete User details
 4.  Save User details.
 5.  Exit
