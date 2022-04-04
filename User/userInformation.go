@@ -11,7 +11,7 @@ type User struct {
 	FullName   string
 	Age        uint
 	Address    string
-	RollNumber int
+	RollNumber uint
 	Courses    []string
 }
 
@@ -40,12 +40,12 @@ func GetAddress() string {
 	return address
 }
 
-func GetRollNumber() int {
+func GetRollNumber() uint {
 	fmt.Println("Enter Your Roll Number")
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	input, _ := strconv.ParseInt(scanner.Text(), 10, 64)
-	return int(input)
+	input, _ := strconv.ParseUint(scanner.Text(), 10, 64)
+	return uint(input)
 }
 
 func GetCourses() []string {
