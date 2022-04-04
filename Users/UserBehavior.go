@@ -2,50 +2,52 @@ package users
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
-	//itemDet "github.com/Blaezy/GO-Assignments/ItemDetails"
+
+	"github.com/pkg/errors"
 )
 
-//Map for item types
-var itemTypeMap map[string]int = map[string]int{
+// Map for item types.
+var itemTypeMap = map[string]int{
 	"raw":          1,
 	"manufactured": 2,
 	"imported":     3,
 }
 
 func GetItemInput() (string, float64, int, string) {
-
 	var name string
 	var price float64
 	var quantity int
 	var itemtype string
 	fmt.Println("Enter Item Details: ")
-	//fmt.Println("Enter First Name of Item")
+	// fmt.Println("Enter First Name of Item")
 	name, errorName := getItemName()
 	if errorName != nil {
 		fmt.Println(errorName)
+		os.Exit(1)
 	}
-	//fmt.Println("Enter Price of Item")
+	// fmt.Println("Enter Price of Item")
 	price, errorPrice := getItemPrice()
 	if errorPrice != nil {
 		fmt.Println(errorPrice)
+		os.Exit(1)
 	}
-	//fmt.Println("Enter Quantity of Item")
+	// fmt.Println("Enter Quantity of Item")
 	quantity, errorQuantity := getItemQuantity()
 	if errorQuantity != nil {
 		fmt.Println(errorQuantity)
+		os.Exit(1)
 	}
 	fmt.Println("Enter Type of Item 1.Raw 2. Manufactured 3.Imported")
 	_, errorType := fmt.Scan(&itemtype)
 	if errorType != nil {
 		fmt.Println(errorType)
-
+		os.Exit(1)
 	}
 
-	//All type of lower case and Upper case are converted to lower case in order to map to right category
+	// All type of lower case and Upper case are converted to lower case in order to map to right category
 	itemtype = strings.ToLower(itemtype)
 	_, isValid := itemTypeMap[itemtype]
 
@@ -71,7 +73,8 @@ func getItemName() (string, error) {
 	isValidName := strings.Contains(name, " ")
 
 	if isValidName {
-		return "", errors.New("Please Enter First Name only")
+		err := errors.New("Please Enter First Name only")
+		return "", err
 	}
 	return name, nil
 }
@@ -82,18 +85,25 @@ func getItemPrice() (float64, error) {
 	fmt.Scan(&price)
 
 	if price < 0 {
-		return 0, errors.New("Negative Price Value not Allowed")
+		err := errors.New("Negative Price Value not Allowed")
+		// err = errors.Wrap(err, "Invalid Value")
+		return 0, err
 	}
+
 	return price, nil
 }
 
 func getItemQuantity() (int, error) {
-	var quantity int
+	var quantityF float64
 	fmt.Println("Enter Quantity of item")
-	fmt.Scan(&quantity)
+	fmt.Scan(&quantityF)
+
+	var quantity int = int(quantityF)
 
 	if quantity < 0 {
-		return 0, errors.New("Negative Quantity Values not Allowed")
+		err := errors.New("Negative Quantity Values not Allowed")
+		return 0, err
 	}
+	quantity = int(quantity)
 	return quantity, nil
 }
