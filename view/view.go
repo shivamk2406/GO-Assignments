@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	itemdetails "github.com/shivamk2406/GO-Assignments/ItemDetails"
+	itemdetails "github.com/shivamk2406/GO-Assignments/item-details"
 )
 
 func QueryScreen() {
@@ -17,7 +17,7 @@ func QueryScreen() {
 
 	for isUserInterested {
 		newItem := itemdetails.Item{}
-		newItem.ItemName, newItem.ItemPrice, newItem.ItemQuantity, newItem.ItemType = newItem.GetItemInput()
+		newItem.ItemName, newItem.ItemPrice, newItem.ItemQuantity, newItem.ItemType = newItem.
 
 		totalFinalCostOfAllItems += newItem.GetTotalCost()
 		fmt.Println("Do you want to enter details of any other item (y/n):")

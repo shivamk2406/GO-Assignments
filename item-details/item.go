@@ -1,4 +1,4 @@
-package ItemDetails
+package itemdetails
 
 import (
 	"bufio"
@@ -119,7 +119,7 @@ func getItemName() (string, error) {
 	isValidName := strings.Contains(name, " ")
 
 	if isValidName {
-		err := errors.New("Please Enter First Name only")
+		err := errors.New("please Enter First Name only")
 		return "", err
 	}
 	return name, nil
@@ -127,11 +127,11 @@ func getItemName() (string, error) {
 
 func getItemPrice() (float64, error) {
 	var price float64
-	fmt.Println("Enter Price of an Item")
+	fmt.Println("enter Price of an Item")
 	fmt.Scan(&price)
 
 	if price < 0 {
-		err := errors.New("Negative Price Value not Allowed")
+		err := errors.New("negative Price Value not Allowed")
 		// err = errors.Wrap(err, "Invalid Value")
 		return 0, err
 	}
@@ -147,7 +147,7 @@ func getItemQuantity() (int, error) {
 	var quantity int = int(quantityF)
 
 	if quantity < 0 {
-		err := errors.New("Negative Quantity Values not Allowed")
+		err := errors.New("negative Quantity Values not Allowed")
 		return 0, err
 	}
 	quantity = int(quantity)

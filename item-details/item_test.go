@@ -1,4 +1,4 @@
-package ItemDetails
+package itemdetails
 
 import (
 	"math"
