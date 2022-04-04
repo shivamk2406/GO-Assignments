@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-// Basic structure for an item
 type Item struct {
 	ItemName     string
 	ItemPrice    float64
@@ -16,14 +15,12 @@ type Item struct {
 	ItemType     string
 }
 
-// Map for item types
-/*var itemTypeMap map[string]int = map[string]int{
+var itemTypeMap = map[string]int{
 	"raw":          1,
 	"manufactured": 2,
 	"imported":     3,
-}*/
+}
 
-// Logic for Calculation of Taxes
 func (item Item) CalculateTax(totalCost float64) float64 {
 	switch item.ItemType {
 	case "raw":
@@ -44,7 +41,6 @@ func (item Item) CalculateTax(totalCost float64) float64 {
 	return totalCost
 }
 
-// Total Cost before and after Tax Calculation
 func (item Item) GetTotalCost() float64 {
 
 	var totalCost float64
@@ -56,31 +52,25 @@ func (item Item) GetTotalCost() float64 {
 	return totalCost
 }
 
-var itemTypeMap = map[string]int{
-	"raw":          1,
-	"manufactured": 2,
-	"imported":     3,
-}
-
 func GetItemInput() (string, float64, int, string) {
 	var name string
 	var price float64
 	var quantity int
 	var itemtype string
 	fmt.Println("Enter Item Details: ")
-	// fmt.Println("Enter First Name of Item")
+
 	name, errorName := getItemName()
 	if errorName != nil {
 		fmt.Println(errorName)
 		os.Exit(1)
 	}
-	// fmt.Println("Enter Price of Item")
+
 	price, errorPrice := getItemPrice()
 	if errorPrice != nil {
 		fmt.Println(errorPrice)
 		os.Exit(1)
 	}
-	// fmt.Println("Enter Quantity of Item")
+
 	quantity, errorQuantity := getItemQuantity()
 	if errorQuantity != nil {
 		fmt.Println(errorQuantity)
@@ -93,7 +83,6 @@ func GetItemInput() (string, float64, int, string) {
 		os.Exit(1)
 	}
 
-	// All type of lower case and Upper case are converted to lower case in order to map to right category
 	itemtype = strings.ToLower(itemtype)
 	_, isValid := itemTypeMap[itemtype]
 

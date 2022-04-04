@@ -17,7 +17,7 @@ func QueryScreen() {
 
 	for isUserInterested {
 		newItem := itemdetails.Item{}
-		newItem.ItemName, newItem.ItemPrice, newItem.ItemQuantity, newItem.ItemType = newItem.
+		newItem.ItemName, newItem.ItemPrice, newItem.ItemQuantity, newItem.ItemType = itemdetails.GetItemInput()
 
 		totalFinalCostOfAllItems += newItem.GetTotalCost()
 		fmt.Println("Do you want to enter details of any other item (y/n):")
