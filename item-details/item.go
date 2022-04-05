@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	enum "github.com/shivamk2406/GO-Assignments/item-details/enum"
 )
 
 type Item struct {
@@ -161,12 +163,7 @@ func createItem(name string, price float64, quantity int, typeItem string) (Item
 	item.ItemName = name
 	item.ItemPrice = price
 	item.ItemQuantity = quantity
-	item.ItemType, err = enum
-
-	newItem.ItemName = name
-	newItem.ItemPrice = price
-	newItem.ItemQuantity = quantity
-	newItem.ItemType = typeItem
+	item.ItemType, err = enum.ItemType.String()
 
 	return newItem, nil
 }
