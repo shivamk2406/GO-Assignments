@@ -14,7 +14,7 @@ type Item struct {
 	ItemName     string
 	ItemPrice    float64
 	ItemQuantity int
-	ItemType     string
+	ItemType     enum.ItemType
 }
 
 var itemTypeMap = map[string]int{
@@ -25,12 +25,12 @@ var itemTypeMap = map[string]int{
 
 func (item Item) CalculateTax(totalCost float64) float64 {
 	switch item.ItemType {
-	case "raw":
+	case enum.Raw:
 		totalCost += 0.125 * item.ItemPrice * float64(item.ItemQuantity)
-	case "manufactured":
+	case enum.Manufactured:
 		totalCost += 0.125 * item.ItemPrice * float64(item.ItemQuantity)
 		totalCost += 0.02 * (item.ItemPrice + 0.125*item.ItemPrice)
-	case "imported":
+	case enum.Imported:
 		totalCost = item.applySurcharge(totalCost)
 	}
 	return totalCost
@@ -159,11 +159,13 @@ func createItem(name string, price float64, quantity int, typeItem string) (Item
 
 	var item Item
 	var err error
-
 	item.ItemName = name
 	item.ItemPrice = price
 	item.ItemQuantity = quantity
-	item.ItemType, err = enum.ItemType.String()
+	item.ItemType, err = enum.ItemTypeString(typeItem)
+	if err != nil {
+		return Item{}, err
+	}
 
-	return newItem, nil
+	return item, nil
 }
