@@ -29,22 +29,32 @@ func (item Item) CalculateTax(totalCost float64) float64 {
 		totalCost += 0.125 * item.ItemPrice * float64(item.ItemQuantity)
 		totalCost += 0.02 * (item.ItemPrice + 0.125*item.ItemPrice)
 	case "imported":
-		totalCost = totalCost + 0.1*item.ItemPrice
-		if totalCost <= 100 {
-			totalCost = totalCost + 5
-		} else if totalCost > 100 && totalCost <= 200 {
-			totalCost += 10
-		} else {
-			totalCost += 0.05 * totalCost
-		}
+		totalCost = item.applySurcharge(totalCost)
 	}
 	return totalCost
 }
 
+func (item Item) applySurcharge(totalCost float64) float64 {
+	totalCost = totalCost + 0.1*item.ItemPrice
+	if totalCost <= 100 {
+		totalCost = totalCost + 5
+	} else if totalCost > 100 && totalCost <= 200 {
+		totalCost += 10
+	} else {
+		totalCost += 0.05 * totalCost
+	}
+	return totalCost
+}
+
+func (item Item) itemInvoice() float64 {
+	totalCost := item.ItemPrice * float64(item.ItemQuantity)
+	return totalCost
+
+}
+
 func (item Item) GetTotalCost() float64 {
 
-	var totalCost float64
-	totalCost = item.ItemPrice * float64(item.ItemQuantity)
+	totalCost := item.itemInvoice()
 	fmt.Printf("Cost  for the item without Taxes %f \n", totalCost)
 
 	totalCost = item.CalculateTax(totalCost)
@@ -143,15 +153,20 @@ func getItemQuantity() (int, error) {
 	return quantity, nil
 }
 
-// New Item Generation
-/*func itemCreated(name string, price float64, quantity int, typeItem string) Item {
+func createItem(name string, price float64, quantity int, typeItem string) (Item, error) {
 
-	newItem := Item{}
+	var item Item
+	var err error
+
+	item.ItemName = name
+	item.ItemPrice = price
+	item.ItemQuantity = quantity
+	item.ItemType, err = enum
 
 	newItem.ItemName = name
 	newItem.ItemPrice = price
 	newItem.ItemQuantity = quantity
 	newItem.ItemType = typeItem
 
-	return newItem
-}*/
+	return newItem, nil
+}

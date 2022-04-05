@@ -2,8 +2,10 @@ package firstpage
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
+	"github.com/pkg/errors"
 	itemdetails "github.com/shivamk2406/GO-Assignments/item-details"
 )
 
@@ -41,4 +43,50 @@ func QueryScreen() {
 	}
 	fmt.Println("Total Cost of all Items Including Taxes are: ", totalFinalCostOfAllItems)
 
+}
+
+func Initialize() err {
+	name, price, quantity, itemType, err := getItem()
+	if err!=nil{
+		return err
+	}
+
+	newItem,err:=itemdetails.
+
+}
+
+func getItem() (name string, price float64, quantity int, itemType string, err error) {
+
+	fmt.Println("Enter Item Name")
+	_, err = fmt.Scanf("%s", &name)
+	if err != nil {
+		err = errors.Wrap(err, "item name scanning failed")
+		log.Println(err)
+		return
+	}
+
+	fmt.Println("Enter Item Price")
+	_, err = fmt.Scanf("%f", &price)
+	if err != nil {
+		err = errors.Wrap(err, "item name scanning failed")
+		log.Println(err)
+		return
+	}
+
+	fmt.Println("Enter Item Quantity")
+	_, err = fmt.Scanf("%d", &quantity)
+	if err != nil {
+		err = errors.Wrap(err, "item quantity scanning failed")
+		log.Println(err)
+		return
+	}
+
+	fmt.Println("Enter Item Type")
+	_, err = fmt.Scanf("%s", &itemType)
+	if err != nil {
+		err = errors.Wrap(err, "item type scanning failed")
+		log.Println(err)
+		return
+	}
+	return
 }
