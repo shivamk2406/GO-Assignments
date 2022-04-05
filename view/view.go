@@ -1,57 +1,42 @@
-package firstpage
+package view
 
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/pkg/errors"
 	itemdetails "github.com/shivamk2406/GO-Assignments/item-details"
 )
 
-func QueryScreen() {
-	fmt.Println("Hello There")
-	var totalFinalCostOfAllItems float64
+const (
+	Accept = "y"
+	Deny   = "n"
+)
 
-	var userResponse string
-
-	isUserInterested := true
-
-	for isUserInterested {
-		newItem := itemdetails.Item{}
-		newItem.ItemName, newItem.ItemPrice, newItem.ItemQuantity, newItem.ItemType = itemdetails.GetItemInput()
-
-		totalFinalCostOfAllItems += newItem.GetTotalCost()
-		fmt.Println("Do you want to enter details of any other item (y/n):")
-		fmt.Scan(&userResponse)
-		userResponse = strings.ToLower(userResponse)
-
-		if userResponse == "n" {
-			isUserInterested = false
-		} else {
-			// fmt.Println("Invalid Response!!!! Try Again")
-			for !(userResponse == "y") && !(userResponse == "n") {
-				fmt.Println("Invalid Response Try Again!!!!!")
-				fmt.Println("Do you want to enter details of any other item (y/n):")
-				fmt.Scan(&userResponse)
-				userResponse = strings.ToLower(userResponse)
-				if userResponse == "n" {
-					isUserInterested = false
-				}
-			}
-		}
-	}
-	fmt.Println("Total Cost of all Items Including Taxes are: ", totalFinalCostOfAllItems)
-
-}
-
-func Initialize() err {
+func Initialize() error {
 	name, price, quantity, itemType, err := getItem()
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 
-	newItem,err:=itemdetails.
+	newItem, err := itemdetails.CreateItem(name, price, quantity, itemType)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(newItem.GetTotalCost())
+
+	moreItems, err := getUserChoice()
+
+	for err != nil {
+		moreItems, err = getUserChoice()
+
+	}
+	if moreItems == Accept {
+		err = Initialize()
+		return err
+	}
+	return nil
 
 }
 
@@ -89,4 +74,29 @@ func getItem() (name string, price float64, quantity int, itemType string, err e
 		return
 	}
 	return
+}
+
+func getUserChoice() (string, error) {
+	fmt.Println("Do you want to enter Details of more item:", Accept+"/"+Deny)
+	userResponse := Accept
+	_, err := fmt.Scanf("%s", &userResponse)
+	if err != nil {
+		err := errors.Wrap(err, "Scan for user choice failed")
+		log.Println(err)
+		return userResponse, err
+	}
+	if err := validateUserResponse(userResponse); err != nil {
+		err = errors.Wrap(err, "invalid user response")
+		return userResponse, err
+	}
+	return userResponse, nil
+}
+
+func validateUserResponse(userResponse string) error {
+	if userResponse != Accept && userResponse != Deny {
+		err := fmt.Errorf("invalid Choice")
+		log.Println(err)
+		return err
+	}
+	return nil
 }
