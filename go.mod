@@ -34,6 +34,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/fzipp/gocyclo v0.4.0 // indirect
 	github.com/go-critic/go-critic v0.6.2 // indirect
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible // indirect
 	github.com/go-toolsmith/astcast v1.0.0 // indirect
 	github.com/go-toolsmith/astcopy v1.0.0 // indirect
 	github.com/go-toolsmith/astequal v1.0.1 // indirect

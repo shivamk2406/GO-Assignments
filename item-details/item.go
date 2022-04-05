@@ -2,7 +2,9 @@ package itemdetails
 
 import (
 	"fmt"
+	"log"
 
+	validation "github.com/go-ozzo/ozzo-validation"
 	enum "github.com/shivamk2406/GO-Assignments/item-details/enum"
 )
 
@@ -65,6 +67,34 @@ func CreateItem(name string, price float64, quantity int, typeItem string) (Item
 	if err != nil {
 		return Item{}, err
 	}
-
+	err = validateItem(item)
+	if err != nil {
+		log.Println(err)
+		return Item{}, nil
+	}
 	return item, nil
+}
+
+func validateItem(item Item) error {
+	return validation.ValidateStruct(&item,
+		validation.Field(&item.ItemPrice, validation.By(checkNegativeValue)),
+		validation.Field(&item.ItemQuantity, validation.By(checkNegativeValue)))
+
+}
+
+func checkNegativeValue(value interface{}) error {
+	err := fmt.Errorf("%v", "negative value")
+
+	switch data := value.(type) {
+	case int:
+		if data < 0 {
+			return err
+		}
+	case float64:
+		if data < 0.0 {
+			return err
+		}
+	}
+	return nil
+
 }
