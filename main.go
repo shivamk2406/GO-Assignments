@@ -1,9 +1,14 @@
 package main
 
 import (
-	query "github.com/shivamk2406/GO-Assignments/view"
+	"fmt"
+
+	"github.com/shivamk2406/GO-Assignments/view"
 )
 
 func main() {
-	query.QueryScreen()
+	err := view.Initialize()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

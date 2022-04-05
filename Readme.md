@@ -1,3 +1,4 @@
+<h1> Item Inventory </h1>
 Write a go program that accepts details (item name, item type, item prize) of different items from
 Command line and outputs the item name, item prize, sales tax liability per item, final prize (sales tax + item prize) to the console. The input should be accepted with following command line options:
 -name <first item name>
@@ -17,7 +18,7 @@ Tax rules for the 3 types are as follows:
     2. manufactured: 12.5% of the item cost + 2% of (item cost + 12.5% of the item cost)
     3. imported: 10% import duty on item cost + a surcharge (surcharge is: Rs. 5 if the final cost after applying tax & import duty is up to Rs. 100, Rs. 10 if the cost exceeds 100 and up to 200 and 5% of the final cost if it exceeds 200).
 
-Key Points:
+**Key Points:**
  
 1. Use Go’s I/O capabilities to accept input from users.
 2. Use Go’s String functionalities to parse input strings.

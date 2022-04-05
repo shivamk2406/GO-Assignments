@@ -1,9 +1,10 @@
 package enum
 
+//go:generate  -type=ItemType
 type ItemType int
 
 const (
-	raw ItemType = iota
-	manufactured
-	imported
+	Raw ItemType = iota
+	Manufactured
+	Imported
 )
