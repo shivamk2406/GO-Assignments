@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	user "github.com/shivamk2406/GO-Assignments/tree/Assignment-2/v"
+	user "github.com/shivamk2406/GO-Assignments/tree/Assignment-2/user"
 )
 
-func QueryScreen() {
+func DriverMenu() {
 	var choice int
 	TempUser := user.User{}
 	for choice != 5 {
