@@ -10,7 +10,6 @@ import (
 )
 
 func Initialize() error {
-
 	item, err := getItem()
 	if err != nil {
 		return err
@@ -31,7 +30,6 @@ func Initialize() error {
 		return err
 	}
 	return nil
-
 }
 
 func getItem() (item itemdetails.Item, err error) {
@@ -84,9 +82,8 @@ func getUserChoice() (string, error) {
 	fmt.Println("Do you want to enter Details of more item:", enum.Accept+"/"+enum.Deny)
 	userResponse := enum.Accept
 	_, err := fmt.Scanf("%s", &userResponse)
-
 	if err != nil {
-		err := errors.Wrap(err, "Scan for user choice failed")
+		err = errors.Wrap(err, "Scan for user choice failed")
 		log.Println(err)
 		return userResponse, err
 	}
@@ -101,9 +98,7 @@ func getUserChoice() (string, error) {
 
 func validateUserResponse(userResponse string) error {
 	if userResponse != enum.Accept && userResponse != enum.Deny {
-		err := fmt.Errorf("invalid Choice")
-		log.Println(err)
-		return err
+		return fmt.Errorf("invalid Choice")
 	}
 	return nil
 }
