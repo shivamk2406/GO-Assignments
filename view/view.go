@@ -5,34 +5,28 @@ import (
 	"log"
 
 	"github.com/pkg/errors"
-	itemdetails "github.com/shivamk2406/GO-Assignments/item-details"
-)
-
-const (
-	Accept = "y"
-	Deny   = "n"
+	itemdetails "github.com/shivamk2406/GO-Assignments/item"
+	"github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
 func Initialize() error {
-	name, price, quantity, itemType, err := getItem()
+
+	item, err := getItem()
 	if err != nil {
 		return err
 	}
 
-	newItem, err := itemdetails.CreateItem(name, price, quantity, itemType)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(newItem.GetTotalCost())
+	itemInvoice := item.ItemInvoice()
+	fmt.Println("Item Details:")
+	fmt.Printf("Name: %s\nPrice: %f \nQuantity: %d \nType: %s \nTax: %f \nEffective Price: %f\n", itemInvoice.Name, itemInvoice.Price, item.Quantity, itemInvoice.Type, itemInvoice.Tax, itemInvoice.EffectivePrice)
 
 	moreItems, err := getUserChoice()
 
 	for err != nil {
 		moreItems, err = getUserChoice()
-
 	}
-	if moreItems == Accept {
+
+	if moreItems == enum.Accept {
 		err = Initialize()
 		return err
 	}
@@ -40,7 +34,11 @@ func Initialize() error {
 
 }
 
-func getItem() (name string, price float64, quantity int, itemType string, err error) {
+func getItem() (item itemdetails.Item, err error) {
+	var name string
+	var price float64
+	var quantity int
+	var itemType string
 
 	fmt.Println("Enter Item Name")
 	_, err = fmt.Scanf("%s", &name)
@@ -73,27 +71,36 @@ func getItem() (name string, price float64, quantity int, itemType string, err e
 		log.Println(err)
 		return
 	}
+
+	item, err = itemdetails.NewItem(name, price, quantity, itemType)
+	if err != nil {
+		return
+	}
+
 	return
 }
 
 func getUserChoice() (string, error) {
-	fmt.Println("Do you want to enter Details of more item:", Accept+"/"+Deny)
-	userResponse := Accept
+	fmt.Println("Do you want to enter Details of more item:", enum.Accept+"/"+enum.Deny)
+	userResponse := enum.Accept
 	_, err := fmt.Scanf("%s", &userResponse)
+
 	if err != nil {
 		err := errors.Wrap(err, "Scan for user choice failed")
 		log.Println(err)
 		return userResponse, err
 	}
+
 	if err := validateUserResponse(userResponse); err != nil {
 		err = errors.Wrap(err, "invalid user response")
 		return userResponse, err
 	}
+
 	return userResponse, nil
 }
 
 func validateUserResponse(userResponse string) error {
-	if userResponse != Accept && userResponse != Deny {
+	if userResponse != enum.Accept && userResponse != enum.Deny {
 		err := fmt.Errorf("invalid Choice")
 		log.Println(err)
 		return err
