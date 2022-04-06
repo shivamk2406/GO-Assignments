@@ -15,7 +15,7 @@ type Item struct {
 	Type     enum.ItemType
 }
 
-type ItemInvoice struct {
+type Invoice struct {
 	Name           string
 	Price          float64
 	Quantity       int
@@ -35,17 +35,17 @@ const (
 	importSurchargeForPriceGreaterThanTwoHundred = 0.05
 )
 
-func (i Item) getItemCostWithoutTax() float64 {
-	itemCost := i.Price * float64(i.Quantity)
+func (item Item) getItemCostWithoutTax() float64 {
+	itemCost := item.Price * float64(item.Quantity)
 
 	return itemCost
 }
 
-func (i Item) GetTax() float64 {
-	priceWithoutTax := i.getItemCostWithoutTax()
+func (item Item) GetTax() float64 {
+	priceWithoutTax := item.getItemCostWithoutTax()
 	var tax float64
 
-	switch i.Type {
+	switch item.Type {
 	case enum.Raw:
 		tax = rawItemTaxPerItem * priceWithoutTax
 	case enum.Manufactured:
@@ -53,7 +53,7 @@ func (i Item) GetTax() float64 {
 		tax += addedManufacturedItemTaxPerItem * rateForAddedManufacturedItemTax * priceWithoutTax
 	case enum.Imported:
 		tax = importedItemTaxPerItem * priceWithoutTax
-		tax += i.applySurcharge()
+		tax += item.applySurcharge()
 	}
 
 	return tax
@@ -70,12 +70,11 @@ func (item Item) applySurcharge() float64 {
 	} else {
 		return priceAfterImportDuty * importSurchargeForPriceGreaterThanTwoHundred
 	}
-
 }
 
-func (item Item) ItemInvoice() ItemInvoice {
-
-	return ItemInvoice{Name: item.Name,
+func (item Item) ItemInvoice() Invoice {
+	return Invoice{
+		Name:           item.Name,
 		Price:          item.Price,
 		Quantity:       item.Quantity,
 		Type:           item.Type,
@@ -90,7 +89,6 @@ func (item Item) GetFinalPrice() (price float64) {
 }
 
 func NewItem(name string, price float64, quantity int, typeItem string) (Item, error) {
-
 	var item Item
 	var err error
 
@@ -115,11 +113,9 @@ func validateItem(item Item) error {
 	return validation.ValidateStruct(&item,
 		validation.Field(&item.Price, validation.By(checkNegativeValue)),
 		validation.Field(&item.Quantity, validation.By(checkNegativeValue)))
-
 }
 
 func checkNegativeValue(value interface{}) error {
-
 	switch data := value.(type) {
 	case int:
 		if data < 0 {
@@ -131,5 +127,4 @@ func checkNegativeValue(value interface{}) error {
 		}
 	}
 	return nil
-
 }
