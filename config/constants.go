@@ -3,14 +3,14 @@ package config
 const (
 	Accept                          = "y"
 	Deny                            = "n"
-	rawItemTaxRate                  = 0.125
-	baseManufacturedItemTaxRate     = 0.125
-	addedManufacturedItemTaxRate    = 0.02
-	rateForAddedManufacturedItemTax = 112.5
-	importedItemTaxRate             = 0.1
-	limit1Surcharge                 = 5
-	limit2Surcharge                 = 10
-	limit3SurchargeRate             = 0.05
-	surchargeLimit1                 = 100
-	surchargeLimit2                 = 200
+	RawItemTaxRate                  = 0.125
+	BaseManufacturedItemTaxRate     = 0.125
+	AddedManufacturedItemTaxRate    = 0.02
+	RateForAddedManufacturedItemTax = 112.5
+	ImportedItemTaxRate             = 0.1
+	Limit1Surcharge                 = 5
+	Limit2Surcharge                 = 10
+	Limit3SurchargeRate             = 0.05
+	SurchargeLimit1                 = 100
+	SurchargeLimit2                 = 200
 )

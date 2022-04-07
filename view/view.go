@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/pkg/errors"
+	"github.com/shivamk2406/GO-Assignments/config"
 	itemdetails "github.com/shivamk2406/GO-Assignments/item"
-	"github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
 func Initialize() error {
@@ -23,7 +24,7 @@ func Initialize() error {
 		moreItems, err = getUserChoice()
 	}
 
-	if moreItems == enum.Accept {
+	if moreItems == config.Accept {
 		err = Initialize()
 		return err
 	}
@@ -40,28 +41,28 @@ func getItem() (itemdetails.Item, error) {
 	_, err := fmt.Scanf("%s", &name)
 	if err != nil {
 		log.Println(err)
-		return itemdetails.Item{}, fmt.Errorf("item name scanning failed")
+		return itemdetails.Item{}, errors.Errorf("item name scanning failed")
 	}
 
 	fmt.Println("Enter Item Price")
 	_, err = fmt.Scanf("%f", &price)
 	if err != nil {
 		log.Println(err)
-		return itemdetails.Item{}, fmt.Errorf("item price scanning failed")
+		return itemdetails.Item{}, errors.Errorf("item price scanning failed")
 	}
 
 	fmt.Println("Enter Item Quantity")
 	_, err = fmt.Scanf("%d", &quantity)
 	if err != nil {
 		log.Println(err)
-		return itemdetails.Item{}, fmt.Errorf("item quantity scanning failed")
+		return itemdetails.Item{}, errors.Errorf("item quantity scanning failed")
 	}
 
 	fmt.Println("Enter Item Type")
 	_, err = fmt.Scanf("%s", &itemType)
 	if err != nil {
 		log.Println(err)
-		return itemdetails.Item{}, fmt.Errorf("item quantity scanning failed")
+		return itemdetails.Item{}, errors.Errorf("item quantity scanning failed")
 	}
 
 	item, err := itemdetails.NewItem(name, price, quantity, itemType)
@@ -73,25 +74,24 @@ func getItem() (itemdetails.Item, error) {
 }
 
 func getUserChoice() (string, error) {
-	fmt.Println("Do you want to enter Details of more item:", enum.Accept+"/"+enum.Deny)
-	userResponse := enum.Accept
+	fmt.Println("Do you want to enter Details of more item:", config.Accept+"/"+config.Deny)
+	userResponse := config.Accept
 	_, err := fmt.Scanf("%s", &userResponse)
 	if err != nil {
 		log.Println(err)
-		return userResponse, fmt.Errorf("scan for user chhoice failed")
+		return userResponse, errors.Errorf("scan for user chhoice failed")
 	}
 
 	if err := validateUserResponse(userResponse); err != nil {
-
-		return userResponse, fmt.Errorf("invalid user response")
+		return userResponse, errors.Errorf("invalid user response")
 	}
 
 	return userResponse, nil
 }
 
 func validateUserResponse(userResponse string) error {
-	if userResponse != enum.Accept && userResponse != enum.Deny {
-		return fmt.Errorf("invalid Choice")
+	if userResponse != config.Accept && userResponse != config.Deny {
+		return errors.Errorf("invalid Choice")
 	}
 	return nil
 }

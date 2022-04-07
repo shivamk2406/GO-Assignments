@@ -1,9 +1,9 @@
 package item
 
 import (
-	"errors"
 	"testing"
 
+	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
@@ -16,7 +16,7 @@ type scenarioTestNewItem struct {
 	itemError   error
 }
 
-type scenarioTestFinalPrice struct {
+type scenarioTestEffectivePrice struct {
 	description   string
 	item          Item
 	expectedPrice float64
@@ -31,7 +31,7 @@ func TestNewItem(t *testing.T) {
 			price:       -87,
 			quantity:    4,
 			itemType:    "raw",
-			itemError:   errors.New("negative value"),
+			itemError:   errors.Errorf("negative value"),
 		},
 		{
 			description: "All correct information is provided",
@@ -61,12 +61,12 @@ func TestNewItem(t *testing.T) {
 	}
 }
 
-func TestGetFinalPrice(t *testing.T) {
-	scenarios := []scenarioTestFinalPrice{
+func TestGetEffectivePrice(t *testing.T) {
+	scenarios := []scenarioTestEffectivePrice{
 		{
 			description:   "Manufactured Item",
 			item:          Item{Name: "Pen", Price: 12, Quantity: 2, Type: enum.Manufactured},
-			expectedPrice: 81.0,
+			expectedPrice: 27.06,
 			err:           nil,
 		},
 		{
@@ -96,9 +96,9 @@ func TestGetFinalPrice(t *testing.T) {
 	}
 
 	for _, testScenarios := range scenarios {
-		effectedPriceForItem := testScenarios.item.GetFinalPrice()
+		effectedPriceForItem := testScenarios.item.GetEffectivePrice()
 		if effectedPriceForItem != testScenarios.expectedPrice {
-			t.Errorf("Error Occured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
+			t.Errorf("Error occcuured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
 		}
 	}
 }
