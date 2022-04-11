@@ -7,25 +7,24 @@ import (
 	"log"
 
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/services"
 )
 
-func ReadFromFile() error {
+func ReadFromFile() ([]aggregate.Student, error) {
 	data, err := ioutil.ReadFile("students.json")
 
 	if err != nil {
 		log.Println(err)
-		return err
+		return []aggregate.Student{}, nil
 	}
 
 	var students []aggregate.Student
 	err = json.Unmarshal(data, &students)
 	if err != nil {
 		log.Println(err)
-		return err
+		return []aggregate.Student{}, err
 	}
-	services.DisplayStudentDetails(students)
-	return nil
+
+	return students, nil
 }
 
 func SaveStudentDetails(students []aggregate.Student) error {
@@ -43,8 +42,4 @@ func SaveStudentDetails(students []aggregate.Student) error {
 	fmt.Println("Wrote To the File named as students.json")
 
 	return nil
-}
-
-func DeleteStudentDetails(student aggregate.Student) error {
-
 }

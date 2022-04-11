@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
@@ -22,7 +23,8 @@ func driveMenu() {
 
 func Initialize() error {
 	choice := 0
-	tempStudents := []aggregate.Student{}
+	existingUsers, _ := repository.ReadFromFile()
+	var tempStudents []aggregate.Student
 
 	for choice != 5 {
 		driveMenu()
@@ -40,11 +42,25 @@ func Initialize() error {
 			tempStudents = append(tempStudents, tempStudent)
 			fmt.Println("Student added successfully")
 		case 2:
-			services.DisplayStudentDetails(tempStudents)
+			students, err := repository.ReadFromFile()
+			if err != nil {
+				return err
+			}
+			services.DisplayStudentDetails(students)
 		case 3:
-			repository.ReadFromFile()
+			var rollNo int
+			fmt.Println("Enter Roll Number")
+			fmt.Scanf("%d", &rollNo)
+			err := services.DeleteStudentDetails(uint(rollNo))
+			if err != nil {
+				return err
+			}
 		case 4:
-			repository.SaveStudentDetails(tempStudents)
+			existingUsers = append(existingUsers, tempStudents...)
+			sort.Slice(existingUsers, func(i, j int) bool {
+				return existingUsers[i].FullName < existingUsers[j].FullName
+			})
+			repository.SaveStudentDetails(existingUsers)
 		case 5:
 			os.Exit(1)
 		}

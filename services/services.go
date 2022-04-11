@@ -6,6 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
+	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/repository"
+	"golang.org/x/exp/slices"
 )
 
 func GetStudentDetails() (aggregate.Student, error) {
@@ -57,7 +59,7 @@ func GetStudentDetails() (aggregate.Student, error) {
 		courses = append(courses, course)
 
 		if i >= 3 {
-			fmt.Println("Minimim courses limit reached press 1 to save the existing ones as final")
+			fmt.Println("Minimum courses limit reached press 1 to save the existing ones as final")
 			_, err := fmt.Scanf("%d", &extraChoice)
 			if err != nil {
 				log.Println(err)
@@ -83,4 +85,25 @@ func DisplayStudentDetails(students []aggregate.Student) {
 	for i := 0; i < len(students); i++ {
 		students[i].DisplayStudentDetails()
 	}
+}
+
+func FindStudent(rollNumber uint) int {
+	students, _ := repository.ReadFromFile()
+	idx := slices.IndexFunc(students, func(e aggregate.Student) bool { return e.RollNumber == rollNumber })
+	return idx
+
+}
+
+func DeleteStudentDetails(rollNumber uint) error {
+	idx := FindStudent(rollNumber)
+	if idx == -1 {
+		return errors.Errorf("no such student found")
+	}
+	students, _ := repository.ReadFromFile()
+	students = append(students[:idx], students[idx+1:]...)
+	err := repository.SaveStudentDetails(students)
+	if err != nil {
+		return errors.Errorf("saving user details failed")
+	}
+	return nil
 }
