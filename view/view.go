@@ -16,8 +16,7 @@ func Initialize() error {
 	}
 
 	itemInvoice := item.ItemInvoice()
-	fmt.Println("Item Details:")
-	fmt.Printf("Name: %s\nPrice: %f \nQuantity: %d \nType: %s \nTax: %f \nEffective Price: %f\n", itemInvoice.Name, itemInvoice.Price, item.Quantity, itemInvoice.Type, itemInvoice.Tax, itemInvoice.EffectivePrice)
+	fmt.Printf("Item Details:\nName: %s\nPrice: %f \nQuantity: %d \nType: %s \nTax: %f \nEffective Price: %f\n", itemInvoice.Name, itemInvoice.Price, item.Quantity, itemInvoice.Type, itemInvoice.Tax, itemInvoice.EffectivePrice)
 
 	moreItems, err := getUserChoice()
 

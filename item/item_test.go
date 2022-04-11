@@ -7,7 +7,7 @@ import (
 	"github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
-type scenarioTestNewItem struct {
+type testNewItemScenario struct {
 	description string
 	name        string
 	price       float64
@@ -16,7 +16,7 @@ type scenarioTestNewItem struct {
 	itemError   error
 }
 
-type scenarioTestFinalPrice struct {
+type testFinalPriceScenario struct {
 	description   string
 	item          Item
 	expectedPrice float64
@@ -24,7 +24,7 @@ type scenarioTestFinalPrice struct {
 }
 
 func TestNewItem(t *testing.T) {
-	scenarios := []scenarioTestNewItem{
+	scenarios := []testNewItemScenario{
 		{
 			description: "All information is provided and Price is negative",
 			name:        "Pen",
@@ -62,7 +62,7 @@ func TestNewItem(t *testing.T) {
 }
 
 func TestGetFinalPrice(t *testing.T) {
-	scenarios := []scenarioTestFinalPrice{
+	scenarios := []testFinalPriceScenario{
 		{
 			description:   "Manufactured Item",
 			item:          Item{Name: "Pen", Price: 12, Quantity: 2, Type: enum.Manufactured},
@@ -98,7 +98,7 @@ func TestGetFinalPrice(t *testing.T) {
 	for _, testScenarios := range scenarios {
 		effectedPriceForItem := testScenarios.item.GetFinalPrice()
 		if effectedPriceForItem != testScenarios.expectedPrice {
-			t.Errorf("Error Occured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
+			t.Errorf("Error Occuured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
 		}
 	}
 }

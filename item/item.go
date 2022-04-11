@@ -1,10 +1,10 @@
 package item
 
 import (
-	"fmt"
 	"log"
 
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/pkg/errors"
 	enum "github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
@@ -119,11 +119,11 @@ func checkNegativeValue(value interface{}) error {
 	switch data := value.(type) {
 	case int:
 		if data < 0 {
-			return fmt.Errorf("negative value")
+			return errors.Errorf("negative value")
 		}
 	case float64:
 		if data < 0.0 {
-			return fmt.Errorf("negative value")
+			return errors.Errorf("negative value")
 		}
 	}
 	return nil
