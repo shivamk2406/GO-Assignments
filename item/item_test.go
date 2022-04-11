@@ -17,7 +17,11 @@ type testNewItemScenario struct {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 type testFinalPriceScenario struct {
+=======
+type scenarioTestEffectivePrice struct {
+>>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
 =======
 type scenarioTestEffectivePrice struct {
 >>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
@@ -66,8 +70,13 @@ func TestNewItem(t *testing.T) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 func TestGetFinalPrice(t *testing.T) {
 	scenarios := []testFinalPriceScenario{
+=======
+func TestGetEffectivePrice(t *testing.T) {
+	scenarios := []scenarioTestEffectivePrice{
+>>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
 =======
 func TestGetEffectivePrice(t *testing.T) {
 	scenarios := []scenarioTestEffectivePrice{
@@ -108,7 +117,11 @@ func TestGetEffectivePrice(t *testing.T) {
 		effectedPriceForItem := testScenarios.item.GetEffectivePrice()
 		if effectedPriceForItem != testScenarios.expectedPrice {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			t.Errorf("Error Occuured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
+=======
+			t.Errorf("Error occcuured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
+>>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
 =======
 			t.Errorf("Error occcuured expected %f got %f for %s", testScenarios.expectedPrice, effectedPriceForItem, testScenarios.description)
 >>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
