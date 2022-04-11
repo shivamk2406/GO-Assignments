@@ -1,22 +1,9 @@
 package item
 
 import (
-<<<<<<< HEAD
-<<<<<<< HEAD
-	"log"
-
-	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/pkg/errors"
-=======
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/config"
->>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
-=======
-	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/pkg/errors"
-	"github.com/shivamk2406/GO-Assignments/config"
->>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
 	enum "github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
