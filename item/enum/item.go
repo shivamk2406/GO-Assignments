@@ -8,8 +8,3 @@ const (
 	Manufactured
 	Imported
 )
-
-const (
-	Accept = "y"
-	Deny   = "n"
-)

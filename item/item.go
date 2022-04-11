@@ -1,10 +1,16 @@
 package item
 
 import (
+<<<<<<< HEAD
 	"log"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/pkg/errors"
+=======
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/pkg/errors"
+	"github.com/shivamk2406/GO-Assignments/config"
+>>>>>>> 8054c788bd506010e5bf567d1ec12671e28805cc
 	enum "github.com/shivamk2406/GO-Assignments/item/enum"
 )
 
@@ -24,51 +30,33 @@ type Invoice struct {
 	EffectivePrice float64
 }
 
-const (
-	rawItemTaxPerItem                            = 0.125
-	baseManufacturedItemTaxPerItem               = 0.125
-	addedManufacturedItemTaxPerItem              = 0.02
-	rateForAddedManufacturedItemTax              = 112.5
-	importedItemTaxPerItem                       = 0.1
-	importSurchargeForPriceLessThanHundred       = 5
-	importSurchargeForPriceLessThanTwoHundred    = 10
-	importSurchargeForPriceGreaterThanTwoHundred = 0.05
-)
-
-func (item Item) getItemCostWithoutTax() float64 {
+func (item Item) getBasePrice() float64 {
 	itemCost := item.Price * float64(item.Quantity)
 
 	return itemCost
 }
 
 func (item Item) GetTax() float64 {
-	priceWithoutTax := item.getItemCostWithoutTax()
-	var tax float64
-
 	switch item.Type {
 	case enum.Raw:
-		tax = rawItemTaxPerItem * priceWithoutTax
+		return config.RawItemTaxRate * item.getBasePrice()
 	case enum.Manufactured:
-		tax = baseManufacturedItemTaxPerItem * priceWithoutTax
-		tax += addedManufacturedItemTaxPerItem * rateForAddedManufacturedItemTax * priceWithoutTax
+		baseTax := config.BaseManufacturedItemTaxRate * item.getBasePrice()
+		return baseTax + config.AddedManufacturedItemTaxRate*baseTax
 	case enum.Imported:
-		tax = importedItemTaxPerItem * priceWithoutTax
-		tax += item.applySurcharge()
+		return config.ImportedItemTaxRate*item.getBasePrice() + item.applySurcharge()
 	}
-
-	return tax
+	return 0
 }
 
 func (item Item) applySurcharge() float64 {
-	priceWithoutTax := item.getItemCostWithoutTax()
-	priceAfterImportDuty := priceWithoutTax + importedItemTaxPerItem*priceWithoutTax
-
-	if priceAfterImportDuty < 100 {
-		return importSurchargeForPriceLessThanHundred
-	} else if priceAfterImportDuty >= 100 && priceAfterImportDuty < 200 {
-		return importSurchargeForPriceLessThanTwoHundred
+	importedPrice := item.getBasePrice() + config.ImportedItemTaxRate*item.getBasePrice()
+	if importedPrice < config.SurchargeLimit1 {
+		return config.Limit1Surcharge
+	} else if importedPrice >= config.SurchargeLimit1 && importedPrice < config.SurchargeLimit2 {
+		return config.Limit2Surcharge
 	} else {
-		return priceAfterImportDuty * importSurchargeForPriceGreaterThanTwoHundred
+		return importedPrice * config.Limit3SurchargeRate
 	}
 }
 
@@ -79,12 +67,12 @@ func (item Item) ItemInvoice() Invoice {
 		Quantity:       item.Quantity,
 		Type:           item.Type,
 		Tax:            item.GetTax(),
-		EffectivePrice: item.GetFinalPrice(),
+		EffectivePrice: item.GetEffectivePrice(),
 	}
 }
 
-func (item Item) GetFinalPrice() (price float64) {
-	price = item.getItemCostWithoutTax() + item.GetTax()
+func (item Item) GetEffectivePrice() (price float64) {
+	price = item.getBasePrice() + item.GetTax()
 	return price
 }
 
@@ -102,7 +90,6 @@ func NewItem(name string, price float64, quantity int, typeItem string) (Item, e
 
 	err = validateItem(item)
 	if err != nil {
-		log.Println(err)
 		return Item{}, err
 	}
 
