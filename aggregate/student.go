@@ -1,23 +1,27 @@
 package aggregate
 
 import (
+	"fmt"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/entity"
-	enum "github.com/shivamk2406/GO-Assignments/tree/Assignment-2/entity/courses/enum"
+	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/entity/courses/enum"
 )
 
 type Student struct {
-	person  entity.Person
-	courses []entity.Course
+	entity.Person
+	Courses    []entity.Course `json:"courses,omitempty"`
+	RollNumber uint
 }
 
-func (s Student) validate() error {
+func validate(s Student) error {
 	return validation.ValidateStruct(&s,
-		validation.Field(&s.person.Address, validation.Required, validation.Length(5, 100)),
-		validation.Field(&s.person.Age, validation.By(checkNegativeValue)),
-		validation.Field(&s.person.FullName, validation.Required, validation.Length(5, 100)),
-		validation.Field(&s.courses, validation.Required, validation.Length(4, 6)),
+		validation.Field(&s.Address, validation.Required, validation.Length(5, 100)),
+		validation.Field(&s.Age, validation.By(checkNegativeValue)),
+		validation.Field(&s.RollNumber, validation.By(checkNegativeValue)),
+		validation.Field(&s.FullName, validation.Required, validation.Length(5, 100)),
+		validation.Field(&s.Courses, validation.Required, validation.Length(4, 6)),
 	)
 }
 
@@ -28,18 +32,33 @@ func checkNegativeValue(value interface{}) error {
 	}
 	return nil
 }
-func New(name string, age uint, address string, courses []string) (Student, error) {
+
+func New(name string, age uint, address string, rollNumber uint, courses []string) (Student, error) {
 	var student Student
 	var err error
-	var course entity.
 
-	student.person = entity.Person{FullName: name, Age: age, Address: address}
-
+	student.Person = entity.Person{FullName: name, Age: age, Address: address}
+	student.RollNumber = rollNumber
 	for i := 0; i < len(courses); i++ {
-
-		course, err = enum.CourseString(courses[i])
+		course, err := enum.CourseString(courses[i])
+		if err != nil {
+			return Student{}, err
+		}
+		student.Courses = append(student.Courses, entity.Course{Name: course})
+	}
+	err = validate(student)
+	if err != nil {
+		return Student{}, err
 	}
 
-	err = student.validate()
+	return student, nil
+}
+
+func (student Student) DisplayStudentDetails() {
+	fmt.Printf("Name: %s\n", student.Person.FullName)
+	fmt.Printf("Address: %s\n", student.Person.Address)
+	fmt.Printf("Age: %d\n", student.Person.Age)
+	fmt.Printf("Roll Number: %d\n", student.RollNumber)
+	fmt.Printf("Courses Enrolled %v \n", student.Courses)
 
 }

@@ -1,0 +1,22 @@
+[
+ {
+  "full_name": "Shivam",
+  "age": 21,
+  "address": "Patna",
+  "courses": [
+   {
+    "Name": 0
+   },
+   {
+    "Name": 1
+   },
+   {
+    "Name": 2
+   },
+   {
+    "Name": 3
+   }
+  ],
+  "RollNumber": 24
+ }
+]

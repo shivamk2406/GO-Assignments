@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	view.DriverMenu()
+	view.Initialize()
 }
