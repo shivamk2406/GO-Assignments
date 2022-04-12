@@ -84,6 +84,7 @@ func GetStudentDetails() (aggregate.Student, error) {
 
 func DisplayStudentDetails(students []aggregate.Student) {
 	fmt.Println("Name            Roll Number         Age              Address            Courses")
+	fmt.Println("----------------------------------------------------------------------------------")
 	for i := 0; i < len(students); i++ {
 		students[i].DisplayStudentDetails()
 	}
@@ -96,8 +97,11 @@ func FindStudent(rollNumber uint) int {
 
 }
 
-func DeleteStudentDetails(rollNumber uint) error {
-	idx := FindStudent(rollNumber)
+func DeleteStudentDetails() error {
+	var rollNo uint
+	fmt.Println("Enter Roll Number")
+	fmt.Scanf("%d", &rollNo)
+	idx := FindStudent(rollNo)
 	if idx == -1 {
 		return errors.Errorf("no such student found")
 	}

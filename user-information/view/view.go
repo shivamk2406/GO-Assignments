@@ -21,9 +21,40 @@ func showMenu() {
 
 }
 
+func addUserDetails() (aggregate.Student, error) {
+	tempStudent, err := services.GetStudentDetails()
+	if err != nil {
+		log.Println(err)
+		return aggregate.Student{}, err
+	}
+	err = vutil.CheckDuplicates(tempStudent)
+	if err != nil {
+		return aggregate.Student{}, err
+	}
+	return tempStudent, nil
+}
+
+func safeExit(tempStudents []aggregate.Student) error {
+	var choice int
+	fmt.Println("There are some unsaved changes!!! Press 1 to save the details any key to exit")
+	choice, err := fmt.Scanf("%d", &choice)
+	if err != nil {
+		return err
+	}
+
+	if choice == 1 {
+		err := repository.AppendStudentDetails(tempStudents)
+		if err != nil {
+			return err
+		}
+	} else {
+		fmt.Println("Exiting")
+	}
+	return nil
+}
+
 func Initialize() error {
 	choice := 0
-	var rollNo int
 	var tempStudents []aggregate.Student
 
 	for choice != 5 {
@@ -34,16 +65,10 @@ func Initialize() error {
 		}
 		switch choice {
 		case 1:
-			tempStudent, err := services.GetStudentDetails()
-			if err != nil {
-				log.Println(err)
-				return err
-			}
-			err = vutil.CheckDuplicateRollNumber(tempStudent)
+			tempStudent, err := addUserDetails()
 			if err != nil {
 				return err
 			}
-
 			tempStudents = append(tempStudents, tempStudent)
 			fmt.Println("Student added successfully")
 		case 2:
@@ -51,42 +76,37 @@ func Initialize() error {
 			if err != nil {
 				return err
 			}
-
 			fmt.Println("on Temp")
+			fmt.Println("----------------------------------------------------------------------------------")
 			services.DisplayStudentDetails(tempStudents)
 			fmt.Println("on File")
+			fmt.Println("----------------------------------------------------------------------------------")
 			services.DisplayStudentDetails(students)
 		case 3:
-
-			fmt.Println("Enter Roll Number")
-			fmt.Scanf("%d", &rollNo)
-			err := services.DeleteStudentDetails(uint(rollNo))
+			err := services.DeleteStudentDetails()
 			if err != nil {
 				return err
 			}
 		case 4:
 			if tempStudents != nil {
 				fmt.Println("Saving Details")
-				repository.AppendStudentDetails(tempStudents)
+				err := repository.AppendStudentDetails(tempStudents)
+				if err != nil {
+					return err
+				}
 			}
-
 			tempStudents = nil
 
 		case 5:
 			if tempStudents != nil {
-				fmt.Println("There are some unsaved changes!!! Press 1 to save the details any key to exit")
-				choice, err := fmt.Scanf("%d", &choice)
+				err := safeExit(tempStudents)
 				if err != nil {
 					return err
 				}
-
-				if choice == 1 {
-					repository.AppendStudentDetails(tempStudents)
-				} else {
-					fmt.Println("Exiting")
-				}
 			}
 			os.Exit(1)
+		default:
+			fmt.Println("invalid choice")
 		}
 	}
 	return nil
@@ -100,13 +120,5 @@ func getChoice() (int, error) {
 		log.Println(err)
 		return 0, errors.Errorf("choice scanning failed")
 	}
-
 	return choice, nil
-}
-
-func validateUserChoice(choice int) error {
-	if choice >= 1 && choice <= 5 {
-		return errors.Errorf("invalid choice")
-	}
-	return nil
 }
