@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sort"
 
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
@@ -23,7 +22,7 @@ func driveMenu() {
 
 func Initialize() error {
 	choice := 0
-	existingUsers, _ := repository.ReadFromFile()
+	var rollNo int
 	var tempStudents []aggregate.Student
 
 	for choice != 5 {
@@ -46,9 +45,12 @@ func Initialize() error {
 			if err != nil {
 				return err
 			}
+			fmt.Println("on Temp")
+			services.DisplayStudentDetails(tempStudents)
+			fmt.Println("on File")
 			services.DisplayStudentDetails(students)
 		case 3:
-			var rollNo int
+
 			fmt.Println("Enter Roll Number")
 			fmt.Scanf("%d", &rollNo)
 			err := services.DeleteStudentDetails(uint(rollNo))
@@ -56,12 +58,24 @@ func Initialize() error {
 				return err
 			}
 		case 4:
-			existingUsers = append(existingUsers, tempStudents...)
-			sort.Slice(existingUsers, func(i, j int) bool {
-				return existingUsers[i].FullName < existingUsers[j].FullName
-			})
-			repository.SaveStudentDetails(existingUsers)
+			if tempStudents != nil {
+				fmt.Println("Saving Details")
+				repository.SaveStudentDetails(tempStudents)
+			}
+
+			tempStudents = nil
+
 		case 5:
+			if tempStudents != nil {
+				fmt.Println("There are some unsaved changes!!! Press 1 to save the details")
+				choice, err := fmt.Scanf("%d", &choice)
+				if err != nil {
+					return err
+				}
+				if choice == 1 {
+					repository.SaveStudentDetails(tempStudents)
+				}
+			}
 			os.Exit(1)
 		}
 	}

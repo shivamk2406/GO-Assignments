@@ -82,6 +82,7 @@ func GetStudentDetails() (aggregate.Student, error) {
 }
 
 func DisplayStudentDetails(students []aggregate.Student) {
+	fmt.Println("Name\tRoll Number\tAge\tAddress\t\t\tCourses")
 	for i := 0; i < len(students); i++ {
 		students[i].DisplayStudentDetails()
 	}
@@ -101,7 +102,7 @@ func DeleteStudentDetails(rollNumber uint) error {
 	}
 	students, _ := repository.ReadFromFile()
 	students = append(students[:idx], students[idx+1:]...)
-	err := repository.SaveStudentDetails(students)
+	err := repository.SaveToFile(students)
 	if err != nil {
 		return errors.Errorf("saving user details failed")
 	}

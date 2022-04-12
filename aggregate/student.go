@@ -55,10 +55,6 @@ func New(name string, age uint, address string, rollNumber uint, courses []strin
 }
 
 func (student Student) DisplayStudentDetails() {
-	fmt.Printf("Name: %s\n", student.Person.FullName)
-	fmt.Printf("Address: %s\n", student.Person.Address)
-	fmt.Printf("Age: %d\n", student.Person.Age)
-	fmt.Printf("Roll Number: %d\n", student.RollNumber)
-	fmt.Printf("Courses Enrolled %v \n", student.Courses)
+	fmt.Printf("%s\t\t%d\t%d\t%s\t\t\t%v\n", student.Person.FullName, student.RollNumber, student.Age, student.Address, student.Courses)
 
 }
