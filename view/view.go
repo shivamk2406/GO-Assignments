@@ -79,7 +79,7 @@ func getUserChoice() (string, error) {
 	_, err := fmt.Scanf("%s", &userResponse)
 	if err != nil {
 		log.Println(err)
-		return userResponse, errors.Errorf("scan for user chhoice failed")
+		return userResponse, errors.Errorf("scan for user choice failed")
 	}
 
 	if err := validateUserResponse(userResponse); err != nil {
