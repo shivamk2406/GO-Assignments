@@ -60,7 +60,7 @@ func Initialize() error {
 		case 4:
 			if tempStudents != nil {
 				fmt.Println("Saving Details")
-				repository.SaveStudentDetails(tempStudents)
+				repository.AppendStudentDetails(tempStudents)
 			}
 
 			tempStudents = nil
@@ -73,7 +73,7 @@ func Initialize() error {
 					return err
 				}
 				if choice == 1 {
-					repository.SaveStudentDetails(tempStudents)
+					repository.AppendStudentDetails(tempStudents)
 				}
 			}
 			os.Exit(1)

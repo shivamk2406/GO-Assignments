@@ -30,7 +30,7 @@ func ReadFromFile() ([]aggregate.Student, error) {
 	return students, nil
 }
 
-func SaveStudentDetails(students []aggregate.Student) error {
+func AppendStudentDetails(students []aggregate.Student) error {
 	existingUsers, _ := ReadFromFile()
 
 	if students == nil {

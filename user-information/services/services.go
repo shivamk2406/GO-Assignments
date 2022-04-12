@@ -82,7 +82,7 @@ func GetStudentDetails() (aggregate.Student, error) {
 }
 
 func DisplayStudentDetails(students []aggregate.Student) {
-	fmt.Println("Name\tRoll Number\tAge\tAddress\t\t\tCourses")
+	fmt.Println("Name            Roll Number         Age              Address            Courses")
 	for i := 0; i < len(students); i++ {
 		students[i].DisplayStudentDetails()
 	}

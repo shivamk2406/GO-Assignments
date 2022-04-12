@@ -12,7 +12,7 @@ import (
 type Student struct {
 	entity.Person
 	Courses    []entity.Course `json:"courses,omitempty"`
-	RollNumber uint
+	RollNumber uint            `json:"roll_number,omitempty"`
 }
 
 func validate(s Student) error {
@@ -55,6 +55,6 @@ func New(name string, age uint, address string, rollNumber uint, courses []strin
 }
 
 func (student Student) DisplayStudentDetails() {
-	fmt.Printf("%s\t\t%d\t%d\t%s\t\t\t%v\n", student.Person.FullName, student.RollNumber, student.Age, student.Address, student.Courses)
+	fmt.Printf("%s            %d         %d              %s            %v\n", student.Person.FullName, student.RollNumber, student.Age, student.Address, student.Courses)
 
 }
