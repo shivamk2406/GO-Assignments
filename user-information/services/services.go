@@ -6,6 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
+	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/config"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/repository"
 	"golang.org/x/exp/slices"
 )
@@ -48,7 +49,7 @@ func GetStudentDetails() (aggregate.Student, error) {
 		return aggregate.Student{}, errors.Errorf("roll number scanning failed")
 	}
 
-	for i := 0; i < 6; i++ {
+	for i := 0; i < config.MaximumCourses; i++ {
 		fmt.Println("Enter Course in which you want to enroll")
 		var course string
 		_, err = fmt.Scanf("%s", &course)
@@ -58,7 +59,7 @@ func GetStudentDetails() (aggregate.Student, error) {
 		}
 		courses = append(courses, course)
 
-		if i >= 3 {
+		if i >= config.MinimumCourses {
 			fmt.Println("Minimum courses limit reached press 1 to save the existing ones as final")
 			_, err := fmt.Scanf("%d", &extraChoice)
 			if err != nil {

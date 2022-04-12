@@ -28,7 +28,7 @@ func TestNewStudent(t *testing.T) {
 		},
 		{
 			description:  "Subject count is less",
-			name:         "Beta",
+			name:         "Mosaic",
 			address:      "Tumkur,Karnataka",
 			age:          22,
 			rollNumber:   03,

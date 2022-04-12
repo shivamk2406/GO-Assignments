@@ -9,9 +9,10 @@ import (
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/repository"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/services"
+	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/vutil"
 )
 
-func driveMenu() {
+func showMenu() {
 	fmt.Println("1.  Add User details.")
 	fmt.Println("2.  Display User details.")
 	fmt.Println("3.  Delete User details")
@@ -26,7 +27,7 @@ func Initialize() error {
 	var tempStudents []aggregate.Student
 
 	for choice != 5 {
-		driveMenu()
+		showMenu()
 		choice, err := getChoice()
 		if err != nil {
 			return err
@@ -38,6 +39,11 @@ func Initialize() error {
 				log.Println(err)
 				return err
 			}
+			err = vutil.CheckDuplicateRollNumber(tempStudent)
+			if err != nil {
+				return err
+			}
+
 			tempStudents = append(tempStudents, tempStudent)
 			fmt.Println("Student added successfully")
 		case 2:
@@ -45,6 +51,7 @@ func Initialize() error {
 			if err != nil {
 				return err
 			}
+
 			fmt.Println("on Temp")
 			services.DisplayStudentDetails(tempStudents)
 			fmt.Println("on File")
@@ -67,13 +74,16 @@ func Initialize() error {
 
 		case 5:
 			if tempStudents != nil {
-				fmt.Println("There are some unsaved changes!!! Press 1 to save the details")
+				fmt.Println("There are some unsaved changes!!! Press 1 to save the details any key to exit")
 				choice, err := fmt.Scanf("%d", &choice)
 				if err != nil {
 					return err
 				}
+
 				if choice == 1 {
 					repository.AppendStudentDetails(tempStudents)
+				} else {
+					fmt.Println("Exiting")
 				}
 			}
 			os.Exit(1)
@@ -92,7 +102,6 @@ func getChoice() (int, error) {
 	}
 
 	return choice, nil
-
 }
 
 func validateUserChoice(choice int) error {

@@ -58,7 +58,7 @@ func SaveToFile(students []aggregate.Student) error {
 		log.Println(err)
 		return err
 	}
-	fmt.Println("Updated To the File named as students.json")
 
+	fmt.Println("Updated To the File named as students.json")
 	return nil
 }
