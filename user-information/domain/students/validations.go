@@ -1,16 +1,11 @@
-package vutil
+package students
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
-
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/repository"
 )
 
-func CheckDuplicateRollNumber(s aggregate.Student) error {
-	existingUsers, err := repository.ReadFromFile()
+func ValidateRollNumber(s Student) error {
+	existingUsers, err := ReadFromFile()
 	if err != nil {
 		return err
 	}
@@ -23,7 +18,7 @@ func CheckDuplicateRollNumber(s aggregate.Student) error {
 	return nil
 }
 
-func CheckDuplicateCourses(s aggregate.Student) error {
+func ValidateCourses(s Student) error {
 	visited := make(map[string]int)
 	for _, course := range s.Courses {
 		visited[course.Name.String()]++
@@ -31,16 +26,16 @@ func CheckDuplicateCourses(s aggregate.Student) error {
 			return errors.Errorf("duplicate courses found")
 		}
 	}
-	fmt.Println(visited)
+
 	return nil
 }
 
-func CheckDuplicates(s aggregate.Student) error {
-	err := CheckDuplicateRollNumber(s)
+func ValidateDuplicates(s Student) error {
+	err := ValidateRollNumber(s)
 	if err != nil {
 		return err
 	}
-	err = CheckDuplicateCourses(s)
+	err = ValidateCourses(s)
 	if err != nil {
 		return err
 	}

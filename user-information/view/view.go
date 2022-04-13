@@ -6,10 +6,7 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/repository"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/services"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/vutil"
+	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/domain/students"
 )
 
 func showMenu() {
@@ -21,20 +18,20 @@ func showMenu() {
 
 }
 
-func addUserDetails() (aggregate.Student, error) {
-	tempStudent, err := services.GetStudentDetails()
+func addUserDetails() (students.Student, error) {
+	tempStudent, err := students.GetStudentDetails()
 	if err != nil {
 		log.Println(err)
-		return aggregate.Student{}, err
+		return students.Student{}, err
 	}
-	err = vutil.CheckDuplicates(tempStudent)
+	err = students.ValidateDuplicates(tempStudent)
 	if err != nil {
-		return aggregate.Student{}, err
+		return students.Student{}, err
 	}
 	return tempStudent, nil
 }
 
-func safeExit(tempStudents []aggregate.Student) error {
+func safeExit(tempStudents []students.Student) error {
 	var choice int
 	fmt.Println("There are some unsaved changes!!! Press 1 to save the details any key to exit")
 	choice, err := fmt.Scanf("%d", &choice)
@@ -43,7 +40,7 @@ func safeExit(tempStudents []aggregate.Student) error {
 	}
 
 	if choice == 1 {
-		err := repository.AppendStudentDetails(tempStudents)
+		err := students.AppendStudentDetails(tempStudents)
 		if err != nil {
 			return err
 		}
@@ -55,7 +52,7 @@ func safeExit(tempStudents []aggregate.Student) error {
 
 func Initialize() error {
 	choice := 0
-	var tempStudents []aggregate.Student
+	var tempStudents []students.Student
 
 	for choice != 5 {
 		showMenu()
@@ -72,25 +69,25 @@ func Initialize() error {
 			tempStudents = append(tempStudents, tempStudent)
 			fmt.Println("Student added successfully")
 		case 2:
-			students, err := repository.ReadFromFile()
+			newstudents, err := students.ReadFromFile()
 			if err != nil {
 				return err
 			}
 			fmt.Println("on Temp")
 			fmt.Println("----------------------------------------------------------------------------------")
-			services.DisplayStudentDetails(tempStudents)
+			students.DisplayStudentDetails(tempStudents)
 			fmt.Println("on File")
 			fmt.Println("----------------------------------------------------------------------------------")
-			services.DisplayStudentDetails(students)
+			students.DisplayStudentDetails(newstudents)
 		case 3:
-			err := services.DeleteStudentDetails()
+			err := students.DeleteStudentDetails()
 			if err != nil {
 				return err
 			}
 		case 4:
 			if tempStudents != nil {
 				fmt.Println("Saving Details")
-				err := repository.AppendStudentDetails(tempStudents)
+				err := students.AppendStudentDetails(tempStudents)
 				if err != nil {
 					return err
 				}

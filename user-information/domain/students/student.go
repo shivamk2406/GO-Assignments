@@ -1,17 +1,16 @@
-package aggregate
+package students
 
 import (
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/pkg/errors"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/entity"
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/entity/courses/enum"
+	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/domain/courses"
 )
 
 type Student struct {
-	entity.Person
-	Courses    []entity.Course `json:"courses,omitempty"`
+	Person
+	Courses    []courses.Course `json:"courses,omitempty"`
 	RollNumber uint
 }
 
@@ -33,18 +32,18 @@ func checkNegativeValue(value interface{}) error {
 	return nil
 }
 
-func New(name string, age uint, address string, rollNumber uint, courses []string) (Student, error) {
+func New(name string, age uint, address string, rollNumber uint, newcourses []string) (Student, error) {
 	var student Student
 	var err error
 
-	student.Person = entity.Person{FullName: name, Age: age, Address: address}
+	student.Person = Person{FullName: name, Age: age, Address: address}
 	student.RollNumber = rollNumber
-	for i := 0; i < len(courses); i++ {
-		course, err := enum.CourseString(courses[i])
+	for i := 0; i < len(newcourses); i++ {
+		course, err := courses.CourseTypeString(newcourses[i])
 		if err != nil {
 			return Student{}, err
 		}
-		student.Courses = append(student.Courses, entity.Course{Name: course})
+		student.Courses = append(student.Courses, courses.Course{Name: course})
 	}
 	err = validate(student)
 	if err != nil {

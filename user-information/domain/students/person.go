@@ -1,4 +1,4 @@
-package entity
+package students
 
 type Person struct {
 	FullName string `json:"full_name,omitempty"`

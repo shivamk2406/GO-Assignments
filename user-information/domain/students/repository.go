@@ -1,4 +1,4 @@
-package repository
+package students
 
 import (
 	"encoding/json"
@@ -8,29 +8,27 @@ import (
 	"sort"
 
 	"github.com/pkg/errors"
-
-	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/aggregate"
 )
 
-func ReadFromFile() ([]aggregate.Student, error) {
+func ReadFromFile() ([]Student, error) {
 	data, err := ioutil.ReadFile("students.json")
 
 	if err != nil {
 		log.Println(err)
-		return []aggregate.Student{}, nil
+		return []Student{}, nil
 	}
 
-	var students []aggregate.Student
-	err = json.Unmarshal(data, &students)
+	var newstudents []Student
+	err = json.Unmarshal(data, &newstudents)
 	if err != nil {
 		log.Println(err)
-		return []aggregate.Student{}, err
+		return []Student{}, err
 	}
 
-	return students, nil
+	return newstudents, nil
 }
 
-func AppendStudentDetails(students []aggregate.Student) error {
+func AppendStudentDetails(students []Student) error {
 	existingUsers, _ := ReadFromFile()
 
 	if students == nil {
@@ -46,7 +44,7 @@ func AppendStudentDetails(students []aggregate.Student) error {
 	return SaveToFile(existingUsers)
 }
 
-func SaveToFile(students []aggregate.Student) error {
+func SaveToFile(students []Student) error {
 	val, err := json.MarshalIndent(students, "", " ")
 	if err != nil {
 		log.Println(err)

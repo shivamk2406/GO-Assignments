@@ -1,4 +1,4 @@
-package aggregate
+package students
 
 import (
 	"errors"

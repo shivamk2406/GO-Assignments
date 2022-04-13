@@ -40,9 +40,9 @@
   "RollNumber": 23
  },
  {
-  "full_name": "Shazam",
-  "age": 25,
-  "address": "baker,street",
+  "full_name": "alpha",
+  "age": 22,
+  "address": "patna",
   "courses": [
    {
     "Name": 0
@@ -51,13 +51,13 @@
     "Name": 1
    },
    {
-    "Name": 4
+    "Name": 2
    },
    {
-    "Name": 5
+    "Name": 3
    }
   ],
-  "RollNumber": 34
+  "RollNumber": 45
  },
  {
   "full_name": "shivam",
@@ -78,26 +78,6 @@
    }
   ],
   "RollNumber": 1
- },
- {
-  "full_name": "shivam",
-  "age": 21,
-  "address": "patna",
-  "courses": [
-   {
-    "Name": 2
-   },
-   {
-    "Name": 3
-   },
-   {
-    "Name": 4
-   },
-   {
-    "Name": 5
-   }
-  ],
-  "RollNumber": 5
  },
  {
   "full_name": "shivam",
