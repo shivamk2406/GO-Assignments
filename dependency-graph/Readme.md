@@ -1,5 +1,5 @@
 <h1> Dependency-Graph </h1>
-***Topics Covered: Data Structures In Go .***
+</em><strong>Topics Covered: Data Structures In Go .</strong></em>
 
 Design a Data Structure that represents a dependency graph.
 
