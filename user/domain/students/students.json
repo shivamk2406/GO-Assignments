@@ -1,48 +1,8 @@
 [
  {
-  "full_name": "Benzema",
-  "age": 45,
-  "address": "Brazil",
-  "courses": [
-   {
-    "Name": 0
-   },
-   {
-    "Name": 3
-   },
-   {
-    "Name": 2
-   },
-   {
-    "Name": 1
-   }
-  ],
-  "RollNumber": 22
- },
- {
-  "full_name": "Ezikiel",
-  "age": 45,
-  "address": "Alberto",
-  "courses": [
-   {
-    "Name": 0
-   },
-   {
-    "Name": 3
-   },
-   {
-    "Name": 4
-   },
-   {
-    "Name": 5
-   }
-  ],
-  "RollNumber": 23
- },
- {
-  "full_name": "Satyam",
-  "age": 22,
-  "address": "Bokaro",
+  "full_name": "mozier",
+  "age": 37,
+  "address": "bangkok",
   "courses": [
    {
     "Name": 0
@@ -57,27 +17,7 @@
     "Name": 3
    }
   ],
-  "RollNumber": 35
- },
- {
-  "full_name": "alpha",
-  "age": 22,
-  "address": "patna",
-  "courses": [
-   {
-    "Name": 0
-   },
-   {
-    "Name": 1
-   },
-   {
-    "Name": 2
-   },
-   {
-    "Name": 3
-   }
-  ],
-  "RollNumber": 45
+  "RollNumber": 32
  },
  {
   "full_name": "shivam",
@@ -101,8 +41,8 @@
  },
  {
   "full_name": "shivam",
-  "age": 23,
-  "address": "patna",
+  "age": 34,
+  "address": "bokaro",
   "courses": [
    {
     "Name": 0
@@ -117,6 +57,6 @@
     "Name": 3
    }
   ],
-  "RollNumber": 56
+  "RollNumber": 34
  }
 ]

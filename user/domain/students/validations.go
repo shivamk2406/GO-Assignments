@@ -30,7 +30,7 @@ func ValidateCourses(s Student) error {
 	return nil
 }
 
-func ValidateDuplicates(s Student) error {
+func Validate(s Student) error {
 	err := ValidateRollNumber(s)
 	if err != nil {
 		return err

@@ -5,10 +5,9 @@ import (
 	"log"
 
 	"github.com/pkg/errors"
-	"golang.org/x/exp/slices"
 )
 
-func GetStudentDetails() (Student, error) {
+func GetStudent() (Student, error) {
 	var name string
 	var address string
 	var age uint
@@ -51,6 +50,12 @@ func GetStudentDetails() (Student, error) {
 	if err != nil {
 		return Student{}, err
 	}
+
+	err = Validate(student)
+	if err != nil {
+		return Student{}, err
+	}
+
 	return student, nil
 }
 
@@ -62,30 +67,30 @@ func DisplayStudentDetails(students []Student) {
 	}
 }
 
-func FindStudent(rollNumber uint) int {
-	students, _ := ReadFromFile()
-	idx := slices.IndexFunc(students, func(e Student) bool { return e.RollNumber == rollNumber })
-	return idx
-}
+// func FindStudent(rollNumber uint) int {
+// 	students, _ := ReadFromFile()
+// 	idx := slices.IndexFunc(students, func(e Student) bool { return e.RollNumber == rollNumber })
+// 	return idx
+// }
 
-func DeleteStudentDetails() error {
-	var rollNo uint
+// func DeleteStudentDetails() error {
+// 	var rollNo uint
 
-	fmt.Println("Enter Roll Number")
-	fmt.Scanf("%d", &rollNo)
-	idx := FindStudent(rollNo)
-	if idx == -1 {
-		return errors.Errorf("no such student found")
-	}
+// 	fmt.Println("Enter Roll Number")
+// 	fmt.Scanf("%d", &rollNo)
+// 	idx := FindStudent(rollNo)
+// 	if idx == -1 {
+// 		return errors.Errorf("no such student found")
+// 	}
 
-	students, _ := ReadFromFile()
-	students = append(students[:idx], students[idx+1:]...)
-	err := SaveToFile(students)
-	if err != nil {
-		return errors.Errorf("saving user details failed")
-	}
-	return nil
-}
+// 	students, _ := ReadFromFile()
+// 	students = append(students[:idx], students[idx+1:]...)
+// 	err := SaveToFile(students)
+// 	if err != nil {
+// 		return errors.Errorf("saving user details failed")
+// 	}
+// 	return nil
+// }
 
 func getCourses() ([]string, error) {
 	var extraChoice int

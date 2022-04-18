@@ -10,44 +10,114 @@ import (
 )
 
 const (
-	Agree = "y"
-	Deny  = "n"
+	Agree       = "y"
+	Deny        = "n"
+	AddUser     = 1
+	DisplayUser = 2
+	DeleteUser  = 3
+	SaveUser    = 4
+	ExitMenu    = 5
 )
 
-func showMenu() {
+func Initialize() (err error) {
+	studentRepo := students.NewRepo()
+	err = studentRepo.Load()
+	if err != nil {
+		return err
+	}
+	moreInput := true
+
+	for moreInput {
+		displayMenu()
+		choice, err := getChoice()
+		if err != nil {
+			return err
+		}
+
+		switch choice {
+		case AddUser:
+			err = addUser(studentRepo)
+		case DisplayUser:
+			err = displayUser(studentRepo)
+		case DeleteUser:
+			err = deleteUser(studentRepo)
+		case SaveUser:
+			err = saveUser(studentRepo)
+		case ExitMenu:
+			moreInput = false
+			err = confirmSave(studentRepo)
+			os.Exit(1)
+		default:
+			fmt.Println("invalid choice")
+		}
+	}
+	return nil
+}
+
+func displayMenu() {
 	fmt.Println("1.  Add User details.")
 	fmt.Println("2.  Display User details.")
 	fmt.Println("3.  Delete User details")
 	fmt.Println("4.  Save User details.")
 	fmt.Println("5.  Exit")
-
 }
 
-func addUserDetails() (students.Student, error) {
-	tempStudent, err := students.GetStudentDetails()
+func addUser(userRepo students.Repository) error {
+	tempStudent, err := students.GetStudent()
 	if err != nil {
 		log.Println(err)
-		return students.Student{}, err
+		return err
 	}
-	err = students.ValidateDuplicates(tempStudent)
-	if err != nil {
-		return students.Student{}, err
+
+	err1 := userRepo.Add(tempStudent)
+	if err1 != nil {
+		return err1
 	}
-	return tempStudent, nil
+
+	fmt.Println("user added successfully")
+	return nil
 }
 
-func confirmSave(tempStudents []students.Student) error {
+func displayUser(userRepo students.Repository) error {
+	return userRepo.Display()
+}
+
+func deleteUser(userRepo students.Repository) error {
+	var rollNumber int
+	fmt.Println("Enter Roll Number:")
+	fmt.Scanf("%d", &rollNumber)
+	err := userRepo.Delete(rollNumber)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func saveUser(userRepo students.Repository) error {
+	err := userRepo.Save()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Saved Successfully!!")
+	return nil
+}
+
+func confirmSave(userRepo students.Repository) error {
 	var choice string
 	fmt.Println("There are some unsaved changes!!! Do you want save those changes", Agree+"/"+Deny)
 	_, err := fmt.Scanf("%s", &choice)
 	if err != nil {
 		return err
 	}
+
 	if err := validateUserResponse(choice); err != nil {
 		return err
 	}
+
 	if choice == Agree {
-		err := students.AppendStudentDetails(tempStudents)
+		err := userRepo.Save()
 		if err != nil {
 			return err
 		}
@@ -64,65 +134,6 @@ func validateUserResponse(userResponse string) error {
 	return nil
 }
 
-func Initialize() error {
-	choice := 0
-	var tempStudents []students.Student
-
-	for choice != 5 {
-		showMenu()
-		choice, err := getChoice()
-		if err != nil {
-			return err
-		}
-		switch choice {
-		case 1:
-			tempStudent, err := addUserDetails()
-			if err != nil {
-				fmt.Println(err)
-			}
-			tempStudents = append(tempStudents, tempStudent)
-			fmt.Println("Student added successfully")
-		case 2:
-			existingStudents, err := students.ReadFromFile()
-			if err != nil {
-				fmt.Println(err)
-			}
-			fmt.Println("on Temp")
-			fmt.Println("----------------------------------------------------------------------------------")
-			students.DisplayStudentDetails(tempStudents)
-			fmt.Println("on File")
-			fmt.Println("----------------------------------------------------------------------------------")
-			students.DisplayStudentDetails(existingStudents)
-		case 3:
-			err := students.DeleteStudentDetails()
-			if err != nil {
-				fmt.Println(err)
-			}
-		case 4:
-			if tempStudents != nil {
-				fmt.Println("Saving Details")
-				err := students.AppendStudentDetails(tempStudents)
-				if err != nil {
-					fmt.Println(err)
-				}
-			}
-			tempStudents = nil
-
-		case 5:
-			if tempStudents != nil {
-				err := confirmSave(tempStudents)
-				if err != nil {
-					fmt.Println(err)
-				}
-			}
-			os.Exit(1)
-		default:
-			fmt.Println("invalid choice")
-		}
-	}
-	return nil
-}
-
 func getChoice() (int, error) {
 	var choice int
 	fmt.Println("Enter Your Choice: ")
@@ -131,5 +142,6 @@ func getChoice() (int, error) {
 		log.Println(err)
 		return 0, errors.Errorf("choice scanning failed")
 	}
+
 	return choice, nil
 }

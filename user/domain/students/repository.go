@@ -1,72 +1,95 @@
 package students
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"sort"
 
 	"github.com/pkg/errors"
+	"golang.org/x/exp/slices"
 )
 
-func ReadFromFile() ([]Student, error) {
-	data, err := ioutil.ReadFile(FileName)
-	if err != nil {
-		log.Println(err)
-		return []Student{}, nil
-	}
-
-	return decodeData(data)
+type Repository interface {
+	Add(Student) error
+	Load() error
+	Delete(int) error
+	Display() error
+	Save() error
 }
 
-func AppendStudentDetails(students []Student) error {
-	existingUsers, _ := ReadFromFile()
-
-	if students == nil {
-		return errors.Errorf("no new students found")
-	}
-	existingUsers = append(existingUsers, students...)
-	sort.Slice(existingUsers, func(i, j int) bool {
-		if existingUsers[i].FullName == existingUsers[j].FullName {
-			return existingUsers[i].RollNumber < existingUsers[j].RollNumber
-		}
-		return existingUsers[i].FullName < existingUsers[j].FullName
-	})
-	return SaveToFile(existingUsers)
+type repository struct {
+	filePath string
+	student  []Student
 }
 
-func SaveToFile(students []Student) error {
-	val, err := encodeData(students)
+func NewRepo() *repository {
+	return &repository{}
+}
+
+func (repo *repository) Load() error {
+	storedData, err := ReadFromFile()
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	err = ioutil.WriteFile(FileName, val, 0o600)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	fmt.Println("Updated To the File named as students.json")
+	repo.student = append(repo.student, storedData...)
+	repo.filePath = FileName
+
 	return nil
 }
 
-func encodeData(students []Student) ([]byte, error) {
-	val, err := json.MarshalIndent(students, "", " ")
+func (repo *repository) Add(student Student) error {
+	err := Validate(student)
 	if err != nil {
 		log.Println(err)
-		return []byte{}, err
+		return err
 	}
-	return val, nil
+	repo.student = append(repo.student, student)
+
+	return nil
 }
 
-func decodeData(bytes []byte) ([]Student, error) {
-	var newStudents []Student
-	err := json.Unmarshal(bytes, &newStudents)
-	if err != nil {
-		log.Println(err)
-		return []Student{}, err
+func (repo *repository) FindStudent(rollNumber uint) int {
+	idx := slices.IndexFunc(repo.student, func(e Student) bool { return e.RollNumber == rollNumber })
+	return idx
+}
+
+func (repo *repository) Delete(rollNumber int) error {
+	idx := repo.FindStudent(uint(rollNumber))
+	if idx == -1 {
+		return errors.Errorf("no such student found")
 	}
-	return newStudents, nil
+	repo.student = append(repo.student[:idx], repo.student[idx+1:]...)
+	repo.sortStudents()
+	return nil
+}
+
+func (repo *repository) Save() error {
+	students := []Student{}
+	for _, student := range repo.student {
+		students = append(students, student)
+	}
+
+	err := SaveToFile(students)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *repository) sortStudents() {
+	sort.Slice(repo.student, func(i, j int) bool {
+		if repo.student[i].FullName == repo.student[j].FullName {
+			return repo.student[i].RollNumber < repo.student[j].RollNumber
+		}
+		return repo.student[i].FullName < repo.student[j].FullName
+	})
+}
+
+func (repo *repository) Display() error {
+	if len(repo.student) == 0 {
+		return errors.Errorf("empty list nothing to display")
+	}
+	DisplayStudentDetails(repo.student)
+	return nil
 }
