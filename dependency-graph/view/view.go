@@ -24,11 +24,12 @@ func Initialize() error {
 	var err error
 
 	for choice != 9 {
+		showMenu()
 		choice, err = getUserChoice()
 		if err != nil {
 			return err
 		}
-		showMenu()
+
 		switch choice {
 		case 1:
 			fmt.Println("Pressed 1")

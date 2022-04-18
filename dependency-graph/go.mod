@@ -1,3 +1,3 @@
-module github.com/shivamk2406/GO-Assignments/tree/dependency-graph
+module github.com/shivamk2406/dependency-graph
 
 go 1.18

@@ -1,10 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"log"
+
+	"github.com/shivamk2406/dependency-graph/view"
 )
 
 func main() {
-	fmt.Println("Hello world")
-
+	err := view.Initialize()
+	if err != nil {
+		log.Println(err)
+	}
 }
