@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/shivamk2406/dependency-graph/domain/node"
 )
 
 func showMenu() {
@@ -22,6 +24,7 @@ func showMenu() {
 func Initialize() error {
 	var choice int
 	var err error
+	familyTree := node.NewFamilyTree()
 
 	for choice != 9 {
 		showMenu()
@@ -32,11 +35,166 @@ func Initialize() error {
 
 		switch choice {
 		case 1:
-			fmt.Println("Pressed 1")
+			err := getImmediateParents(familyTree)
+			if err != nil {
+				return err
+			}
+		case 2:
+			err := getImmediateChildren(familyTree)
+			if err != nil {
+				return err
+			}
+		case 5:
+			err := deleteDependency(familyTree)
+			if err != nil {
+				return err
+			}
+		case 6:
+			err := deleteNode(familyTree)
+			if err != nil {
+				return err
+			}
+		case 7:
+			err := addDependency(familyTree)
+			if err != nil {
+				return err
+			}
+		case 8:
+			err := addNewNode(familyTree)
+			if err != nil {
+				return err
+			}
 		case 9:
 			os.Exit(1)
 		}
 	}
+	return nil
+}
+
+func getImmediateParents(familyTree node.FamilyTree) error {
+	var id int
+	fmt.Printf("Enter Node Id:")
+	_, err := fmt.Scanf("%d", &id)
+	if err != nil {
+		return err
+	}
+
+	parents, err := familyTree.GetParents(id)
+	if err != nil {
+		return err
+	}
+
+	for id := range parents {
+		fmt.Println(id)
+	}
+	return nil
+}
+
+func getImmediateChildren(familyTree node.FamilyTree) error {
+	var id int
+	fmt.Printf("Enter Node Id:")
+	_, err := fmt.Scanf("%d", &id)
+	if err != nil {
+		return err
+	}
+
+	children, err := familyTree.GetChildren(id)
+	if err != nil {
+		return err
+	}
+
+	for id := range children {
+		fmt.Println(id)
+	}
+	return nil
+}
+
+func deleteDependency(familyTree node.FamilyTree) error {
+	var id1 int
+	var id2 int
+	fmt.Printf("Enter id-1: ")
+	_, err := fmt.Scanf("%d", &id1)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Enter id-2: ")
+	_, err = fmt.Scanf("%d", &id2)
+	if err != nil {
+		return err
+	}
+
+	err = familyTree.DeleteEdge(id1, id2)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("dependency deletion successful")
+	return nil
+}
+
+func deleteNode(familyTree node.FamilyTree) error {
+	var id int
+	fmt.Printf("Enter Node Id:")
+	_, err := fmt.Scanf("%d", &id)
+	if err != nil {
+		return err
+	}
+	err = familyTree.DeleteNode(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("node deletion successful")
+	return nil
+}
+
+func addDependency(familyTree node.FamilyTree) error {
+	var id1 int
+	var id2 int
+	fmt.Printf("Enter id-1: ")
+	_, err := fmt.Scanf("%d", &id1)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Enter id-2: ")
+	_, err = fmt.Scanf("%d", &id2)
+	if err != nil {
+		return err
+	}
+
+	err = familyTree.AddEdge(id1, id2)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("dependency addition successful")
+	return nil
+}
+
+func addNewNode(familyTree node.FamilyTree) error {
+	var id int
+	var name string
+
+	fmt.Println("Enter id: ")
+	_, err := fmt.Scanf("%d", &id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Enter name: ")
+	_, err = fmt.Scanf("%s", &name)
+	if err != nil {
+		return err
+	}
+
+	err = familyTree.AddNode(id, name)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("node addition successful")
 	return nil
 }
 

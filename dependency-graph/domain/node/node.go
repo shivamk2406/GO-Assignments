@@ -7,10 +7,10 @@ type FamilyTree interface {
 	AddEdge(int, int) error
 	DeleteNode(int) error
 	DeleteEdge(int, int) error
-	GetParents() map[int]*Node
+	GetParents(int) (map[int]*Node, error)
 	GetChildren(int) (map[int]*Node, error)
-	GetAncestors(int) (map[int]*Node, error)
-	GetDescendents() (map[int]*Node, error)
+	// GetAncestors(int) (map[int]*Node, error)
+	// GetDescendents() (map[int]*Node, error)
 }
 
 type familyTree struct {
@@ -64,6 +64,9 @@ func (f *familyTree) AddEdge(id1 int, id2 int) error {
 	//make id2 as child of id1
 	f.nodes[id1].Children[id2] = f.nodes[id2]
 
+	if f.nodes[id2].Parents == nil {
+		f.nodes[id2].Parents = make(map[int]*Node)
+	}
 	//make id1 as parent of id2
 	f.nodes[id2].Parents[id1] = f.nodes[id1]
 
