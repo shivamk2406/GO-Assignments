@@ -1,6 +1,8 @@
 package node
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type FamilyTree interface {
 	AddNode(int, string) error
@@ -9,8 +11,8 @@ type FamilyTree interface {
 	DeleteEdge(int, int) error
 	GetParents(int) (map[int]*Node, error)
 	GetChildren(int) (map[int]*Node, error)
-	// GetAncestors(int) (map[int]*Node, error)
-	// GetDescendents() (map[int]*Node, error)
+	GetAncestors(int) (map[int]*Node, error)
+	GetDescendents(int) (map[int]*Node, error)
 }
 
 type familyTree struct {
@@ -166,4 +168,67 @@ func (f *familyTree) GetParents(id int) (map[int]*Node, error) {
 	}
 
 	return parents, nil
+}
+
+func (f *familyTree) GetAncestors(id int) (map[int]*Node, error) {
+	if f.nodes == nil {
+		return nil, fmt.Errorf("no nodes exists in graph ")
+	}
+
+	_, exists := f.nodes[id]
+	if !exists {
+		return nil, fmt.Errorf("no such nodes exists")
+	}
+
+	ancestors := make(map[int]*Node)
+	//visited := make(map[int]bool)
+
+	getAnc(f.nodes[id].Parents, ancestors)
+	return ancestors, nil
+}
+
+func getAnc(parents map[int]*Node, ancestors map[int]*Node) {
+	for _, val := range parents {
+		_, exists := ancestors[val.Id]
+		if !exists {
+			ancestors[val.Id] = val
+		}
+
+	}
+	for _, val := range parents {
+		if val.Parents != nil {
+			getAnc(val.Parents, ancestors)
+		}
+	}
+}
+
+func (f *familyTree) GetDescendents(id int) (map[int]*Node, error) {
+	if f.nodes == nil {
+		return nil, fmt.Errorf("no nodes exists in graph ")
+	}
+
+	_, exists := f.nodes[id]
+	if !exists {
+		return nil, fmt.Errorf("no such nodes exists")
+	}
+
+	descendents := make(map[int]*Node)
+	fmt.Println(f.nodes[id].Children)
+	getDes(f.nodes[id].Children, descendents)
+	return descendents, nil
+}
+
+func getDes(children map[int]*Node, descendents map[int]*Node) {
+	for _, val := range children {
+		_, exists := descendents[val.Id]
+		if !exists {
+			descendents[val.Id] = val
+			fmt.Println(val.Id)
+		}
+	}
+	for _, val := range children {
+		if val.Children != nil {
+			getDes(val.Children, descendents)
+		}
+	}
 }

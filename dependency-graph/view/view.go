@@ -25,6 +25,7 @@ func Initialize() error {
 	var choice int
 	var err error
 	familyTree := node.NewFamilyTree()
+	populateGraph(familyTree)
 
 	for choice != 9 {
 		showMenu()
@@ -41,6 +42,16 @@ func Initialize() error {
 			}
 		case 2:
 			err := getImmediateChildren(familyTree)
+			if err != nil {
+				return err
+			}
+		case 3:
+			err := getAncestors(familyTree)
+			if err != nil {
+				return err
+			}
+		case 4:
+			err := getDescendents(familyTree)
 			if err != nil {
 				return err
 			}
@@ -196,6 +207,66 @@ func addNewNode(familyTree node.FamilyTree) error {
 
 	fmt.Println("node addition successful")
 	return nil
+}
+
+func getAncestors(familyTree node.FamilyTree) error {
+	var id int
+
+	fmt.Println("Enter id: ")
+	_, err := fmt.Scanf("%d", &id)
+	if err != nil {
+		return err
+	}
+
+	ancestors, err := familyTree.GetAncestors(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(ancestors)
+	return nil
+}
+
+func getDescendents(familyTree node.FamilyTree) error {
+	var id int
+
+	fmt.Println("Enter id: ")
+	_, err := fmt.Scanf("%d", &id)
+	if err != nil {
+		return err
+	}
+
+	descendants, err := familyTree.GetDescendents(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(descendants)
+	return nil
+}
+
+func populateGraph(familyTree node.FamilyTree) {
+	familyTree.AddNode(1, "A")
+	familyTree.AddNode(2, "B")
+	familyTree.AddNode(3, "C")
+	familyTree.AddNode(4, "D")
+	familyTree.AddNode(5, "E")
+	familyTree.AddNode(6, "F")
+	familyTree.AddNode(7, "G")
+
+	familyTree.AddEdge(1, 3)
+	familyTree.AddEdge(1, 4)
+	familyTree.AddEdge(1, 5)
+	familyTree.AddEdge(2, 3)
+	familyTree.AddEdge(2, 4)
+	familyTree.AddEdge(2, 5)
+	familyTree.AddEdge(3, 6)
+	familyTree.AddEdge(3, 7)
+	familyTree.AddEdge(4, 6)
+	familyTree.AddEdge(4, 7)
+	familyTree.AddEdge(5, 6)
+	familyTree.AddEdge(5, 7)
+
 }
 
 func getUserChoice() (int, error) {
