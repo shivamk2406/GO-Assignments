@@ -19,9 +19,9 @@ const (
 	ExitMenu    = 5
 )
 
-func Initialize() (err error) {
+func Initialize() error {
 	studentRepo := students.NewRepo()
-	err = studentRepo.Load()
+	err := studentRepo.Load()
 	if err != nil {
 		return err
 	}
@@ -37,15 +37,30 @@ func Initialize() (err error) {
 		switch choice {
 		case AddUser:
 			err = addUser(studentRepo)
+			if err != nil {
+				log.Println(err)
+			}
 		case DisplayUser:
 			err = displayUser(studentRepo)
+			if err != nil {
+				log.Println(err)
+			}
 		case DeleteUser:
 			err = deleteUser(studentRepo)
+			if err != nil {
+				log.Println(err)
+			}
 		case SaveUser:
 			err = saveUser(studentRepo)
+			if err != nil {
+				log.Println(err)
+			}
 		case ExitMenu:
 			moreInput = false
 			err = confirmSave(studentRepo)
+			if err != nil {
+				log.Println(err)
+			}
 			os.Exit(1)
 		default:
 			fmt.Println("invalid choice")

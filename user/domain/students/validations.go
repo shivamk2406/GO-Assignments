@@ -15,6 +15,7 @@ func ValidateRollNumber(s Student) error {
 			return errors.Errorf("user with roll number already exists")
 		}
 	}
+
 	return nil
 }
 
@@ -35,9 +36,11 @@ func Validate(s Student) error {
 	if err != nil {
 		return err
 	}
+
 	err = ValidateCourses(s)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

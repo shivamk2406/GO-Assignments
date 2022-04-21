@@ -21,20 +21,20 @@
  },
  {
   "full_name": "shivam",
-  "age": 22,
-  "address": "indore",
+  "age": 21,
+  "address": "patna",
   "courses": [
-   {
-    "Name": 0
-   },
-   {
-    "Name": 1
-   },
    {
     "Name": 2
    },
    {
     "Name": 3
+   },
+   {
+    "Name": 4
+   },
+   {
+    "Name": 5
    }
   ],
   "RollNumber": 1

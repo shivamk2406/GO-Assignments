@@ -29,6 +29,7 @@ func SaveToFile(students []Student) error {
 		log.Println(err)
 		return err
 	}
+
 	fmt.Println("Updated To the File named as students.json")
 	return nil
 }
@@ -39,6 +40,7 @@ func encodeData(students []Student) ([]byte, error) {
 		log.Println(err)
 		return []byte{}, err
 	}
+
 	return val, nil
 }
 
@@ -49,5 +51,6 @@ func decodeData(bytes []byte) ([]Student, error) {
 		log.Println(err)
 		return []Student{}, err
 	}
+
 	return newStudents, nil
 }

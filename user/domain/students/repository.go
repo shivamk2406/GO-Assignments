@@ -44,8 +44,8 @@ func (repo *repository) Add(student Student) error {
 		log.Println(err)
 		return err
 	}
-	repo.student = append(repo.student, student)
 
+	repo.student = append(repo.student, student)
 	return nil
 }
 
@@ -59,6 +59,7 @@ func (repo *repository) Delete(rollNumber int) error {
 	if idx == -1 {
 		return errors.Errorf("no such student found")
 	}
+
 	repo.student = append(repo.student[:idx], repo.student[idx+1:]...)
 	repo.sortStudents()
 	return nil
@@ -70,10 +71,12 @@ func (repo *repository) Save() error {
 		students = append(students, student)
 	}
 
+	repo.sortStudents()
 	err := SaveToFile(students)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -90,6 +93,7 @@ func (repo *repository) Display() error {
 	if len(repo.student) == 0 {
 		return errors.Errorf("empty list nothing to display")
 	}
+	repo.sortStudents()
 	DisplayStudentDetails(repo.student)
 	return nil
 }

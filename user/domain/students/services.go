@@ -42,10 +42,12 @@ func GetStudent() (Student, error) {
 		log.Println(err)
 		return Student{}, errors.Errorf("roll number scanning failed")
 	}
+
 	courses, err = getCourses()
 	if err != nil {
 		return Student{}, err
 	}
+
 	student, err = New(name, age, address, uint(rollNumber), courses)
 	if err != nil {
 		return Student{}, err
@@ -67,31 +69,6 @@ func DisplayStudentDetails(students []Student) {
 	}
 }
 
-// func FindStudent(rollNumber uint) int {
-// 	students, _ := ReadFromFile()
-// 	idx := slices.IndexFunc(students, func(e Student) bool { return e.RollNumber == rollNumber })
-// 	return idx
-// }
-
-// func DeleteStudentDetails() error {
-// 	var rollNo uint
-
-// 	fmt.Println("Enter Roll Number")
-// 	fmt.Scanf("%d", &rollNo)
-// 	idx := FindStudent(rollNo)
-// 	if idx == -1 {
-// 		return errors.Errorf("no such student found")
-// 	}
-
-// 	students, _ := ReadFromFile()
-// 	students = append(students[:idx], students[idx+1:]...)
-// 	err := SaveToFile(students)
-// 	if err != nil {
-// 		return errors.Errorf("saving user details failed")
-// 	}
-// 	return nil
-// }
-
 func getCourses() ([]string, error) {
 	var extraChoice int
 	var err error
@@ -105,6 +82,7 @@ func getCourses() ([]string, error) {
 			log.Println(err)
 			return []string{}, err
 		}
+
 		courses = append(courses, course)
 
 		if i >= MinimumCourses {
@@ -119,5 +97,6 @@ func getCourses() ([]string, error) {
 			}
 		}
 	}
+
 	return courses, nil
 }

@@ -44,6 +44,7 @@ func New(name string, age uint, address string, rollNumber uint, newcourses []st
 		if err != nil {
 			return Student{}, err
 		}
+
 		student.Courses = append(student.Courses, courses.Course{Name: course})
 	}
 	err = validate(student)
