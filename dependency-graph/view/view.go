@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/shivamk2406/dependency-graph/domain/node"
+	node "github.com/shivamk2406/dependency-graph/domain/graph"
+	"golang.org/x/exp/maps"
 )
 
 func showMenu() {
@@ -151,6 +152,7 @@ func deleteNode(familyTree node.FamilyTree) error {
 	if err != nil {
 		return err
 	}
+
 	err = familyTree.DeleteNode(id)
 	if err != nil {
 		return err
@@ -223,7 +225,13 @@ func getAncestors(familyTree node.FamilyTree) error {
 		return err
 	}
 
-	fmt.Println(ancestors)
+	keys := maps.Keys(ancestors)
+	fmt.Println("The Ancestors are:")
+	for i := range keys {
+		fmt.Printf("%d  ", keys[i])
+	}
+	fmt.Println()
+
 	return nil
 }
 
@@ -241,7 +249,13 @@ func getDescendents(familyTree node.FamilyTree) error {
 		return err
 	}
 
-	fmt.Println(descendants)
+	keys := maps.Keys(descendants)
+	fmt.Println("The Descendants are:")
+	for i := range keys {
+		fmt.Printf("%d  ", keys[i])
+	}
+	fmt.Println()
+
 	return nil
 }
 
