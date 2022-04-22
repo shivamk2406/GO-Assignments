@@ -12,6 +12,14 @@ type TestScenario struct {
 	nodeID      int
 }
 
+//    1             2
+//
+//
+//
+//
+//
+//
+
 func populateGraph(familyTree FamilyTree) {
 	familyTree.AddNode(1, "A")
 	familyTree.AddNode(2, "B")

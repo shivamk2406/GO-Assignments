@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"log"
-	"os"
 
 	node "github.com/shivamk2406/dependency-graph/domain/graph"
 	"golang.org/x/exp/maps"
@@ -26,9 +25,8 @@ func Initialize() error {
 	var choice int
 	var err error
 	familyTree := node.NewFamilyTree()
-	populateGraph(familyTree)
 
-	for choice != 9 {
+	for choice != int(Exit) {
 		showMenu()
 		choice, err = getUserChoice()
 		if err != nil {
@@ -36,50 +34,53 @@ func Initialize() error {
 		}
 
 		switch choice {
-		case 1:
+		case int(GetImmediateParents):
 			err := getImmediateParents(familyTree)
 			if err != nil {
 				return err
 			}
-		case 2:
+		case int(GetImmediateChildren):
 			err := getImmediateChildren(familyTree)
 			if err != nil {
 				return err
 			}
-		case 3:
+		case int(GetAncestors):
 			err := getAncestors(familyTree)
 			if err != nil {
 				return err
 			}
-		case 4:
+		case int(GetDescendents):
 			err := getDescendents(familyTree)
 			if err != nil {
 				return err
 			}
-		case 5:
+		case int(DeleteDependency):
 			err := deleteDependency(familyTree)
 			if err != nil {
 				return err
 			}
-		case 6:
+		case int(DeleteNode):
 			err := deleteNode(familyTree)
 			if err != nil {
 				return err
 			}
-		case 7:
+		case int(AddDependency):
 			err := addDependency(familyTree)
 			if err != nil {
 				return err
 			}
-		case 8:
+		case int(AddNode):
 			err := addNewNode(familyTree)
 			if err != nil {
 				return err
 			}
-		case 9:
-			os.Exit(1)
+		case int(Exit):
+			break
+		default:
+			fmt.Println("Invalid choice please try again")
 		}
 	}
+	fmt.Println("Exiting")
 	return nil
 }
 
@@ -257,30 +258,6 @@ func getDescendents(familyTree node.FamilyTree) error {
 	fmt.Println()
 
 	return nil
-}
-
-func populateGraph(familyTree node.FamilyTree) {
-	familyTree.AddNode(1, "A")
-	familyTree.AddNode(2, "B")
-	familyTree.AddNode(3, "C")
-	familyTree.AddNode(4, "D")
-	familyTree.AddNode(5, "E")
-	familyTree.AddNode(6, "F")
-	familyTree.AddNode(7, "G")
-
-	familyTree.AddEdge(1, 3)
-	familyTree.AddEdge(1, 4)
-	familyTree.AddEdge(1, 5)
-	familyTree.AddEdge(2, 3)
-	familyTree.AddEdge(2, 4)
-	familyTree.AddEdge(2, 5)
-	familyTree.AddEdge(3, 6)
-	familyTree.AddEdge(3, 7)
-	familyTree.AddEdge(4, 6)
-	familyTree.AddEdge(4, 7)
-	familyTree.AddEdge(5, 6)
-	familyTree.AddEdge(5, 7)
-
 }
 
 func getUserChoice() (int, error) {
