@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/domain/students"
@@ -61,11 +60,12 @@ func Initialize() error {
 			if err != nil {
 				log.Println(err)
 			}
-			os.Exit(1)
+			break
 		default:
 			fmt.Println("invalid choice")
 		}
 	}
+	fmt.Println("Exiting")
 	return nil
 }
 
@@ -141,8 +141,6 @@ func confirmSave(userRepo students.Repository) error {
 		if err != nil {
 			return err
 		}
-	} else {
-		fmt.Println("Exiting")
 	}
 	return nil
 }
