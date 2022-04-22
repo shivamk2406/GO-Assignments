@@ -16,7 +16,7 @@ type duplicateScenarios struct {
 func TestDuplicates(t *testing.T) {
 	scenarios := []duplicateScenarios{
 		{
-			description: "Duplicate Courses",
+			description: "All Courses are duplicate for the user",
 			student: Student{
 				Person: Person{FullName: "shivam", Age: 24, Address: "Patna"},
 				Courses: []courses.Course{
@@ -30,7 +30,7 @@ func TestDuplicates(t *testing.T) {
 			err: errors.Errorf("duplicate courses found"),
 		},
 		{
-			description: "Two Duplicate Courses",
+			description: "Two Courses are duplicate for the user",
 			student: Student{
 				Person: Person{FullName: "shivam", Age: 24, Address: "Patna"},
 				Courses: []courses.Course{

@@ -1,24 +1,24 @@
 package students
 
 import (
+	"fmt"
 	"log"
 	"sort"
 
 	"github.com/pkg/errors"
-	"golang.org/x/exp/slices"
 )
 
 type Repository interface {
 	Add(Student) error
 	Load() error
 	Delete(int) error
-	Display() error
+	List() ([]Student, error)
 	Save() error
 }
 
 type repository struct {
 	filePath string
-	student  []Student
+	student  map[int]Student
 }
 
 func NewRepo() *repository {
@@ -32,36 +32,37 @@ func (repo *repository) Load() error {
 		return err
 	}
 
-	repo.student = append(repo.student, storedData...)
-	repo.filePath = FileName
+	repo.student = make(map[int]Student)
+
+	for _, student := range storedData {
+		repo.student[int(student.RollNumber)] = student
+	}
+	repo.filePath = FilePath
 
 	return nil
 }
 
 func (repo *repository) Add(student Student) error {
-	err := Validate(student)
+	err := ValidateDuplicates(student)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	repo.student = append(repo.student, student)
+	if _, exists := repo.student[int(student.RollNumber)]; exists {
+		return errors.Errorf("student already exists")
+	}
+	repo.student[int(student.RollNumber)] = student
 	return nil
 }
 
-func (repo *repository) FindStudent(rollNumber uint) int {
-	idx := slices.IndexFunc(repo.student, func(e Student) bool { return e.RollNumber == rollNumber })
-	return idx
-}
-
 func (repo *repository) Delete(rollNumber int) error {
-	idx := repo.FindStudent(uint(rollNumber))
-	if idx == -1 {
-		return errors.Errorf("no such student found")
+	if _, exists := repo.student[rollNumber]; !exists {
+		return errors.Errorf("user with roll number  %d do not exists", rollNumber)
 	}
 
-	repo.student = append(repo.student[:idx], repo.student[idx+1:]...)
-	repo.sortStudents()
+	delete(repo.student, rollNumber)
+	fmt.Printf("student with roll number %d deleted\n", rollNumber)
 	return nil
 }
 
@@ -80,20 +81,29 @@ func (repo *repository) Save() error {
 	return nil
 }
 
-func (repo *repository) sortStudents() {
-	sort.Slice(repo.student, func(i, j int) bool {
-		if repo.student[i].FullName == repo.student[j].FullName {
-			return repo.student[i].RollNumber < repo.student[j].RollNumber
+func (repo *repository) sortStudents() []Student {
+	students := []Student{}
+
+	for _, student := range repo.student {
+		students = append(students, student)
+	}
+
+	comparator := func(i, j int) bool {
+		if students[i].FullName == students[j].FullName {
+			return students[i].RollNumber < students[j].RollNumber
 		}
-		return repo.student[i].FullName < repo.student[j].FullName
-	})
+		return students[i].FullName < students[j].FullName
+	}
+
+	sort.Slice(students, comparator)
+	return students
 }
 
-func (repo *repository) Display() error {
+func (repo *repository) List() ([]Student, error) {
 	if len(repo.student) == 0 {
-		return errors.Errorf("empty list nothing to display")
+		return []Student{}, errors.Errorf("empty list nothing to display")
 	}
-	repo.sortStudents()
-	DisplayStudentDetails(repo.student)
-	return nil
+
+	sortedStudents := repo.sortStudents()
+	return sortedStudents, nil
 }

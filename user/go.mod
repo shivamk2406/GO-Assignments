@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/pkg/errors v0.9.1
-	golang.org/x/exp v0.0.0-20220407100705-7b9b53b0aca4
 )
 
 require (

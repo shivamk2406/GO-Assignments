@@ -1,8 +1,6 @@
 package students
 
 import (
-	"fmt"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/GO-Assignments/tree/Assignment-2/domain/courses"
@@ -14,7 +12,7 @@ type Student struct {
 	RollNumber uint
 }
 
-func validate(s Student) error {
+func ValidateStudent(s Student) error {
 	return validation.ValidateStruct(&s,
 		validation.Field(&s.Address, validation.Required, validation.Length(5, 100)),
 		validation.Field(&s.Age, validation.By(checkNegativeValue)),
@@ -34,27 +32,22 @@ func checkNegativeValue(value interface{}) error {
 
 func New(name string, age uint, address string, rollNumber uint, newcourses []string) (Student, error) {
 	var student Student
-	var err error
-	var course courses.CourseType
 
 	student.Person = Person{FullName: name, Age: age, Address: address}
 	student.RollNumber = rollNumber
 	for i := 0; i < len(newcourses); i++ {
-		course, err = courses.CourseTypeString(newcourses[i])
+		course, err := courses.CourseTypeString(newcourses[i])
 		if err != nil {
 			return Student{}, err
 		}
 
 		student.Courses = append(student.Courses, courses.Course{Name: course})
 	}
-	err = validate(student)
+
+	err := ValidateStudent(student)
 	if err != nil {
 		return Student{}, err
 	}
 
 	return student, nil
-}
-
-func (student Student) DisplayStudentDetails() {
-	fmt.Printf("%s\t\t%d\t\t\t%d\t\t%s\t\t\t%v\n", student.Person.FullName, student.RollNumber, student.Age, student.Address, student.Courses)
 }

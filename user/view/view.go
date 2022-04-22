@@ -78,7 +78,7 @@ func displayMenu() {
 }
 
 func addUser(userRepo students.Repository) error {
-	tempStudent, err := students.GetStudent()
+	tempStudent, err := GetStudent()
 	if err != nil {
 		log.Println(err)
 		return err
@@ -94,7 +94,12 @@ func addUser(userRepo students.Repository) error {
 }
 
 func displayUser(userRepo students.Repository) error {
-	return userRepo.Display()
+	sortedStudents, err := userRepo.List()
+	if err != nil {
+		return err
+	}
+	DisplayStudentDetails(sortedStudents)
+	return nil
 }
 
 func deleteUser(userRepo students.Repository) error {

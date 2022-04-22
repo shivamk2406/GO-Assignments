@@ -8,7 +8,7 @@ import (
 )
 
 func ReadFromFile() ([]Student, error) {
-	data, err := ioutil.ReadFile(FileName)
+	data, err := ioutil.ReadFile(FilePath)
 	if err != nil {
 		log.Println(err)
 		return []Student{}, nil
@@ -24,7 +24,7 @@ func SaveToFile(students []Student) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(FileName, val, 0o600)
+	err = ioutil.WriteFile(FilePath, val, 0o600)
 	if err != nil {
 		log.Println(err)
 		return err
