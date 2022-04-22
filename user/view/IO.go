@@ -74,7 +74,7 @@ func getCourses() ([]string, error) {
 	var extraChoice int
 	var err error
 	var courses []string
-
+	
 	for i := 0; i < students.MaximumCourses; i++ {
 		fmt.Println("Enter Course in which you want to enroll")
 		var course string
