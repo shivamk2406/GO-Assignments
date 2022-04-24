@@ -1,0 +1,82 @@
+[
+ {
+  "full_name": "shivam",
+  "age": 21,
+  "address": "patna",
+  "courses": [
+   {
+    "Name": 2
+   },
+   {
+    "Name": 3
+   },
+   {
+    "Name": 4
+   },
+   {
+    "Name": 5
+   }
+  ],
+  "RollNumber": 1
+ },
+ {
+  "full_name": "shivam",
+  "age": 34,
+  "address": "bokaro",
+  "courses": [
+   {
+    "Name": 0
+   },
+   {
+    "Name": 1
+   },
+   {
+    "Name": 2
+   },
+   {
+    "Name": 3
+   }
+  ],
+  "RollNumber": 34
+ },
+ {
+  "full_name": "alpha",
+  "age": 23,
+  "address": "patna",
+  "courses": [
+   {
+    "Name": 0
+   },
+   {
+    "Name": 2
+   },
+   {
+    "Name": 3
+   },
+   {
+    "Name": 5
+   }
+  ],
+  "RollNumber": 12
+ },
+ {
+  "full_name": "mangi",
+  "age": 22,
+  "address": "kolkata",
+  "courses": [
+   {
+    "Name": 0
+   },
+   {
+    "Name": 1
+   },
+   {
+    "Name": 2
+   },
+   {
+    "Name": 3
+   }
+  ],
+  "RollNumber": 14
+ }
+]
