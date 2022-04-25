@@ -20,7 +20,6 @@ func ProducerConsumerUtil(items []item.Item) []item.Invoice {
 
 	for j := 0; j < len(items); j++ {
 		itemInvoices = append(itemInvoices, <-producerChannel)
-		fmt.Println(itemInvoices[j])
 	}
 	return itemInvoices
 }
@@ -28,6 +27,7 @@ func ProducerConsumerUtil(items []item.Item) []item.Invoice {
 func worker(consumer <-chan item.Item, producer chan<- item.Invoice) {
 	for val := range consumer {
 		producer <- val.ItemInvoice()
+		fmt.Println(val.ItemInvoice())
 
 	}
 }

@@ -5,17 +5,9 @@ import (
 )
 
 func Start() error {
-	err, db := service.NewRepo()
+	err := service.Init()
 	if err != nil {
 		return err
 	}
-
-	items, err := db.GetInventoryItem()
-	if err != nil {
-		return err
-	}
-
-	service.ProducerConsumerUtil(items)
-
 	return nil
 }
