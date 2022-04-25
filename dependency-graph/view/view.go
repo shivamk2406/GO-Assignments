@@ -21,11 +21,35 @@ func showMenu() {
 	fmt.Println("9. exit")
 }
 
+func populateGraph(familyTree node.FamilyTree) {
+	familyTree.AddNode(1, "A")
+	familyTree.AddNode(2, "B")
+	familyTree.AddNode(3, "C")
+	familyTree.AddNode(4, "D")
+	familyTree.AddNode(5, "E")
+	familyTree.AddNode(6, "F")
+	familyTree.AddNode(7, "G")
+
+	familyTree.AddEdge(1, 3)
+	familyTree.AddEdge(1, 4)
+	familyTree.AddEdge(1, 5)
+	familyTree.AddEdge(2, 3)
+	familyTree.AddEdge(2, 4)
+	familyTree.AddEdge(2, 5)
+	familyTree.AddEdge(3, 6)
+	familyTree.AddEdge(3, 7)
+	familyTree.AddEdge(4, 6)
+	familyTree.AddEdge(4, 7)
+	familyTree.AddEdge(5, 6)
+	familyTree.AddEdge(5, 7)
+
+}
+
 func Initialize() error {
 	var choice int
 	var err error
 	familyTree := node.NewFamilyTree()
-
+	populateGraph(familyTree)
 	for choice != int(ExitChoice) {
 		showMenu()
 		choice, err = getUserChoice()

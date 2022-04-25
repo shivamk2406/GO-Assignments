@@ -12,14 +12,6 @@ type TestScenario struct {
 	nodeID      int
 }
 
-//    1             2
-//
-//
-//
-//
-//
-//
-
 func populateGraph(familyTree FamilyTree) {
 	familyTree.AddNode(1, "A")
 	familyTree.AddNode(2, "B")
@@ -44,7 +36,7 @@ func populateGraph(familyTree FamilyTree) {
 
 }
 
-func TestParents(t *testing.T) {
+func TestGetParents(t *testing.T) {
 	graph := NewFamilyTree()
 	populateGraph(graph)
 	scenarios := []TestScenario{
@@ -71,7 +63,7 @@ func TestParents(t *testing.T) {
 
 }
 
-func TestChildren(t *testing.T) {
+func TestGetChildren(t *testing.T) {
 	graph := NewFamilyTree()
 	populateGraph(graph)
 	scenarios := []TestScenario{
@@ -98,7 +90,7 @@ func TestChildren(t *testing.T) {
 
 }
 
-func TestAncestors(t *testing.T) {
+func TestGetAncestors(t *testing.T) {
 	graph := NewFamilyTree()
 	populateGraph(graph)
 	scenarios := []TestScenario{
@@ -124,7 +116,7 @@ func TestAncestors(t *testing.T) {
 
 }
 
-func TestDescendants(t *testing.T) {
+func TestGetDescendants(t *testing.T) {
 	graph := NewFamilyTree()
 	populateGraph(graph)
 	scenarios := []TestScenario{
