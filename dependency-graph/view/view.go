@@ -26,7 +26,7 @@ func Initialize() error {
 	var err error
 	familyTree := node.NewFamilyTree()
 
-	for choice != int(Exit) {
+	for choice != int(ExitChoice) {
 		showMenu()
 		choice, err = getUserChoice()
 		if err != nil {
@@ -34,47 +34,47 @@ func Initialize() error {
 		}
 
 		switch choice {
-		case int(GetImmediateParents):
+		case int(ImmediateParentsChoice):
 			err := getImmediateParents(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(GetImmediateChildren):
+		case int(ImmediateChildrenChoice):
 			err := getImmediateChildren(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(GetAncestors):
+		case int(AncestorsChoice):
 			err := getAncestors(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(GetDescendents):
+		case int(DescendentsChoice):
 			err := getDescendents(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(DeleteDependency):
+		case int(DeleteDependencyChoice):
 			err := deleteDependency(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(DeleteNode):
+		case int(DeleteNodeChoice):
 			err := deleteNode(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(AddDependency):
+		case int(AddDependencyChoice):
 			err := addDependency(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(AddNode):
+		case int(AddNodeChoice):
 			err := addNewNode(familyTree)
 			if err != nil {
 				return err
 			}
-		case int(Exit):
+		case int(ExitChoice):
 			break
 		default:
 			fmt.Println("Invalid choice please try again")

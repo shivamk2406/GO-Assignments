@@ -3,13 +3,13 @@ package view
 type Choice int
 
 const (
-	GetImmediateParents Choice = iota + 1
-	GetImmediateChildren
-	GetAncestors
-	GetDescendents
-	DeleteDependency
-	DeleteNode
-	AddDependency
-	AddNode
-	Exit
+	ImmediateParentsChoice Choice = iota + 1
+	ImmediateChildrenChoice
+	AncestorsChoice
+	DescendentsChoice
+	DeleteDependencyChoice
+	DeleteNodeChoice
+	AddDependencyChoice
+	AddNodeChoice
+	ExitChoice
 )
