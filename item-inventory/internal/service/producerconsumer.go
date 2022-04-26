@@ -5,7 +5,8 @@ import (
 )
 
 const (
-	RoutineCount = 5
+	RoutineCount   = 5
+	BufferCapacity = 1
 )
 
 func getItemFromDB(repo *repository) (error, []item.Item) {
@@ -18,14 +19,13 @@ func getItemFromDB(repo *repository) (error, []item.Item) {
 }
 
 func ProducerConsumerUtil(repo *repository) (error, []item.Invoice) {
-
 	err, items := getItemFromDB(repo)
 	if err != nil {
 		return err, []item.Invoice{}
 	}
 
-	consumerChannel := make(chan item.Item, 1)
-	producerChannel := make(chan item.Invoice, 1)
+	consumerChannel := make(chan item.Item, BufferCapacity)
+	producerChannel := make(chan item.Invoice, BufferCapacity)
 	var itemInvoices []item.Invoice
 
 	for i := 0; i < RoutineCount; i++ {
@@ -50,7 +50,6 @@ func worker(consumer <-chan item.Item, producer chan<- item.Invoice) {
 }
 
 func ProducerConsumerUtil1(repo *repository) (error, []item.Invoice) {
-
 	err, items := getItemFromDB(repo)
 	if err != nil {
 		return err, []item.Invoice{}
