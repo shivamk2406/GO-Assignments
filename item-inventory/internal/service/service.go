@@ -23,7 +23,7 @@ func Init() error {
 		return err
 	}
 
-	err, itemInvoices := ProducerConsumerUtil1(repo)
+	err, itemInvoices := ProducerConsumerUtil(repo)
 	if err != nil {
 		return err
 	}
