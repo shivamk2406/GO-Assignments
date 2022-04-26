@@ -1,9 +1,17 @@
 package service
 
-import "github.com/shivamk2406/item-inventory/database"
+import (
+	"fmt"
+
+	"github.com/shivamk2406/item-inventory/database"
+	"github.com/shivamk2406/item-inventory/domain/item"
+)
 
 func Init() error {
-	config := LoadAppConfig()
+	err, config := LoadAppConfig()
+	if err != nil {
+		return err
+	}
 
 	db, err := database.Open(config)
 	if err != nil {
@@ -15,13 +23,19 @@ func Init() error {
 		return err
 	}
 
-	items, err := repo.GetInventoryItem()
+	err, itemInvoices := ProducerConsumerUtil1(repo)
 	if err != nil {
 		return err
 	}
 
-	ProducerConsumerUtil(items)
+	displayInvoices(itemInvoices)
 
 	return nil
 
+}
+
+func displayInvoices(invoices []item.Invoice) {
+	for _, val := range invoices {
+		fmt.Printf("%v \n", val)
+	}
 }
