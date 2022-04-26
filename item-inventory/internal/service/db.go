@@ -16,14 +16,11 @@ type repository struct {
 }
 
 func NewRepo(db *gorm.DB) (error, *repository) {
-
 	return nil, &repository{db: db}
 }
 
 func (r *repository) GetInventoryItem() ([]item.Item, error) {
-
 	var items []item.Item
-
 	if err := r.db.Find(&items).Error; err != nil {
 		log.Println(err)
 		return []item.Item{}, err

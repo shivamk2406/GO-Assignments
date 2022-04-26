@@ -8,7 +8,6 @@ import (
 )
 
 func LoadAppConfig() (error, database.Config) {
-
 	var conf database.Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {

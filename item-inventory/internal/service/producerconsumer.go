@@ -70,7 +70,6 @@ func ProducerConsumerUtil1(repo *repository) (error, []item.Invoice) {
 func consumer(consumerChannel chan item.Item, items []item.Item) {
 	for i := 0; i < len(items); i++ {
 		consumerChannel <- items[i]
-
 	}
 	close(consumerChannel)
 }
