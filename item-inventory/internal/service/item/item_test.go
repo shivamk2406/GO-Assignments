@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
-	"github.com/shivamk2406/item-inventory/domain/item/enum"
+	"github.com/shivamk2406/item-inventory/internal/service/item/enum"
 )
 
 type scenarioTestNewItem struct {

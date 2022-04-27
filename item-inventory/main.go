@@ -1,14 +1,9 @@
 package main
 
 import (
-	"log"
-
-	"github.com/shivamk2406/item-inventory/internal/service"
+	"github.com/shivamk2406/item-inventory/cmd/app"
 )
 
 func main() {
-	err := service.Init()
-	if err != nil {
-		log.Println(err)
-	}
+	app.Start()
 }

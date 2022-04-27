@@ -3,7 +3,7 @@ package item
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/pkg/errors"
-	"github.com/shivamk2406/item-inventory/domain/item/enum"
+	"github.com/shivamk2406/item-inventory/internal/service/item/enum"
 )
 
 const (
