@@ -8,6 +8,7 @@ import (
 
 type DB interface {
 	GetInventoryItem() ([]Item, error)
+	BatchInsertion([]Item)
 }
 
 type repository struct {
@@ -26,4 +27,8 @@ func (r *repository) GetInventoryItem() ([]Item, error) {
 	}
 
 	return items, nil
+}
+
+func (r *repository) BatchInsertion(items []Item) {
+	r.db.Create(&items)
 }
