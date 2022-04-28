@@ -2,7 +2,6 @@ package item
 
 import (
 	"log"
-	"sync"
 
 	"gorm.io/gorm"
 )
@@ -32,12 +31,4 @@ func (r *Repository) GetInventoryItem() ([]Item, error) {
 
 func (r *Repository) BatchInsertion(items []Item) {
 	r.db.Create(&items)
-}
-
-func ProviderRepo(db *gorm.DB) *Repository {
-	var repo *Repository
-	var repoOnce sync.Once
-
-	repoOnce.Do(func() { repo, _ = NewRepo(db) })
-	return repo
 }

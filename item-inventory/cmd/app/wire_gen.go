@@ -8,7 +8,6 @@ package app
 
 import (
 	"github.com/google/wire"
-	"github.com/shivamk2406/item-inventory/internal/config"
 	"github.com/shivamk2406/item-inventory/internal/service"
 	"github.com/shivamk2406/item-inventory/internal/service/item"
 )
@@ -16,14 +15,14 @@ import (
 // Injectors from wire.go:
 
 func Wire() *item.Repository {
-	configConfig := config.ProviderConfig()
-	db := service.ProviderDB(configConfig)
-	repository := item.ProviderRepo(db)
+	config := service.ProviderConfig()
+	db := service.ProviderDB(config)
+	repository := service.ProviderRepo(db)
 	return repository
 }
 
 // wire.go:
 
 var (
-	ProviderSet wire.ProviderSet = wire.NewSet(config.ProviderConfig, service.ProviderDB, item.ProviderRepo)
+	ProviderSet wire.ProviderSet = wire.NewSet(service.ProviderConfig, service.ProviderDB, service.ProviderRepo)
 )

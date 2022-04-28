@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"sync"
-	"time"
 
 	"github.com/shivamk2406/item-inventory/internal/config"
 	"github.com/shivamk2406/item-inventory/internal/service/consumer"
@@ -13,32 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Init() error {
-	config, err := config.LoadDatabaseConfig()
-	if err != nil {
-		return err
-	}
-
-	db, cleanup, err := database.Open(config)
-	if err != nil {
-		return err
-	}
-	defer cleanup()
-
-	repo, err := item.NewRepo(db)
-	if err != nil {
-		return err
-	}
-	start := time.Now()
-	//BatchInsertion(repo)
-
-	Util(repo)
-	fmt.Println(time.Since(start))
-	return nil
-
-}
-
-func Util(repo item.DB) {
+func RunApp(repo item.DB) {
 	consumerCount, producerCount, err := config.LoadRoutineConfig()
 	if err != nil {
 		fmt.Println(err)
@@ -64,6 +39,40 @@ func ProviderDB(conf config.Config) *gorm.DB {
 	var db *gorm.DB
 	var dbOnce sync.Once
 
-	dbOnce.Do(func() { db, _, _ = database.Open(conf) })
+	dbOnce.Do(func() {
+		var err error
+		db, _, err = database.Open(conf)
+		if err != nil {
+			log.Println(err)
+		}
+	})
 	return db
+}
+
+func ProviderRepo(db *gorm.DB) *item.Repository {
+	var repo *item.Repository
+	var repoOnce sync.Once
+
+	repoOnce.Do(func() {
+		var err error
+		repo, err = item.NewRepo(db)
+		if err != nil {
+			log.Println(err)
+		}
+	})
+	return repo
+}
+
+func ProviderConfig() config.Config {
+	var conf config.Config
+	var confOnce sync.Once
+
+	confOnce.Do(func() {
+		var err error
+		conf, err = config.LoadDatabaseConfig()
+		if err != nil {
+			log.Println(err)
+		}
+	})
+	return conf
 }
