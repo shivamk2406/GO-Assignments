@@ -7,7 +7,6 @@ import (
 )
 
 func Start() {
-
 	err := service.Init()
 	if err != nil {
 		log.Println(err)
