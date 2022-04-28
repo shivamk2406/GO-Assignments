@@ -20,7 +20,15 @@ type Config struct {
 		DisableTLS            bool          `yaml:"disableTLS"`
 	} `yaml:"database"`
 	Routine struct {
-		RoutineCount int `yaml:"routineCount"`
+		Consumer int `yaml:"consumer"`
+		Producer int `yaml:"producer"`
+	} `yaml:"routine"`
+}
+
+type Routine struct {
+	Routine struct {
+		Consumer int `yaml:"consumer"`
+		Producer int `yaml:"producer"`
 	} `yaml:"routine"`
 }
 
@@ -31,16 +39,16 @@ func LoadDatabaseConfig() (Config, error) {
 		fmt.Println(err)
 		return conf, err
 	}
-
 	return conf, nil
 }
 
-func LoadRoutineConfig() (int, error) {
+func LoadRoutineConfig() (int, int, error) {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
 		fmt.Println(err)
-		return conf.Routine.RoutineCount, err
+		return conf.Routine.Consumer, conf.Routine.Producer, err
 	}
-	return conf.Routine.RoutineCount, err
+
+	return conf.Routine.Consumer, conf.Routine.Producer, err
 }

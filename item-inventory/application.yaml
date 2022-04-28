@@ -9,5 +9,5 @@ database:
   maxConnectionIdletime: 150s
   disableTLS: true
 routine:
-  producercount: 5
-  consumercount: 15
+  producer: 1
+  consumer: 5

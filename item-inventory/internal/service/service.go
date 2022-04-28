@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/shivamk2406/item-inventory/internal/config"
-	"github.com/shivamk2406/item-inventory/internal/consumer"
-	producer "github.com/shivamk2406/item-inventory/internal/producer"
+	"github.com/shivamk2406/item-inventory/internal/service/consumer"
 	"github.com/shivamk2406/item-inventory/internal/service/item"
 	"github.com/shivamk2406/item-inventory/internal/service/item/enum"
+	producer "github.com/shivamk2406/item-inventory/internal/service/producer"
 	"github.com/shivamk2406/item-inventory/pkg/database"
 )
 
@@ -40,8 +40,7 @@ func Init() error {
 }
 
 func Util(repo item.DB) {
-
-	routineCount, err := config.LoadRoutineConfig()
+	consumerCount, producerCount, err := config.LoadRoutineConfig()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -51,10 +50,10 @@ func Util(repo item.DB) {
 	var wg sync.WaitGroup
 	var mutex sync.Mutex
 
-	wg.Add(routineCount)
+	wg.Add(producerCount + consumerCount)
 
 	go producer.Producer(repo, c, &wg)
-	for i := 0; i < routineCount-1; i++ {
+	for i := 0; i < consumerCount; i++ {
 		go consumer.Consumer(c, &invoices, &wg, &mutex)
 	}
 
