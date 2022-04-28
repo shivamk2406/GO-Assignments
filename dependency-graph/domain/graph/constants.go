@@ -1,9 +1,21 @@
 package graph
 
+import "github.com/pkg/errors"
+
 const (
-	GraphEmptyErr        = "No nodes exists in the graph!!! Graph empty"
-	NodeDoNotExistErr    = "No such node with id: %d exists in the graph"
-	NodeAlreadyExistsErr = "Node with the id: %d alredy exists"
-	NoSuchDependencyErr  = "no relationship found between the nodes %d %d"
-	CyclicDependencyErr  = "A relationship already exists between the nodes %d and %d"
+	SingleNodeString = "id %d: %w"
+	DoubleNodeString = "id %d & id %d : %w "
+)
+
+var (
+	GraphEmptyErr           = errors.Errorf("Graph Empty")
+	NodeDNEErr              = errors.Errorf("Node Not Found")
+	NodeAlreadyExistsErr    = errors.Errorf("Node Already Exists")
+	DependencyAlreadyExists = errors.Errorf("Dependency Already Exists")
+	NoSuchDependencyErr     = errors.Errorf("No such Dependency Exists")
+	CyclicDependencyErr     = errors.Errorf("Cyclic Dependency Exits")
+	NoParentsExistErr       = errors.Errorf("No parents exists for the node")
+	NoChildrenExistErr      = errors.Errorf("No Children Exists for the node")
+	NoAncestorsExistErr     = errors.Errorf("No ancestors exists for the node ")
+	NoDescendantsExistErr   = errors.Errorf("No Descendants exists for the node")
 )

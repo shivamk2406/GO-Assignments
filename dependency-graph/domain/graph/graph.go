@@ -32,7 +32,7 @@ type Node struct {
 
 func (f *familyTree) AddNode(id int, name string) error {
 	if _, exists := f.nodes[id]; exists {
-		return fmt.Errorf(NodeAlreadyExistsErr, id)
+		return fmt.Errorf(SingleNodeString, id, NodeAlreadyExistsErr)
 	}
 
 	f.nodes[id] = &Node{Id: id, Name: name}
@@ -41,27 +41,30 @@ func (f *familyTree) AddNode(id int, name string) error {
 
 func (f *familyTree) AddEdge(id1 int, id2 int) error {
 	if len(f.nodes) == 0 {
-		return fmt.Errorf(GraphEmptyErr)
+		return GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id1]; !exists {
-		return fmt.Errorf(NodeDoNotExistErr, id1)
+		return fmt.Errorf(SingleNodeString, id1, NodeDNEErr)
 	}
 
 	if _, exists := f.nodes[id2]; !exists {
-		return fmt.Errorf(NodeDoNotExistErr, id2)
+		return fmt.Errorf(SingleNodeString, id1, NodeDNEErr)
+	}
+	if _, exists := f.nodes[id1].Children[id2]; exists {
+		return fmt.Errorf(DoubleNodeString, id1, id2, DependencyAlreadyExists)
 	}
 
 	id1Ancestors, _ := f.GetAncestors(id1)
 
 	if _, exists := id1Ancestors[id2]; exists {
-		return fmt.Errorf(CyclicDependencyErr, id1, id2)
+		return fmt.Errorf(DoubleNodeString, id1, id2, CyclicDependencyErr)
 	}
 
 	id2Descendants, _ := f.GetDescendents(id2)
 
 	if _, exists := id2Descendants[id2]; exists {
-		return fmt.Errorf(CyclicDependencyErr, id1, id2)
+		return fmt.Errorf(DoubleNodeString, id1, id2, CyclicDependencyErr)
 	}
 
 	if f.nodes[id1].Children == nil {
@@ -79,11 +82,11 @@ func (f *familyTree) AddEdge(id1 int, id2 int) error {
 
 func (f *familyTree) DeleteNode(id int) error {
 	if len(f.nodes) == 0 {
-		return fmt.Errorf(GraphEmptyErr)
+		return GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id]; !exists {
-		return fmt.Errorf(NodeDoNotExistErr, id)
+		return fmt.Errorf(SingleNodeString, id, NodeDNEErr)
 	}
 
 	child := f.nodes[id].Children
@@ -103,33 +106,33 @@ func (f *familyTree) DeleteNode(id int) error {
 
 func (f *familyTree) DeleteEdge(id1 int, id2 int) error {
 	if len(f.nodes) == 0 {
-		return fmt.Errorf(GraphEmptyErr)
+		return GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id1]; !exists {
-		return fmt.Errorf(NodeDoNotExistErr, id1)
+		return fmt.Errorf(SingleNodeString, id1, NodeDNEErr)
 	}
 
 	if _, exists := f.nodes[id2]; !exists {
-		return fmt.Errorf(NodeDoNotExistErr, id2)
+		return fmt.Errorf(SingleNodeString, id1, NodeDNEErr)
 	}
 
 	firstNodeChildren := f.nodes[id1].Children
 	if firstNodeChildren == nil {
-		return fmt.Errorf("no children exists for the node %d", id1)
+		return fmt.Errorf(SingleNodeString, id1, NoChildrenExistErr)
 	}
 
 	if _, exists := firstNodeChildren[id2]; !exists {
-		return fmt.Errorf(NoSuchDependencyErr, id1, id2)
+		return fmt.Errorf(DoubleNodeString, id1, id2, NoSuchDependencyErr)
 	}
 
 	secondNodeParents := f.nodes[id2].Parents
 	if secondNodeParents == nil {
-		return fmt.Errorf("no parents exists for the node %d", id2)
+		return fmt.Errorf(SingleNodeString, id2, NoParentsExistErr)
 	}
 
 	if _, exists := secondNodeParents[id1]; !exists {
-		return fmt.Errorf(NoSuchDependencyErr, id1, id2)
+		return fmt.Errorf(DoubleNodeString, id1, id2, NoSuchDependencyErr)
 	}
 
 	delete(secondNodeParents, id1)
@@ -140,15 +143,15 @@ func (f *familyTree) DeleteEdge(id1 int, id2 int) error {
 
 func (f *familyTree) GetChildren(id int) (map[int]*Node, error) {
 	if len(f.nodes) == 0 {
-		return nil, fmt.Errorf(GraphEmptyErr)
+		return nil, GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id]; !exists {
-		return nil, fmt.Errorf(NodeDoNotExistErr, id)
+		return nil, fmt.Errorf(SingleNodeString, id, NodeDNEErr)
 	}
 
 	if f.nodes[id].Children == nil {
-		return nil, fmt.Errorf("no children  exists for this node")
+		return nil, fmt.Errorf(SingleNodeString, id, NoChildrenExistErr)
 	}
 
 	return f.nodes[id].Children, nil
@@ -156,15 +159,15 @@ func (f *familyTree) GetChildren(id int) (map[int]*Node, error) {
 
 func (f *familyTree) GetParents(id int) (map[int]*Node, error) {
 	if len(f.nodes) == 0 {
-		return nil, fmt.Errorf(GraphEmptyErr)
+		return nil, GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id]; !exists {
-		return nil, fmt.Errorf(NodeDoNotExistErr, id)
+		return nil, fmt.Errorf(SingleNodeString, id, NodeDNEErr)
 	}
 
 	if f.nodes[id].Parents == nil {
-		return nil, fmt.Errorf("no parent exist for the node")
+		return nil, fmt.Errorf(SingleNodeString, id, NoParentsExistErr)
 	}
 
 	return f.nodes[id].Parents, nil
@@ -172,18 +175,18 @@ func (f *familyTree) GetParents(id int) (map[int]*Node, error) {
 
 func (f *familyTree) GetAncestors(id int) (map[int]*Node, error) {
 	if len(f.nodes) == 0 {
-		return nil, fmt.Errorf(GraphEmptyErr)
+		return nil, GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id]; !exists {
-		return nil, fmt.Errorf(NodeDoNotExistErr, id)
+		return nil, fmt.Errorf(SingleNodeString, id, NodeDNEErr)
 	}
 
 	ancestors := make(map[int]*Node)
 	getAnc(f.nodes[id], ancestors)
 
 	if len(ancestors) == 0 {
-		return nil, fmt.Errorf("no ancestor exits for the queried node")
+		return nil, fmt.Errorf(SingleNodeString, id, NoAncestorsExistErr)
 	}
 	return ancestors, nil
 }
@@ -205,18 +208,18 @@ func getAnc(node *Node, ancestors map[int]*Node) {
 
 func (f *familyTree) GetDescendents(id int) (map[int]*Node, error) {
 	if len(f.nodes) == 0 {
-		return nil, fmt.Errorf(GraphEmptyErr)
+		return nil, GraphEmptyErr
 	}
 
 	if _, exists := f.nodes[id]; !exists {
-		return nil, fmt.Errorf(NodeDoNotExistErr, id)
+		return nil, fmt.Errorf(SingleNodeString, id, NodeDNEErr)
 	}
 
 	descendents := make(map[int]*Node)
 	getDes(f.nodes[id], descendents)
 
 	if len(descendents) == 0 {
-		return nil, fmt.Errorf("no descendants exists for the queried node")
+		return nil, fmt.Errorf(SingleNodeString, id, NoDescendantsExistErr)
 	}
 
 	return descendents, nil

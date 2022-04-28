@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
 )
 
 type TestScenario struct {
@@ -47,18 +48,14 @@ func TestGetParents(t *testing.T) {
 		},
 		{
 			description: "parents for node do not exists",
-			nodeerr:     errors.Errorf("parent do not exists"),
+			nodeerr:     NoParentsExistErr,
 			nodeID:      1,
 		},
 	}
 
 	for _, scenario := range scenarios {
 		_, err := graph.GetParents(scenario.nodeID)
-		if err == nil && scenario.nodeerr != nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		} else if err != nil && scenario.nodeerr == nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		}
+		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
 	}
 
 }
@@ -75,17 +72,13 @@ func TestGetChildren(t *testing.T) {
 		{
 			description: "children do not exists for the node",
 			nodeID:      6,
-			nodeerr:     errors.Errorf("no children exits for the node"),
+			nodeerr:     NoChildrenExistErr,
 		},
 	}
 
 	for _, scenario := range scenarios {
 		_, err := graph.GetChildren(scenario.nodeID)
-		if err == nil && scenario.nodeerr != nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		} else if err != nil && scenario.nodeerr == nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		}
+		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
 	}
 
 }
@@ -101,17 +94,13 @@ func TestGetAncestors(t *testing.T) {
 		},
 		{
 			description: "no ancestor exists for the node",
-			nodeerr:     errors.Errorf("no ancestor exists for the node "),
+			nodeerr:     NoAncestorsExistErr,
 			nodeID:      1,
 		},
 	}
 	for _, scenario := range scenarios {
 		_, err := graph.GetAncestors(scenario.nodeID)
-		if err == nil && scenario.nodeerr != nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		} else if err != nil && scenario.nodeerr == nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		}
+		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
 	}
 
 }
@@ -127,17 +116,13 @@ func TestGetDescendants(t *testing.T) {
 		},
 		{
 			description: "no descendanst exists for the node",
-			nodeerr:     errors.Errorf("no ancestor exists for the node "),
+			nodeerr:     NoDescendantsExistErr,
 			nodeID:      6,
 		},
 	}
 	for _, scenario := range scenarios {
 		_, err := graph.GetDescendents(scenario.nodeID)
-		if err == nil && scenario.nodeerr != nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		} else if err != nil && scenario.nodeerr == nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.nodeerr)
-		}
+		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
 	}
 
 }
@@ -163,16 +148,12 @@ func TestCyclicDependency(t *testing.T) {
 			description: "dependency already exits between the two nodes",
 			id1:         3,
 			id2:         1,
-			cyclicError: errors.Errorf("cyclic dependency error"),
+			cyclicError: CyclicDependencyErr,
 		},
 	}
 	for _, scenario := range scenarios {
 		err := graph.AddEdge(scenario.id1, scenario.id2)
-		if err == nil && scenario.cyclicError != nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.cyclicError)
-		} else if err != nil && scenario.cyclicError == nil {
-			t.Errorf("For %s got %v  expected was%v", scenario.description, err, scenario.cyclicError)
-		}
+		require.Equal(t, scenario.cyclicError, errors.Unwrap(err))
 	}
 
 }
