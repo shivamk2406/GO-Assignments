@@ -10,6 +10,7 @@ import (
 	"github.com/shivamk2406/item-inventory/internal/service/item"
 	producer "github.com/shivamk2406/item-inventory/internal/service/producer"
 	"github.com/shivamk2406/item-inventory/pkg/database"
+	"gorm.io/gorm"
 )
 
 func Init() error {
@@ -57,4 +58,12 @@ func Util(repo item.DB) {
 
 	wg.Wait()
 	fmt.Printf("Total Length of invoice generated %d \n", len(invoices))
+}
+
+func ProviderDB(conf config.Config) *gorm.DB {
+	var db *gorm.DB
+	var dbOnce sync.Once
+
+	dbOnce.Do(func() { db, _, _ = database.Open(conf) })
+	return db
 }

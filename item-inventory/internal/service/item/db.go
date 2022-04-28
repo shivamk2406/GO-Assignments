@@ -2,6 +2,7 @@ package item
 
 import (
 	"log"
+	"sync"
 
 	"gorm.io/gorm"
 )
@@ -11,15 +12,15 @@ type DB interface {
 	BatchInsertion([]Item)
 }
 
-type repository struct {
+type Repository struct {
 	db *gorm.DB
 }
 
-func NewRepo(db *gorm.DB) (*repository, error) {
-	return &repository{db: db}, nil
+func NewRepo(db *gorm.DB) (*Repository, error) {
+	return &Repository{db: db}, nil
 }
 
-func (r *repository) GetInventoryItem() ([]Item, error) {
+func (r *Repository) GetInventoryItem() ([]Item, error) {
 	var items []Item
 	if err := r.db.Find(&items).Error; err != nil {
 		log.Println(err)
@@ -29,6 +30,14 @@ func (r *repository) GetInventoryItem() ([]Item, error) {
 	return items, nil
 }
 
-func (r *repository) BatchInsertion(items []Item) {
+func (r *Repository) BatchInsertion(items []Item) {
 	r.db.Create(&items)
+}
+
+func ProviderRepo(db *gorm.DB) *Repository {
+	var repo *Repository
+	var repoOnce sync.Once
+
+	repoOnce.Do(func() { repo, _ = NewRepo(db) })
+	return repo
 }
