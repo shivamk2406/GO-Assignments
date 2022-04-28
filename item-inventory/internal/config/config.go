@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -51,4 +52,12 @@ func LoadRoutineConfig() (int, int, error) {
 	}
 
 	return conf.Routine.Consumer, conf.Routine.Producer, err
+}
+
+func ProviderConfig() Config {
+	var conf Config
+	var confOnce sync.Once
+
+	confOnce.Do(func() { conf, _ = LoadDatabaseConfig() })
+	return conf
 }

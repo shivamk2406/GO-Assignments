@@ -1,20 +1,17 @@
 package app
 
 import (
-	"fmt"
-
-	"github.com/shivamk2406/item-inventory/internal/config"
 	"github.com/shivamk2406/item-inventory/internal/service"
 )
 
 func Start() {
 
-	config, err := config.LoadDatabaseConfig()
-	if err != nil {
-		fmt.Println(err)
-	}
+	// config, err := config.LoadDatabaseConfig()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
-	repo := Wire(config)
+	repo := Wire()
 
 	service.Util(repo)
 	// err := service.Init()

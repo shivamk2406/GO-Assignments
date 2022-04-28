@@ -12,11 +12,12 @@ import (
 
 var (
 	ProviderSet wire.ProviderSet = wire.NewSet(
+		config.ProviderConfig,
 		service.ProviderDB,
 		item.ProviderRepo,
 	)
 )
 
-func Wire(conf config.Config) *item.Repository {
+func Wire() *item.Repository {
 	panic(wire.Build(ProviderSet))
 }

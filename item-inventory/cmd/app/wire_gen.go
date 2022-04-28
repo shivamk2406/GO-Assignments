@@ -15,8 +15,9 @@ import (
 
 // Injectors from wire.go:
 
-func Wire(conf config.Config) *item.Repository {
-	db := service.ProviderDB(conf)
+func Wire() *item.Repository {
+	configConfig := config.ProviderConfig()
+	db := service.ProviderDB(configConfig)
 	repository := item.ProviderRepo(db)
 	return repository
 }
@@ -24,5 +25,5 @@ func Wire(conf config.Config) *item.Repository {
 // wire.go:
 
 var (
-	ProviderSet wire.ProviderSet = wire.NewSet(service.ProviderDB, item.ProviderRepo)
+	ProviderSet wire.ProviderSet = wire.NewSet(config.ProviderConfig, service.ProviderDB, item.ProviderRepo)
 )
