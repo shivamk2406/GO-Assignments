@@ -39,7 +39,7 @@ func BatchInsertion(repo item.DB) {
 		items = append(items, item)
 	}
 
-	repo.BatchInsertion(items)
+	//repo.BatchInsertion(items)
 
 	fmt.Println(len(items))
 

@@ -9,7 +9,6 @@ import (
 
 type DB interface {
 	GetInventoryItem() ([]Item, error)
-	BatchInsertion([]Item)
 }
 
 type Repository struct {
@@ -28,10 +27,6 @@ func (r *Repository) GetInventoryItem() ([]Item, error) {
 	}
 
 	return items, nil
-}
-
-func (r *Repository) BatchInsertion(items []Item) {
-	r.db.Create(&items)
 }
 
 func InitializeRepo(db *gorm.DB) (*Repository, error) {
