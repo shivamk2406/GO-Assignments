@@ -39,7 +39,6 @@ func LoadDatabaseConfig() (Config, error) {
 		fmt.Println(err)
 		return conf, err
 	}
-	fmt.Println(conf)
 	return conf, nil
 }
 
