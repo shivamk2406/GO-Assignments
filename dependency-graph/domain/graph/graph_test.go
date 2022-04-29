@@ -55,7 +55,7 @@ func TestGetParents(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		_, err := graph.GetParents(scenario.nodeID)
-		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
+		require.True(t, errors.Is(err, scenario.nodeerr))
 	}
 
 }
@@ -78,7 +78,7 @@ func TestGetChildren(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		_, err := graph.GetChildren(scenario.nodeID)
-		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
+		require.True(t, errors.Is(err, scenario.nodeerr))
 	}
 
 }
@@ -100,7 +100,7 @@ func TestGetAncestors(t *testing.T) {
 	}
 	for _, scenario := range scenarios {
 		_, err := graph.GetAncestors(scenario.nodeID)
-		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
+		require.True(t, errors.Is(err, scenario.nodeerr))
 	}
 
 }
@@ -122,7 +122,7 @@ func TestGetDescendants(t *testing.T) {
 	}
 	for _, scenario := range scenarios {
 		_, err := graph.GetDescendents(scenario.nodeID)
-		require.Equal(t, scenario.nodeerr, errors.Unwrap(err))
+		require.True(t, errors.Is(err, scenario.nodeerr))
 	}
 
 }
@@ -153,7 +153,7 @@ func TestCyclicDependency(t *testing.T) {
 	}
 	for _, scenario := range scenarios {
 		err := graph.AddEdge(scenario.id1, scenario.id2)
-		require.Equal(t, scenario.cyclicError, errors.Unwrap(err))
+		require.True(t, errors.Is(err, scenario.cyclicError))
 	}
 
 }
