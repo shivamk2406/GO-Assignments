@@ -22,10 +22,10 @@ type Config struct {
 		DisableTLS            bool          `yaml:"disableTLS"`
 	} `yaml:"database"`
 	Producer struct {
-		Producer int `yaml:"producer"`
+		Producer int `yaml:"producerCount"`
 	} `yaml:"producer"`
 	Consumer struct {
-		Consumer int `yaml:"consumer"`
+		Consumer int `yaml:"consumerCount"`
 	} `yaml:"consumer"`
 	Channel struct {
 		BufferCapacity int `yaml:"bufferCapacity"`
