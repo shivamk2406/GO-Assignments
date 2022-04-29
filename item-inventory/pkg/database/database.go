@@ -61,16 +61,13 @@ func Open(cfg config.Config) (*gorm.DB, func(), error) {
 
 }
 
-func InitializeDB(conf config.Config) *gorm.DB {
+func InitializeDB(conf config.Config) (*gorm.DB, error) {
 	var db *gorm.DB
 	var dbOnce sync.Once
-
+	var err error
 	dbOnce.Do(func() {
-		var err error
+
 		db, _, err = Open(conf)
-		if err != nil {
-			log.Println(err)
-		}
 	})
-	return db
+	return db, err
 }

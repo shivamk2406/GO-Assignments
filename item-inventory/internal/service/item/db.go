@@ -34,16 +34,16 @@ func (r *Repository) BatchInsertion(items []Item) {
 	r.db.Create(&items)
 }
 
-func InitializeRepo(db *gorm.DB) *Repository {
+func InitializeRepo(db *gorm.DB) (*Repository, error) {
 	var repo *Repository
 	var repoOnce sync.Once
+	var err error
 
 	repoOnce.Do(func() {
-		var err error
 		repo, err = NewRepo(db)
 		if err != nil {
 			log.Println(err)
 		}
 	})
-	return repo
+	return repo, err
 }

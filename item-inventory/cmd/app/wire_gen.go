@@ -14,9 +14,18 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeEvent() *item.Repository {
-	configConfig := config.InitializeConfig()
-	db := database.InitializeDB(configConfig)
-	repository := item.InitializeRepo(db)
-	return repository
+func InitializeEvent() (*item.Repository, error) {
+	configConfig, err := config.InitializeConfig()
+	if err != nil {
+		return nil, err
+	}
+	db, err := database.InitializeDB(configConfig)
+	if err != nil {
+		return nil, err
+	}
+	repository, err := item.InitializeRepo(db)
+	if err != nil {
+		return nil, err
+	}
+	return repository, nil
 }

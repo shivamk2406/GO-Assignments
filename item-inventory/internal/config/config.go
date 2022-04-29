@@ -76,16 +76,17 @@ func LoadChannelConfig() (int, error) {
 	return conf.Channel.BufferCapacity, err
 }
 
-func InitializeConfig() Config {
+func InitializeConfig() (Config, error) {
 	var conf Config
 	var confOnce sync.Once
+	var err error
 
 	confOnce.Do(func() {
-		var err error
+
 		conf, err = LoadDatabaseConfig()
 		if err != nil {
 			log.Println(err)
 		}
 	})
-	return conf
+	return conf, err
 }
