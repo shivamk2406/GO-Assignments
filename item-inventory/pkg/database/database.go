@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -58,4 +59,18 @@ func Open(cfg config.Config) (*gorm.DB, func(), error) {
 
 	return db, cleanup, nil
 
+}
+
+func InitializeDB(conf config.Config) *gorm.DB {
+	var db *gorm.DB
+	var dbOnce sync.Once
+
+	dbOnce.Do(func() {
+		var err error
+		db, _, err = Open(conf)
+		if err != nil {
+			log.Println(err)
+		}
+	})
+	return db
 }

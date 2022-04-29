@@ -2,31 +2,35 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"sync"
 
 	"github.com/shivamk2406/item-inventory/internal/config"
 	"github.com/shivamk2406/item-inventory/internal/service/consumer"
 	"github.com/shivamk2406/item-inventory/internal/service/item"
 	producer "github.com/shivamk2406/item-inventory/internal/service/producer"
-	"github.com/shivamk2406/item-inventory/pkg/database"
-	"gorm.io/gorm"
 )
 
-func RunApp(repo item.DB) {
-	consumerCount, producerCount, err := config.LoadRoutineConfig()
-	if err != nil {
-		fmt.Println(err)
-	}
-
+func ProducerConsumerUtil1(repo item.DB) {
 	c := make(chan item.Item)
 	var invoices []item.Invoice
 	var wg sync.WaitGroup
 	var mutex sync.Mutex
 
-	wg.Add(producerCount + consumerCount)
+	consumerCount, err := config.LoadConsumerConfig()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	go producer.Producer(repo, c, &wg)
+	producerCount, err := config.LoadProducerConfig()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	wg.Add(producerCount + consumerCount)
+	for i := 0; i < producerCount; i++ {
+		go producer.Producer(repo, c, &wg)
+	}
+
 	for i := 0; i < consumerCount; i++ {
 		go consumer.Consumer(c, &invoices, &wg, &mutex)
 	}
@@ -35,44 +39,38 @@ func RunApp(repo item.DB) {
 	fmt.Printf("Total Length of invoice generated %d \n", len(invoices))
 }
 
-func ProviderDB(conf config.Config) *gorm.DB {
-	var db *gorm.DB
-	var dbOnce sync.Once
+func ProducerConsumerUtil(repo item.DB) {
+	var invoices []item.Invoice
+	var wg sync.WaitGroup
+	var mutex sync.Mutex
 
-	dbOnce.Do(func() {
-		var err error
-		db, _, err = database.Open(conf)
+	bufferCapacity, err := config.LoadChannelConfig()
+	if err != nil {
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		}
-	})
-	return db
-}
+	}
 
-func ProviderRepo(db *gorm.DB) *item.Repository {
-	var repo *item.Repository
-	var repoOnce sync.Once
+	c := make(chan item.Item, bufferCapacity)
+	consumerCount, err := config.LoadConsumerConfig()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	repoOnce.Do(func() {
-		var err error
-		repo, err = item.NewRepo(db)
-		if err != nil {
-			log.Println(err)
-		}
-	})
-	return repo
-}
+	producerCount, err := config.LoadProducerConfig()
+	if err != nil {
+		fmt.Println(err)
+	}
+	wg.Add(producerCount + consumerCount)
+	for i := 0; i < producerCount; i++ {
+		go producer.Producer(repo, c, &wg)
+	}
 
-func ProviderConfig() config.Config {
-	var conf config.Config
-	var confOnce sync.Once
+	for i := 0; i < consumerCount; i++ {
+		go consumer.Consumer(c, &invoices, &wg, &mutex)
+	}
 
-	confOnce.Do(func() {
-		var err error
-		conf, err = config.LoadDatabaseConfig()
-		if err != nil {
-			log.Println(err)
-		}
-	})
-	return conf
+	wg.Wait()
+	fmt.Printf("Total Length of invoice generated %d \n", len(invoices))
+
 }

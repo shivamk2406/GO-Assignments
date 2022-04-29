@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"log"
+	"sync"
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -19,17 +21,15 @@ type Config struct {
 		MaxConnectionIdleTime time.Duration `yaml:"maxConnectionIdleTime"`
 		DisableTLS            bool          `yaml:"disableTLS"`
 	} `yaml:"database"`
-	Routine struct {
-		Consumer int `yaml:"consumer"`
+	Producer struct {
 		Producer int `yaml:"producer"`
-	} `yaml:"routine"`
-}
-
-type Routine struct {
-	Routine struct {
+	} `yaml:"producer"`
+	Consumer struct {
 		Consumer int `yaml:"consumer"`
-		Producer int `yaml:"producer"`
-	} `yaml:"routine"`
+	} `yaml:"consumer"`
+	Channel struct {
+		BufferCapacity int `yaml:"bufferCapacity"`
+	} `yaml:"channel"`
 }
 
 func LoadDatabaseConfig() (Config, error) {
@@ -39,16 +39,53 @@ func LoadDatabaseConfig() (Config, error) {
 		fmt.Println(err)
 		return conf, err
 	}
+	fmt.Println(conf)
 	return conf, nil
 }
 
-func LoadRoutineConfig() (int, int, error) {
+func LoadProducerConfig() (int, error) {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
 		fmt.Println(err)
-		return conf.Routine.Consumer, conf.Routine.Producer, err
+		return conf.Producer.Producer, err
 	}
 
-	return conf.Routine.Consumer, conf.Routine.Producer, err
+	return conf.Producer.Producer, err
+}
+
+func LoadConsumerConfig() (int, error) {
+	var conf Config
+	err := cleanenv.ReadConfig("application.yaml", &conf)
+	if err != nil {
+		fmt.Println(err)
+		return conf.Consumer.Consumer, err
+	}
+
+	return conf.Consumer.Consumer, err
+}
+
+func LoadChannelConfig() (int, error) {
+	var conf Config
+	err := cleanenv.ReadConfig("application.yaml", &conf)
+	if err != nil {
+		fmt.Println(err)
+		return conf.Channel.BufferCapacity, err
+	}
+
+	return conf.Channel.BufferCapacity, err
+}
+
+func InitializeConfig() Config {
+	var conf Config
+	var confOnce sync.Once
+
+	confOnce.Do(func() {
+		var err error
+		conf, err = LoadDatabaseConfig()
+		if err != nil {
+			log.Println(err)
+		}
+	})
+	return conf
 }

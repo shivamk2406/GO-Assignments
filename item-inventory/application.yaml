@@ -8,6 +8,9 @@ database:
   maxConnectionLifetime: 150s
   maxConnectionIdletime: 150s
   disableTLS: true
-routine:
+producer:
   producer: 1
+consumer:
   consumer: 5
+channel:
+  bufferCapacity: 5 

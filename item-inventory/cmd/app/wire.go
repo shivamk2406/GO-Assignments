@@ -5,18 +5,16 @@ package app
 
 import (
 	"github.com/google/wire"
-	"github.com/shivamk2406/item-inventory/internal/service"
+
+	"github.com/shivamk2406/item-inventory/internal/config"
 	"github.com/shivamk2406/item-inventory/internal/service/item"
+	"github.com/shivamk2406/item-inventory/pkg/database"
 )
 
-var (
-	ProviderSet wire.ProviderSet = wire.NewSet(
-		service.ProviderConfig,
-		service.ProviderDB,
-		service.ProviderRepo,
-	)
-)
-
-func Wire() *item.Repository {
-	panic(wire.Build(ProviderSet))
+func InitializeEvent() *item.Repository {
+	panic(wire.Build(wire.NewSet(
+		config.InitializeConfig,
+		database.InitializeDB,
+		item.InitializeRepo,
+	)))
 }

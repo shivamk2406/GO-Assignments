@@ -17,7 +17,6 @@ func Producer(repo item.DB, c chan item.Item, wg *sync.WaitGroup) {
 	for _, val := range items {
 		c <- val
 	}
-
 	close(c)
 	wg.Done()
 }

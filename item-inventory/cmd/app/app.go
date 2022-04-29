@@ -5,6 +5,6 @@ import (
 )
 
 func Start() {
-	repo := Wire()
-	service.RunApp(repo)
+	repo := InitializeEvent()
+	service.ProducerConsumerUtil(repo)
 }
