@@ -1,0 +1,16 @@
+database:
+  user: alpha
+  password: alpha
+  host: 127.0.0.1:3306
+  name: inventory
+  maxIdleConnections: 5
+  maxOpenConnections: 5
+  maxConnectionLifetime: 150s
+  maxConnectionIdletime: 150s
+  disableTLS: true
+producer:
+  concurrency: 1
+consumer:
+  concurrency: 5
+channel:
+  bufferCapacity: 5 
