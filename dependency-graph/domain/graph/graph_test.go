@@ -164,6 +164,8 @@ func TestGetDescendants(t *testing.T) {
 		err := graph.GetDescendents(scenario.nodeID, descendants)
 		if err != nil {
 			require.True(t, errors.Is(err, scenario.nodeerr))
+		} else {
+			require.Equal(t, scenario.expected, descendants)
 		}
 
 	}
