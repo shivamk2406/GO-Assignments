@@ -83,46 +83,89 @@ func TestGetChildren(t *testing.T) {
 
 }
 
+type TestAncestorsScenario struct {
+	description string
+	nodeerr     error
+	nodeID      int
+	expected    map[int]*Node
+}
+
 func TestGetAncestors(t *testing.T) {
 	graph := NewFamilyTree()
 	populateGraph(graph)
-	scenarios := []TestScenario{
+	scenarios := []TestAncestorsScenario{
 		{
 			description: "ancestors exists for the node",
 			nodeerr:     nil,
 			nodeID:      4,
+			expected: map[int]*Node{
+				2: graph.nodes[2],
+				1: graph.nodes[1],
+			},
 		},
 		{
 			description: "no ancestor exists for the node",
 			nodeerr:     NoAncestorsExistErr,
 			nodeID:      1,
+			expected:    map[int]*Node{},
 		},
 	}
 	for _, scenario := range scenarios {
-		_, err := graph.GetAncestors(scenario.nodeID)
-		require.True(t, errors.Is(err, scenario.nodeerr))
+		ancestors := make(map[int]*Node)
+		err := graph.GetAncestors(scenario.nodeID, ancestors)
+		if err != nil {
+			require.True(t, errors.Is(err, scenario.nodeerr))
+		} else {
+			require.Equal(t, scenario.expected, ancestors)
+		}
+
 	}
 
+}
+
+type TestDescendantsScenario struct {
+	description string
+	nodeerr     error
+	nodeID      int
+	expected    map[int]*Node
 }
 
 func TestGetDescendants(t *testing.T) {
 	graph := NewFamilyTree()
 	populateGraph(graph)
-	scenarios := []TestScenario{
+	scenarios := []TestDescendantsScenario{
 		{
 			description: "descendants exists for the node",
 			nodeerr:     nil,
 			nodeID:      1,
+			expected: map[int]*Node{
+				6: graph.nodes[6],
+				7: graph.nodes[7],
+				3: graph.nodes[3],
+				4: graph.nodes[4],
+				5: graph.nodes[5],
+			},
 		},
 		{
 			description: "no descendanst exists for the node",
 			nodeerr:     NoDescendantsExistErr,
 			nodeID:      6,
+			expected:    map[int]*Node{},
+		},
+		{
+			description: "node with the given id do not exists",
+			nodeerr:     NodeDNEErr,
+			nodeID:      9,
+			expected:    nil,
 		},
 	}
 	for _, scenario := range scenarios {
-		_, err := graph.GetDescendents(scenario.nodeID)
-		require.True(t, errors.Is(err, scenario.nodeerr))
+		descendants := make(map[int]*Node)
+		err := graph.GetDescendents(scenario.nodeID, descendants)
+		if err != nil {
+			require.True(t, errors.Is(err, scenario.nodeerr))
+		}
+
 	}
 
 }
