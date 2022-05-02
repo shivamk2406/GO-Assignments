@@ -10,7 +10,7 @@ import (
 	producer "github.com/shivamk2406/item-inventory/internal/service/producer"
 )
 
-func ProducerConsumerUtil1(repo item.DB) {
+func ProcessorUnbuffered(repo item.DB) {
 	c := make(chan item.Item)
 	var invoices []item.Invoice
 	var wg sync.WaitGroup
@@ -39,7 +39,7 @@ func ProducerConsumerUtil1(repo item.DB) {
 	fmt.Printf("Total Length of invoice generated %d \n", len(invoices))
 }
 
-func ProducerConsumerUtil(repo item.DB) {
+func ProcessorBuffered(repo item.DB) {
 	var invoices []item.Invoice
 	var wg sync.WaitGroup
 	var mutex sync.Mutex

@@ -22,10 +22,10 @@ type Config struct {
 		DisableTLS            bool          `yaml:"disableTLS"`
 	} `yaml:"database"`
 	Producer struct {
-		Producer int `yaml:"producerCount"`
+		Producer int `yaml:"concurrency"`
 	} `yaml:"producer"`
 	Consumer struct {
-		Consumer int `yaml:"consumerCount"`
+		Consumer int `yaml:"concurrency"`
 	} `yaml:"consumer"`
 	Channel struct {
 		BufferCapacity int `yaml:"bufferCapacity"`
@@ -39,6 +39,7 @@ func LoadDatabaseConfig() (Config, error) {
 		fmt.Println(err)
 		return conf, err
 	}
+	fmt.Println(conf)
 	return conf, nil
 }
 

@@ -11,7 +11,7 @@ import (
 	"github.com/shivamk2406/item-inventory/pkg/database"
 )
 
-func InitializeEvent() (*item.Repository, error) {
+func InitializeFactory() (*item.Repository, error) {
 	panic(wire.Build(wire.NewSet(
 		config.InitializeConfig,
 		database.InitializeDB,

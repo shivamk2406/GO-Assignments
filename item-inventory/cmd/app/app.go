@@ -7,9 +7,9 @@ import (
 )
 
 func Start() {
-	repo, err := InitializeEvent()
+	repo, err := InitializeFactory()
 	if err != nil {
 		fmt.Println(err)
 	}
-	service.ProducerConsumerUtil(repo)
+	service.ProcessorBuffered(repo)
 }

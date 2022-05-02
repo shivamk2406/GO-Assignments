@@ -14,7 +14,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeEvent() (*item.Repository, error) {
+func InitializeFactory() (*item.Repository, error) {
 	configConfig, err := config.InitializeConfig()
 	if err != nil {
 		return nil, err

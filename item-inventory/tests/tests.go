@@ -9,7 +9,7 @@ import (
 	"github.com/shivamk2406/item-inventory/internal/service/item/enum"
 )
 
-func BatchInsertion(repo item.DB) {
+func DataGenerator(repo item.DB) {
 	rand.Seed(time.Now().UnixNano())
 	var items []item.Item
 	names := [6]string{

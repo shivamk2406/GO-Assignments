@@ -9,8 +9,8 @@ database:
   maxConnectionIdletime: 150s
   disableTLS: true
 producer:
-  producerCount: 1
+  concurrency: 1
 consumer:
-  consumerCount: 5
+  concurrency: 5
 channel:
   bufferCapacity: 5 
