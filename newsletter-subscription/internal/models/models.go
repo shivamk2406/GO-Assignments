@@ -5,20 +5,21 @@ import (
 )
 
 type User struct {
-	ID            int           `gorm:"primary_key;AUTO_INCREMENT;column:id;type:bigint;"`
-	Email         string        `gorm:"primary_key;column:email;"`
-	Name          string        `gorm:"column:name;"`
-	StartDate     time.Time     `gorm:"column:start_time;type:datetime;"`
-	Subs_id       int           `gorm:"column:subsid;type:bigint;"`
-	Active        bool          `gorm:"column:active;type:tinyint;default:1;"`
-	Validity      int           `gorm:"column:validity;NOT NULL,type:ubigint;"`
-	Subscriptions Subscriptions `gorm:"foreignKey:id"`
+	ID        int       `gorm:"primary_key;AUTO_INCREMENT;column:id;type:bigint;"`
+	Email     string    `gorm:"primary_key;column:email;"`
+	Name      string    `gorm:"column:name;"`
+	StartDate time.Time `gorm:"column:start_time;type:datetime;"`
+	SubsID    int       `gorm:"column:subsid;type:bigint;"`
+	Active    bool      `gorm:"column:active;type:tinyint;default:1;"`
+	Validity  int       `gorm:"column:validity;NOT NULL,type:ubigint;"`
 }
 
 type Subscriptions struct {
 	ID      int     `gorm:"primary_key;column:id;"`
+	User    User    `gorm:"foreignKey:id"`
 	Name    string  `gorm:"column:name;"`
 	Renewal int     `gorm:"column:renewal;"`
+	Price   int     `gorm:"column:price;"`
 	Genres  []Genre `gorm:"many2many:subscription_genre;"`
 }
 

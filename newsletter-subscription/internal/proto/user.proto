@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package=".;newsletter";
+
+import "google/protobuf/timestamp.proto";
+
+message CreateUserReponse{
+    string name= 1;
+    string email=2;
+    int32 active=3;
+    int32 validity=4;
+    int32 subsid=5;
+    google.protobuf.Timestamp starttime=6;
+}
+
+message CreateUserRequest{
+    string name=1;
+    string  email=2;
+    int32 subsid=3;
+}
+
+message AuthenticateUserRequest{
+    string email=1;
+}
+
+message AuthenticateUserRespone{
+    bool isAuthenticated=1;
+}
+
+service UserManagement{
+  rpc CreateUser(CreateUserRequest) returns (CreateUserReponse){} 
+  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserRespone){}
+}
+
+
+
+
+
