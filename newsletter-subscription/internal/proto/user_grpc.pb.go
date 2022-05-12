@@ -22,8 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserManagementClient interface {
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserReponse, error)
-	AuthenticateUser(ctx context.Context, in *AuthenticateUserRequest, opts ...grpc.CallOption) (*AuthenticateUserRespone, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*NewUser, error)
+	AuthenticateUser(ctx context.Context, in *AuthenticateUserRequest, opts ...grpc.CallOption) (*AuthenticateUserResponse, error)
+	GetSubscription(ctx context.Context, in *SubscriptionRequest, opts ...grpc.CallOption) (*Subscription, error)
+	SetSubsciption(ctx context.Context, in *SetSubscriptionRequest, opts ...grpc.CallOption) (*SetSubscriptionResponse, error)
+	GetPlans(ctx context.Context, in *GetPlansRequests, opts ...grpc.CallOption) (*Plans, error)
+	GetNews(ctx context.Context, in *GetNewsRequest, opts ...grpc.CallOption) (*News, error)
+	GetNewsByGenre(ctx context.Context, in *GetNewsByGenreRequest, opts ...grpc.CallOption) (*News, error)
 }
 
 type userManagementClient struct {
@@ -34,8 +39,8 @@ func NewUserManagementClient(cc grpc.ClientConnInterface) UserManagementClient {
 	return &userManagementClient{cc}
 }
 
-func (c *userManagementClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserReponse, error) {
-	out := new(CreateUserReponse)
+func (c *userManagementClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*NewUser, error) {
+	out := new(NewUser)
 	err := c.cc.Invoke(ctx, "/proto.UserManagement/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -43,9 +48,54 @@ func (c *userManagementClient) CreateUser(ctx context.Context, in *CreateUserReq
 	return out, nil
 }
 
-func (c *userManagementClient) AuthenticateUser(ctx context.Context, in *AuthenticateUserRequest, opts ...grpc.CallOption) (*AuthenticateUserRespone, error) {
-	out := new(AuthenticateUserRespone)
+func (c *userManagementClient) AuthenticateUser(ctx context.Context, in *AuthenticateUserRequest, opts ...grpc.CallOption) (*AuthenticateUserResponse, error) {
+	out := new(AuthenticateUserResponse)
 	err := c.cc.Invoke(ctx, "/proto.UserManagement/AuthenticateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManagementClient) GetSubscription(ctx context.Context, in *SubscriptionRequest, opts ...grpc.CallOption) (*Subscription, error) {
+	out := new(Subscription)
+	err := c.cc.Invoke(ctx, "/proto.UserManagement/GetSubscription", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManagementClient) SetSubsciption(ctx context.Context, in *SetSubscriptionRequest, opts ...grpc.CallOption) (*SetSubscriptionResponse, error) {
+	out := new(SetSubscriptionResponse)
+	err := c.cc.Invoke(ctx, "/proto.UserManagement/SetSubsciption", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManagementClient) GetPlans(ctx context.Context, in *GetPlansRequests, opts ...grpc.CallOption) (*Plans, error) {
+	out := new(Plans)
+	err := c.cc.Invoke(ctx, "/proto.UserManagement/GetPlans", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManagementClient) GetNews(ctx context.Context, in *GetNewsRequest, opts ...grpc.CallOption) (*News, error) {
+	out := new(News)
+	err := c.cc.Invoke(ctx, "/proto.UserManagement/GetNews", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userManagementClient) GetNewsByGenre(ctx context.Context, in *GetNewsByGenreRequest, opts ...grpc.CallOption) (*News, error) {
+	out := new(News)
+	err := c.cc.Invoke(ctx, "/proto.UserManagement/GetNewsByGenre", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +106,13 @@ func (c *userManagementClient) AuthenticateUser(ctx context.Context, in *Authent
 // All implementations must embed UnimplementedUserManagementServer
 // for forward compatibility
 type UserManagementServer interface {
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserReponse, error)
-	AuthenticateUser(context.Context, *AuthenticateUserRequest) (*AuthenticateUserRespone, error)
+	CreateUser(context.Context, *CreateUserRequest) (*NewUser, error)
+	AuthenticateUser(context.Context, *AuthenticateUserRequest) (*AuthenticateUserResponse, error)
+	GetSubscription(context.Context, *SubscriptionRequest) (*Subscription, error)
+	SetSubsciption(context.Context, *SetSubscriptionRequest) (*SetSubscriptionResponse, error)
+	GetPlans(context.Context, *GetPlansRequests) (*Plans, error)
+	GetNews(context.Context, *GetNewsRequest) (*News, error)
+	GetNewsByGenre(context.Context, *GetNewsByGenreRequest) (*News, error)
 	mustEmbedUnimplementedUserManagementServer()
 }
 
@@ -65,11 +120,26 @@ type UserManagementServer interface {
 type UnimplementedUserManagementServer struct {
 }
 
-func (UnimplementedUserManagementServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserReponse, error) {
+func (UnimplementedUserManagementServer) CreateUser(context.Context, *CreateUserRequest) (*NewUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserManagementServer) AuthenticateUser(context.Context, *AuthenticateUserRequest) (*AuthenticateUserRespone, error) {
+func (UnimplementedUserManagementServer) AuthenticateUser(context.Context, *AuthenticateUserRequest) (*AuthenticateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateUser not implemented")
+}
+func (UnimplementedUserManagementServer) GetSubscription(context.Context, *SubscriptionRequest) (*Subscription, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSubscription not implemented")
+}
+func (UnimplementedUserManagementServer) SetSubsciption(context.Context, *SetSubscriptionRequest) (*SetSubscriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetSubsciption not implemented")
+}
+func (UnimplementedUserManagementServer) GetPlans(context.Context, *GetPlansRequests) (*Plans, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlans not implemented")
+}
+func (UnimplementedUserManagementServer) GetNews(context.Context, *GetNewsRequest) (*News, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNews not implemented")
+}
+func (UnimplementedUserManagementServer) GetNewsByGenre(context.Context, *GetNewsByGenreRequest) (*News, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNewsByGenre not implemented")
 }
 func (UnimplementedUserManagementServer) mustEmbedUnimplementedUserManagementServer() {}
 
@@ -120,6 +190,96 @@ func _UserManagement_AuthenticateUser_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserManagement_GetSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubscriptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManagementServer).GetSubscription(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserManagement/GetSubscription",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManagementServer).GetSubscription(ctx, req.(*SubscriptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManagement_SetSubsciption_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetSubscriptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManagementServer).SetSubsciption(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserManagement/SetSubsciption",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManagementServer).SetSubsciption(ctx, req.(*SetSubscriptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManagement_GetPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlansRequests)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManagementServer).GetPlans(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserManagement/GetPlans",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManagementServer).GetPlans(ctx, req.(*GetPlansRequests))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManagement_GetNews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNewsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManagementServer).GetNews(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserManagement/GetNews",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManagementServer).GetNews(ctx, req.(*GetNewsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserManagement_GetNewsByGenre_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNewsByGenreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManagementServer).GetNewsByGenre(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserManagement/GetNewsByGenre",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManagementServer).GetNewsByGenre(ctx, req.(*GetNewsByGenreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserManagement_ServiceDesc is the grpc.ServiceDesc for UserManagement service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +294,26 @@ var UserManagement_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthenticateUser",
 			Handler:    _UserManagement_AuthenticateUser_Handler,
+		},
+		{
+			MethodName: "GetSubscription",
+			Handler:    _UserManagement_GetSubscription_Handler,
+		},
+		{
+			MethodName: "SetSubsciption",
+			Handler:    _UserManagement_SetSubsciption_Handler,
+		},
+		{
+			MethodName: "GetPlans",
+			Handler:    _UserManagement_GetPlans_Handler,
+		},
+		{
+			MethodName: "GetNews",
+			Handler:    _UserManagement_GetNews_Handler,
+		},
+		{
+			MethodName: "GetNewsByGenre",
+			Handler:    _UserManagement_GetNewsByGenre_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

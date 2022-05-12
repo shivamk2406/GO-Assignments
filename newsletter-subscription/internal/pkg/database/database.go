@@ -30,8 +30,8 @@ func Open(cfg config.Config) (*gorm.DB, func(), error) {
 			return db, nil, err
 		}
 	}
-	if !db.Migrator().HasTable(&models.News{}) {
 
+	if !db.Migrator().HasTable(&models.News{}) {
 		err := db.AutoMigrate(&models.News{})
 		if err != nil {
 			return db, nil, err
@@ -49,7 +49,12 @@ func Open(cfg config.Config) (*gorm.DB, func(), error) {
 			return db, nil, err
 		}
 	}
-
+	if !db.Migrator().HasTable(&models.SubscriptionGenre{}) {
+		err := db.AutoMigrate(&models.SubscriptionGenre{})
+		if err != nil {
+			return db, nil, err
+		}
+	}
 	sqlDB.SetConnMaxIdleTime(cfg.Database.MaxConnectionIdleTime)
 	sqlDB.SetConnMaxLifetime(cfg.Database.MaxConnectionLifeTime)
 	sqlDB.SetMaxIdleConns(cfg.Database.MaxIdleConnections)

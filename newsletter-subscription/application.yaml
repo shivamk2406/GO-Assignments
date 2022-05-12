@@ -2,7 +2,7 @@ database:
   user: alpha
   password: alpha
   host: 127.0.0.1:3306
-  name: news
+  name: newslet
   maxIdleConnections: 5
   maxOpenConnections: 5
   maxConnectionLifetime: 150s

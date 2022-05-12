@@ -22,7 +22,6 @@ type Config struct {
 }
 
 func LoadDatabaseConfig() (Config, error) {
-	fmt.Println("Called This Function")
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {

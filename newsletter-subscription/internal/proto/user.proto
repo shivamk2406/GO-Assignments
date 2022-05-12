@@ -6,32 +6,83 @@ option go_package=".;newsletter";
 
 import "google/protobuf/timestamp.proto";
 
-message CreateUserReponse{
-    string name= 1;
-    string email=2;
-    int32 active=3;
-    int32 validity=4;
-    int32 subsid=5;
-    google.protobuf.Timestamp starttime=6;
-}
+// (-- api-linter: core::0127::http-annotation=disabled
+//     aip.dev/not-precedent: We need to do this because reasons. --)
+
 
 message CreateUserRequest{
     string name=1;
     string  email=2;
-    int32 subsid=3;
+}
+
+message NewUser{
+    string name=1;
+    string email=2;
+    bool active=3;
 }
 
 message AuthenticateUserRequest{
     string email=1;
 }
 
-message AuthenticateUserRespone{
+message AuthenticateUserResponse{
     bool isAuthenticated=1;
+    NewUser user=2;
+}
+message Genres{
+    string name=1;
+}
+
+message SubscriptionRequest{
+    string email=1;
+}
+
+message GetPlansRequests{}
+
+message Plans{
+    repeated Subscription subs=1;
+}
+
+message Subscription{
+    int32 id=1;
+    string name=2;
+    int32 validity=3;
+    repeated Genres genres=4;
+}
+
+message SetSubscriptionRequest{
+    string email=1;
+    int32 subsid=2;
+}
+
+message SetSubscriptionResponse{
+    string email=1;
+    bool active=2;
+    google.protobuf.Timestamp starttime=3;
+    int32 validity=4;
+}
+
+
+message GetNewsByGenreRequest{
+    string genre=1;
+}
+
+message GetNewsRequest{
+    int32 subsid=1;
+}
+
+message News{
+    repeated string news=1;
 }
 
 service UserManagement{
-  rpc CreateUser(CreateUserRequest) returns (CreateUserReponse){} 
-  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserRespone){}
+  rpc CreateUser(CreateUserRequest) returns (NewUser){} 
+  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
+  rpc GetSubscription(SubscriptionRequest) returns (Subscription){}
+  rpc SetSubsciption(SetSubscriptionRequest) returns (SetSubscriptionResponse){}
+  rpc GetPlans(GetPlansRequests)returns (Plans){}
+  rpc GetNews(GetNewsRequest) returns (News){}
+  rpc GetNewsByGenre(GetNewsByGenreRequest) returns (News){}
 }
 
 
