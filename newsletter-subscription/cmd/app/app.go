@@ -25,6 +25,7 @@ func Start() error {
 		log.Println(err)
 	}
 	repo := initializeRepo(db)
+	serv := initializeUserManagementServer(repo)
 
 	func() {
 		lis, err := net.Listen("tcp", port)
@@ -32,7 +33,7 @@ func Start() error {
 			log.Println(err)
 		}
 		s := grpc.NewServer()
-		pb.RegisterUserManagementServer(s, repo)
+		pb.RegisterUserManagementServer(s, serv)
 		reflection.Register(s)
 		log.Printf("server listening at %v", lis.Addr().String())
 

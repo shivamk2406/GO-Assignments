@@ -79,7 +79,7 @@ func getUserEmail() string {
 }
 
 func GetAvailablePlans(c pb.UserManagementClient, ctx context.Context) error {
-	r, err := c.GetPlans(ctx, &pb.GetPlansRequests{})
+	r, err := c.ListPlans(ctx, &pb.ListPlansRequest{})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -107,7 +107,7 @@ func SetSubsciption(c pb.UserManagementClient, ctx context.Context, email string
 		}
 		subsid = a
 	}
-	r, err := c.SetSubsciption(ctx, &pb.SetSubscriptionRequest{Email: email, Subsid: int32(subsid)})
+	r, err := c.CreateSubscription(ctx, &pb.CreateSubscriptionRequest{Email: email, Subsid: int32(subsid)})
 	if err != nil {
 		return err
 	}
@@ -134,14 +134,14 @@ func Login(c pb.UserManagementClient, ctx context.Context) error {
 		return err
 	}
 
-	res, err := c.GetNews(ctx, &pb.GetNewsRequest{Subsid: int32(subsid)})
+	res, err := c.ListNews(ctx, &pb.ListNewsRequest{Subsid: int32(subsid)})
 	if err != nil {
 		return err
 	}
 	fmt.Println(res)
 
 	fmt.Println("By Genre")
-	res1, err := c.GetNewsByGenre(ctx, &pb.GetNewsByGenreRequest{Genre: "Daily Brief"})
+	res1, err := c.ListNewsByGenre(ctx, &pb.ListNewsByGenreRequest{Genre: "Daily Brief"})
 	if err != nil {
 		return err
 	}
@@ -181,6 +181,7 @@ func main() {
 	switch choice {
 	case 1:
 		err := Login(c, ctx)
+		GetAvailablePlans(c, ctx)
 		if err != nil {
 			log.Println(err)
 		}

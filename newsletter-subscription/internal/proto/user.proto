@@ -15,7 +15,7 @@ message CreateUserRequest{
     string  email=2;
 }
 
-message NewUser{
+message User{
     string name=1;
     string email=2;
     bool active=3;
@@ -27,35 +27,37 @@ message AuthenticateUserRequest{
 
 message AuthenticateUserResponse{
     bool isAuthenticated=1;
-    NewUser user=2;
+    User user=2;
 }
-message Genres{
+message Genre{
     string name=1;
 }
 
+//A Representation of subscription request from user
 message SubscriptionRequest{
+    //User email from which request has been raised
     string email=1;
 }
 
-message GetPlansRequests{}
+message ListPlansRequest{}
 
 message Plans{
-    repeated Subscription subs=1;
+    repeated Plan subs=1;
 }
 
-message Subscription{
+message Plan{
     int32 id=1;
     string name=2;
     int32 validity=3;
-    repeated Genres genres=4;
+    repeated Genre genres=4;
 }
 
-message SetSubscriptionRequest{
+message CreateSubscriptionRequest{
     string email=1;
     int32 subsid=2;
 }
 
-message SetSubscriptionResponse{
+message SubscriptionResponse{
     string email=1;
     bool active=2;
     google.protobuf.Timestamp starttime=3;
@@ -63,11 +65,11 @@ message SetSubscriptionResponse{
 }
 
 
-message GetNewsByGenreRequest{
+message ListNewsByGenreRequest{
     string genre=1;
 }
 
-message GetNewsRequest{
+message ListNewsRequest{
     int32 subsid=1;
 }
 
@@ -76,13 +78,13 @@ message News{
 }
 
 service UserManagement{
-  rpc CreateUser(CreateUserRequest) returns (NewUser){} 
+  rpc CreateUser(CreateUserRequest) returns (User){} 
   rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
-  rpc GetSubscription(SubscriptionRequest) returns (Subscription){}
-  rpc SetSubsciption(SetSubscriptionRequest) returns (SetSubscriptionResponse){}
-  rpc GetPlans(GetPlansRequests)returns (Plans){}
-  rpc GetNews(GetNewsRequest) returns (News){}
-  rpc GetNewsByGenre(GetNewsByGenreRequest) returns (News){}
+  rpc GetSubscription(SubscriptionRequest) returns (Plan){}
+  rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse){}
+  rpc ListPlans(ListPlansRequest)returns (Plans){}
+  rpc ListNews(ListNewsRequest) returns (News){}
+  rpc ListNewsByGenre(ListNewsByGenreRequest) returns (News){}
 }
 
 

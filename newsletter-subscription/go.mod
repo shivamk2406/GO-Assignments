@@ -3,6 +3,7 @@ module github.com/shivamk2406/newsletter-subscriptions
 go 1.18
 
 require (
+	github.com/go-kit/kit v0.12.0
 	github.com/google/wire v0.5.0
 	github.com/ilyakaznacheev/cleanenv v1.2.6
 	github.com/pkg/errors v0.9.1

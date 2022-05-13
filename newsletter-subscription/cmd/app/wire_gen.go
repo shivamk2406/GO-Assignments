@@ -10,7 +10,7 @@ import (
 	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/pkg/database"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/proto"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/user"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +34,12 @@ func initializeDB(conf config.Config) (*gorm.DB, func(), error) {
 	}, nil
 }
 
-func initializeRepo(db *gorm.DB) newsletter.UserManagementServer {
-	userManagementServer := user.NewRepo(db)
+func initializeRepo(db *gorm.DB) *user.Repository {
+	repository := user.NewRepo(db)
+	return repository
+}
+
+func initializeUserManagementServer(repo *user.Repository) newsletter.UserManagementServer {
+	userManagementServer := user.UserManagementService(repo)
 	return userManagementServer
 }
