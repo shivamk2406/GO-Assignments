@@ -7,7 +7,6 @@ import (
 	"github.com/google/wire"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/pkg/database"
-	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"gorm.io/gorm"
 )
@@ -25,9 +24,4 @@ func initializeDB(conf config.Config) (*gorm.DB, func(), error) {
 func initializeRepo(db *gorm.DB) *user.Repository {
 	wire.Build(user.NewRepo)
 	return &user.Repository{}
-}
-
-func initializeUserManagementServer(repo *user.Repository) pb.UserManagementServer {
-	wire.Build(user.UserManagementService)
-	return user.UserManagementServer{}
 }

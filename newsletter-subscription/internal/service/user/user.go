@@ -2,8 +2,9 @@ package user
 
 import (
 	"context"
-	"log"
+	"os"
 
+	"github.com/go-kit/log"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto"
 )
 
@@ -13,17 +14,17 @@ type UserManagement interface {
 	AuthenticateUser(ctx context.Context, in *pb.AuthenticateUserRequest) (*pb.AuthenticateUserResponse, error)
 	GetSubscription(ctx context.Context, in *pb.SubscriptionRequest) (*pb.Plan, error)
 	CreateSubscription(ctx context.Context, in *pb.CreateSubscriptionRequest) (*pb.SubscriptionResponse, error)
-	ListNewsByGenre(ctx context.Context, in *pb.ListNewsByGenreRequest) (*pb.News, error)
 	ListNews(ctx context.Context, in *pb.ListNewsRequest) (*pb.News, error)
+	ListNewsByGenre(ctx context.Context, in *pb.ListNewsByGenreRequest) (*pb.News, error)
 }
 
 type UserManagementServer struct {
-	pb.UnimplementedUserManagementServer
+	log  log.Logger
 	repo Repository
 }
 
-func UserManagementService(repo *Repository) pb.UserManagementServer {
-	return &UserManagementServer{repo: *repo}
+func UserManagementService(repo *Repository, logger log.Logger) UserManagementServer {
+	return UserManagementServer{repo: *repo, log: logger}
 }
 func (r UserManagementServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.User, error) {
 	model := CreateUserRequest{Name: in.Name, Email: in.Email}
@@ -56,9 +57,10 @@ func (r UserManagementServer) ListPlans(ctx context.Context, in *pb.ListPlansReq
 }
 
 func (r UserManagementServer) AuthenticateUser(ctx context.Context, in *pb.AuthenticateUserRequest) (*pb.AuthenticateUserResponse, error) {
-
+	w := log.NewSyncWriter(os.Stderr)
+	logger := log.NewLogfmtLogger(w)
 	model := AuthenticateUserRequest{Email: in.Email}
-	log.Printf("Inside User Request Generated for db %v", model)
+	logger.Log("Inside User Request Generated for db %v", model)
 
 	response, err := r.repo.AuthenticateUser(ctx, model)
 	if err != nil {

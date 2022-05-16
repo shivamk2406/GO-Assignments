@@ -133,6 +133,7 @@ func Login(c pb.UserManagementClient, ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println(subsid)
 
 	res, err := c.ListNews(ctx, &pb.ListNewsRequest{Subsid: int32(subsid)})
 	if err != nil {

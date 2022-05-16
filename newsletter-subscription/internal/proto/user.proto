@@ -4,12 +4,19 @@ package proto;
 
 option go_package=".;newsletter";
 
+
 import "google/protobuf/timestamp.proto";
+service UserManagement{
 
-// (-- api-linter: core::0127::http-annotation=disabled
-//     aip.dev/not-precedent: We need to do this because reasons. --)
-
-
+    rpc CreateUser(CreateUserRequest) returns (User){} 
+    rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
+    rpc GetSubscription(SubscriptionRequest) returns (Plan){}
+    rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse){}
+    rpc ListPlans(ListPlansRequest)returns (Plans){}
+    rpc ListNews(ListNewsRequest) returns (News){}
+    rpc ListNewsByGenre(ListNewsByGenreRequest) returns (News){}
+  }
+  
 message CreateUserRequest{
     string name=1;
     string  email=2;
@@ -77,15 +84,6 @@ message News{
     repeated string news=1;
 }
 
-service UserManagement{
-  rpc CreateUser(CreateUserRequest) returns (User){} 
-  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
-  rpc GetSubscription(SubscriptionRequest) returns (Plan){}
-  rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse){}
-  rpc ListPlans(ListPlansRequest)returns (Plans){}
-  rpc ListNews(ListNewsRequest) returns (News){}
-  rpc ListNewsByGenre(ListNewsByGenreRequest) returns (News){}
-}
 
 
 

@@ -1,12 +1,18 @@
 package app
 
 import (
-	"log"
+	"fmt"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
+	log "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/shivamk2406/newsletter-subscriptions/cmd/transport"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -16,33 +22,60 @@ const (
 func Start() error {
 
 	//ctx := context.Background()
+	var logger log.Logger
+	logger = log.NewJSONLogger(os.Stdout)
+	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	logger = log.With(logger, "caller", log.DefaultCaller)
+
 	conf, err := InitializeConfig()
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	db, cleanup, err := initializeDB(conf)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	repo := initializeRepo(db)
-	serv := initializeUserManagementServer(repo)
+	serv := user.UserManagementService(repo, logger)
+	endpoints := user.MakeEndpoint(serv)
+	grpcServer := transport.NewServer(endpoints)
 
-	func() {
-		lis, err := net.Listen("tcp", port)
-		if err != nil {
-			log.Println(err)
-		}
-		s := grpc.NewServer()
-		pb.RegisterUserManagementServer(s, serv)
-		reflection.Register(s)
-		log.Printf("server listening at %v", lis.Addr().String())
-
-		if err := s.Serve(lis); err != nil {
-			log.Fatalf("Failed to Serve: %v", err)
-
-		}
-
+	errs := make(chan error)
+	go func() {
+		c := make(chan os.Signal)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM, syscall.SIGALRM)
+		errs <- fmt.Errorf("%s", <-c)
 	}()
+
+	grpcListener, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		os.Exit(1)
+	}
+
+	go func() {
+		baseServer := grpc.NewServer()
+		pb.RegisterUserManagementServer(baseServer, grpcServer)
+		level.Info(logger).Log("msg", "Server started successfully 🚀")
+		baseServer.Serve(grpcListener)
+	}()
+
+	level.Error(logger).Log("exit", <-errs)
+	// func() {
+	// 	lis, err := net.Listen("tcp", port)
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 	}
+	// 	s := grpc.NewServer()
+	// 	pb.RegisterUserManagementServer(s, serv)
+	// 	reflection.Register(s)
+	// 	log.Printf("server listening at %v", lis.Addr().String())
+
+	// 	if err := s.Serve(lis); err != nil {
+	// 		log.Fatalf("Failed to Serve: %v", err)
+
+	// 	}
+
+	// }()
 	//grpcserver.RunServer(ctx, repo)
 	defer cleanup()
 

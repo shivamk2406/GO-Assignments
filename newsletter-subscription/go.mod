@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/go-kit/kit v0.12.0
+	github.com/go-kit/log v0.2.0
 	github.com/google/wire v0.5.0
 	github.com/ilyakaznacheev/cleanenv v1.2.6
 	github.com/pkg/errors v0.9.1
@@ -15,6 +16,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
+	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
