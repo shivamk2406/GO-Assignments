@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
@@ -10,6 +11,7 @@ import (
 	log "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/shivamk2406/newsletter-subscriptions/cmd/transport"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/pkg/kafka"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"google.golang.org/grpc"
@@ -21,7 +23,7 @@ const (
 
 func Start() error {
 
-	//ctx := context.Background()
+	ctx := context.Background()
 	var logger log.Logger
 	logger = log.NewJSONLogger(os.Stdout)
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
@@ -37,6 +39,11 @@ func Start() error {
 	}
 	repo := initializeRepo(db)
 	serv := user.UserManagementService(repo, logger)
+
+	kaf := kafka.NewProducerConsumerService(serv, "my-topic", "news ", []string{"localhost:9092"})
+	kaf.NewsProducer(ctx, "my-topic")
+	kaf.ConsumeNews(ctx, "my-topic", "news")
+
 	endpoints := user.MakeEndpoint(serv)
 	grpcServer := transport.NewServer(endpoints)
 
@@ -60,6 +67,8 @@ func Start() error {
 	}()
 
 	level.Error(logger).Log("exit", <-errs)
+	defer cleanup()
+
 	// func() {
 	// 	lis, err := net.Listen("tcp", port)
 	// 	if err != nil {
@@ -77,7 +86,6 @@ func Start() error {
 
 	// }()
 	//grpcserver.RunServer(ctx, repo)
-	defer cleanup()
 
 	// conf, err := config.LoadDatabaseConfig()
 	// if err != nil {

@@ -8,6 +8,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/ilyakaznacheev/cleanenv v1.2.6
 	github.com/pkg/errors v0.9.1
+	github.com/segmentio/kafka-go v0.4.31
 	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
 	gorm.io/driver/mysql v1.3.3
@@ -22,6 +23,8 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/klauspost/compress v1.14.2 // indirect
+	github.com/pierrec/lz4/v4 v4.1.14 // indirect
 	golang.org/x/net v0.0.0-20210917221730-978cfadd31cf // indirect
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
 	golang.org/x/text v0.3.7 // indirect

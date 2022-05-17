@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"os"
 
 	"github.com/go-kit/log"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto"
@@ -57,10 +56,10 @@ func (r UserManagementServer) ListPlans(ctx context.Context, in *pb.ListPlansReq
 }
 
 func (r UserManagementServer) AuthenticateUser(ctx context.Context, in *pb.AuthenticateUserRequest) (*pb.AuthenticateUserResponse, error) {
-	w := log.NewSyncWriter(os.Stderr)
-	logger := log.NewLogfmtLogger(w)
+	//w := log.NewSyncWriter(os.Stderr)
+	//logger := log.NewLogfmtLogger(w)
 	model := AuthenticateUserRequest{Email: in.Email}
-	logger.Log("Inside User Request Generated for db %v", model)
+	//logger.Log("Inside User Request Generated for db %v", model)
 
 	response, err := r.repo.AuthenticateUser(ctx, model)
 	if err != nil {
