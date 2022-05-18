@@ -8,3 +8,6 @@ database:
   maxConnectionLifetime: 150s
   maxConnectionIdletime: 150s
   disableTLS: true
+grpc:
+  port: 50051
+  network: tcp

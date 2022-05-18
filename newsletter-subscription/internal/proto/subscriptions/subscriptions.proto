@@ -1,41 +1,18 @@
 syntax = "proto3";
 
-package proto;
+package proto.subscriptions;
 
 option go_package=".;newsletter";
 
 
 import "google/protobuf/timestamp.proto";
-service UserManagement{
 
-    rpc CreateUser(CreateUserRequest) returns (User){} 
-    rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
+service SubscriptionManagementService{
     rpc GetSubscription(SubscriptionRequest) returns (Plan){}
     rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse){}
     rpc ListPlans(ListPlansRequest)returns (Plans){}
-    rpc ListNews(ListNewsRequest) returns (News){}
-    rpc ListNewsByGenre(ListNewsByGenreRequest) returns (News){}
-  }
-  
-message CreateUserRequest{
-    string name=1;
-    string  email=2;
 }
 
-message User{
-    string name=1;
-    string email=2;
-    bool active=3;
-}
-
-message AuthenticateUserRequest{
-    string email=1;
-}
-
-message AuthenticateUserResponse{
-    bool isAuthenticated=1;
-    User user=2;
-}
 message Genre{
     string name=1;
 }
@@ -70,22 +47,3 @@ message SubscriptionResponse{
     google.protobuf.Timestamp starttime=3;
     int32 validity=4;
 }
-
-
-message ListNewsByGenreRequest{
-    string genre=1;
-}
-
-message ListNewsRequest{
-    int32 subsid=1;
-}
-
-message News{
-    repeated string news=1;
-}
-
-
-
-
-
-

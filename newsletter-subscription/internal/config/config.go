@@ -19,6 +19,10 @@ type Config struct {
 		MaxConnectionIdleTime time.Duration `yaml:"maxConnectionIdleTime"`
 		DisableTLS            bool          `yaml:"disableTLS"`
 	} `yaml:"database"`
+	Grpc struct {
+		Port    string `yaml:"port"`
+		Network string `yaml:"network"`
+	} `yaml:"grpc"`
 }
 
 func LoadDatabaseConfig() (Config, error) {
@@ -30,4 +34,14 @@ func LoadDatabaseConfig() (Config, error) {
 	}
 	fmt.Println(conf)
 	return conf, nil
+}
+
+func LoadGrpcConfig() (string, string, error) {
+	var conf Config
+	err := cleanenv.ReadConfig("application.yaml", &conf)
+	if err != nil {
+		fmt.Println(err)
+		return "", "", err
+	}
+	return conf.Grpc.Port, conf.Grpc.Network, nil
 }

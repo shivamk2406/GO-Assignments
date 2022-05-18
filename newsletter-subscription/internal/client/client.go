@@ -9,7 +9,9 @@ import (
 	"strconv"
 	"time"
 
-	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto"
+	newspb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/news"
+	subspb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/subscriptions"
+	userpb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/user"
 	"google.golang.org/grpc"
 )
 
@@ -17,7 +19,7 @@ const (
 	address = "localhost:50051"
 )
 
-func getUserInput() (pb.CreateUserRequest, error) {
+func getUserInput() (userpb.CreateUserRequest, error) {
 	var name string
 	var email string
 	//var subsid int
@@ -28,7 +30,7 @@ func getUserInput() (pb.CreateUserRequest, error) {
 	}
 	if err := scanner.Err(); err != nil {
 		log.Println(err)
-		return pb.CreateUserRequest{}, err
+		return userpb.CreateUserRequest{}, err
 	}
 
 	fmt.Println("Enter Your Email: ")
@@ -37,7 +39,7 @@ func getUserInput() (pb.CreateUserRequest, error) {
 	}
 	if err := scanner.Err(); err != nil {
 		log.Println(err)
-		return pb.CreateUserRequest{}, err
+		return userpb.CreateUserRequest{}, err
 	}
 
 	// fmt.Println("Enter Your Subsid: ")
@@ -51,10 +53,10 @@ func getUserInput() (pb.CreateUserRequest, error) {
 	// }
 	if err := scanner.Err(); err != nil {
 		log.Println(err)
-		return pb.CreateUserRequest{}, err
+		return userpb.CreateUserRequest{}, err
 	}
 
-	return pb.CreateUserRequest{Name: name, Email: email}, nil
+	return userpb.CreateUserRequest{Name: name, Email: email}, nil
 
 }
 
@@ -78,8 +80,8 @@ func getUserEmail() string {
 	return email
 }
 
-func GetAvailablePlans(c pb.UserManagementClient, ctx context.Context) error {
-	r, err := c.ListPlans(ctx, &pb.ListPlansRequest{})
+func GetAvailablePlans(c subspb.SubscriptionManagementServiceClient, ctx context.Context) error {
+	r, err := c.ListPlans(ctx, &subspb.ListPlansRequest{})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -95,7 +97,7 @@ func GetAvailablePlans(c pb.UserManagementClient, ctx context.Context) error {
 	}
 	return nil
 }
-func SetSubsciption(c pb.UserManagementClient, ctx context.Context, email string) error {
+func SetSubsciption(c subspb.SubscriptionManagementServiceClient, ctx context.Context, email string) error {
 	var subsid int
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("Enter Your Subsid: ")
@@ -107,7 +109,7 @@ func SetSubsciption(c pb.UserManagementClient, ctx context.Context, email string
 		}
 		subsid = a
 	}
-	r, err := c.CreateSubscription(ctx, &pb.CreateSubscriptionRequest{Email: email, Subsid: int32(subsid)})
+	r, err := c.CreateSubscription(ctx, &subspb.CreateSubscriptionRequest{Email: email, Subsid: int32(subsid)})
 	if err != nil {
 		return err
 	}
@@ -115,34 +117,34 @@ func SetSubsciption(c pb.UserManagementClient, ctx context.Context, email string
 	return nil
 }
 
-func Login(c pb.UserManagementClient, ctx context.Context) error {
+func Login(u userpb.UserManagementServiceClient, s subspb.SubscriptionManagementServiceClient, n newspb.NewsServiceClient, ctx context.Context) error {
 	email := getUserEmail()
-	r, err := c.AuthenticateUser(ctx, &pb.AuthenticateUserRequest{Email: email})
+	r, err := u.AuthenticateUser(ctx, &userpb.AuthenticateUserRequest{Email: email})
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 	log.Println(r.User.Active)
 	if !r.User.Active {
-		err := SetSubsciption(c, ctx, email)
+		err := SetSubsciption(s, ctx, email)
 		if err != nil {
 			return err
 		}
 	}
-	subsid, err := getSubs(c, ctx, email)
+	subsid, err := getSubs(s, ctx, email)
 	if err != nil {
 		return err
 	}
 	fmt.Println(subsid)
 
-	res, err := c.ListNews(ctx, &pb.ListNewsRequest{Subsid: int32(subsid)})
+	res, err := n.ListNews(ctx, &newspb.ListNewsRequest{Subsid: int32(subsid)})
 	if err != nil {
 		return err
 	}
 	fmt.Println(res)
 
 	fmt.Println("By Genre")
-	res1, err := c.ListNewsByGenre(ctx, &pb.ListNewsByGenreRequest{Genre: "Daily Brief"})
+	res1, err := n.ListNewsByGenre(ctx, &newspb.ListNewsByGenreRequest{Genre: "Daily Brief"})
 	if err != nil {
 		return err
 	}
@@ -150,8 +152,8 @@ func Login(c pb.UserManagementClient, ctx context.Context) error {
 	return nil
 }
 
-func getSubs(c pb.UserManagementClient, ctx context.Context, email string) (int, error) {
-	r, err := c.GetSubscription(ctx, &pb.SubscriptionRequest{Email: email})
+func getSubs(c subspb.SubscriptionManagementServiceClient, ctx context.Context, email string) (int, error) {
+	r, err := c.GetSubscription(ctx, &subspb.SubscriptionRequest{Email: email})
 	if err != nil {
 		log.Println(err)
 		return 0, err
@@ -172,7 +174,9 @@ func main() {
 
 	defer conn.Close()
 
-	c := pb.NewUserManagementClient(conn)
+	u := userpb.NewUserManagementServiceClient(conn)
+	n := newspb.NewNewsServiceClient(conn)
+	s := subspb.NewSubscriptionManagementServiceClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
@@ -181,8 +185,8 @@ func main() {
 	fmt.Printf("Choice is %d", choice)
 	switch choice {
 	case 1:
-		err := Login(c, ctx)
-		GetAvailablePlans(c, ctx)
+		err := Login(u, s, n, ctx)
+		GetAvailablePlans(s, ctx)
 		if err != nil {
 			log.Println(err)
 		}
@@ -192,7 +196,7 @@ func main() {
 			log.Println(err)
 		}
 
-		r, err := c.CreateUser(ctx, &user)
+		r, err := u.CreateUser(ctx, &user)
 		if err != nil {
 			log.Println(err)
 			log.Println("could not create user")

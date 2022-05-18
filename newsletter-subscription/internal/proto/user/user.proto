@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package proto.user;
+
+option go_package=".;newsletter";
+
+service UserManagementService{
+    rpc CreateUser(CreateUserRequest) returns (User){} 
+    rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
+}
+
+message CreateUserRequest{
+    string name=1;
+    string  email=2;
+}
+
+message User{
+    string name=1;
+    string email=2;
+    bool active=3;
+}
+
+message AuthenticateUserRequest{
+    string email=1;
+}
+
+message AuthenticateUserResponse{
+    bool isAuthenticated=1;
+    User user=2;
+}
+

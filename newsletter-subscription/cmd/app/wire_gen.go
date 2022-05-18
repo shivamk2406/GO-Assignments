@@ -7,9 +7,13 @@
 package app
 
 import (
+	"github.com/go-kit/log"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/pkg/database"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	"github.com/shivamk2406/newsletter-subscriptions/pkg/database"
 	"gorm.io/gorm"
 )
 
@@ -33,7 +37,13 @@ func initializeDB(conf config.Config) (*gorm.DB, func(), error) {
 	}, nil
 }
 
-func initializeRepo(db *gorm.DB) *user.Repository {
-	repository := user.NewRepo(db)
-	return repository
+func initializeRegistry(db *gorm.DB, log2 log.Logger) *service.Registry {
+	subscriptionDB := subscriptions.NewSubscriptionRepo(db)
+	subscriptionManagement := subscriptions.NewSubscriptionService(subscriptionDB, log2)
+	newsDB := news.NewNewsRepo(db)
+	newsManagement := news.NewsManagementService(newsDB, log2)
+	usersDB := users.NewUsersRepo(db)
+	userManagement := users.UserManagementService(usersDB, log2)
+	registry := service.ServiceRegistry(subscriptionManagement, newsManagement, userManagement)
+	return registry
 }
