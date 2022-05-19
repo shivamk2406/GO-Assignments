@@ -14,14 +14,14 @@ import (
 type GetPlansRequests struct {
 }
 
-type Genre struct {
+type genre struct {
 	Name string
 }
 type Subscription struct {
 	Id       int32
 	Name     string
 	Validity int32
-	Genres   []*Genre
+	Genres   []*genre
 }
 type Plans struct {
 	Subs []*Subscription
@@ -57,7 +57,7 @@ func NewSubscriptionRepo(db *gorm.DB) SubscriptionDB {
 	return &Repository{db: db}
 }
 
-func (r Repository) getGenresById(id int) []*Genre {
+func (r Repository) getGenresById(id int) []*genre {
 	var subscriptionGenres []models.SubscriptionGenre
 	r.db.Where("subscriptions_id = ?", id).Find(&subscriptionGenres)
 
@@ -73,10 +73,10 @@ func (r Repository) getGenresById(id int) []*Genre {
 		genres = append(genres, genre)
 	}
 
-	var genresField []*Genre
+	var genresField []*genre
 	for _, val := range genres {
-		genre := Genre{Name: val.Name}
-		genresField = append(genresField, &genre)
+		genres := genre{Name: val.Name}
+		genresField = append(genresField, &genres)
 	}
 	return genresField
 }
@@ -122,6 +122,7 @@ func (r Repository) setSubscription(ctx context.Context, in SetSubscriptionReque
 		Updates(map[string]interface{}{
 			"active":     true,
 			"start_time": time.Now(),
+			"end_time":   time.Now().AddDate(0, 0, subs.Renewal),
 			"subsid":     in.Subsid,
 			"validity":   subs.Renewal}).Error; err != nil {
 		return SetSubscriptionResponse{}, err

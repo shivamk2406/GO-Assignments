@@ -46,4 +46,5 @@ message SubscriptionResponse{
     bool active=2;
     google.protobuf.Timestamp starttime=3;
     int32 validity=4;
+    google.protobuf.Timestamp endtime=5;
 }

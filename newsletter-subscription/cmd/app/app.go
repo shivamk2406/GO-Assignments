@@ -19,6 +19,7 @@ import (
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/consumer"
 	"google.golang.org/grpc"
 )
 
@@ -72,14 +73,21 @@ func run(ctx context.Context, serv *service.Registry, logger log.Logger) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	grpcListener, err := net.Listen(network, ":"+port)
+	cfg, err := config.LoadConsumerConfig()
 	if err != nil {
-		logger.Log("during", "Listen", "err", err)
-		os.Exit(1)
+		fmt.Println(err)
 	}
-
+	newConsumer, err := consumer.NewConsumer(ctx, cfg)
+	if err != nil {
+		fmt.Println(err)
+	}
+	go serv.CronService(ctx, *newConsumer)
 	go func() {
+		grpcListener, err := net.Listen(network, ":"+port)
+		if err != nil {
+			logger.Log("during", "Listen", "err", err)
+			os.Exit(1)
+		}
 		baseServer := grpc.NewServer()
 		userpb.RegisterUserManagementServiceServer(baseServer, userServer)
 		subspb.RegisterSubscriptionManagementServiceServer(baseServer, subsServer)

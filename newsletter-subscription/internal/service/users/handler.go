@@ -10,12 +10,14 @@ import (
 type Endpoints struct {
 	CreateUserEndpoint       endpoint.Endpoint
 	AuthenticateUserEndpoint endpoint.Endpoint
+	ListActiveUsersEndpoint  endpoint.Endpoint
 }
 
 func MakeEndpoint(serv UserManagement) Endpoints {
 	return Endpoints{
 		CreateUserEndpoint:       MakeCreateUserEndpoint(serv),
 		AuthenticateUserEndpoint: MakeAuthenticateUserEndpoint(serv),
+		ListActiveUsersEndpoint:  MakeListActiveUserEndpoinr(serv),
 	}
 }
 
@@ -34,6 +36,17 @@ func MakeAuthenticateUserEndpoint(s UserManagement) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*pb.AuthenticateUserRequest)
 		resp, err := s.AuthenticateUser(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+		return resp, nil
+	}
+}
+
+func MakeListActiveUserEndpoinr(s UserManagement) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(*pb.ListActiveUsersRequest)
+		resp, err := s.ListActiveUsers(ctx, req)
 		if err != nil {
 			return nil, err
 		}
@@ -60,4 +73,14 @@ func EncodeAuthenticateUserResponse(ctx context.Context, response interface{}) (
 	res := response.(*pb.AuthenticateUserResponse)
 	user := pb.User{Name: res.User.Name, Email: res.User.Email, Active: res.User.Active}
 	return &pb.AuthenticateUserResponse{IsAuthenticated: res.IsAuthenticated, User: &user}, nil
+}
+
+func DecodeListActiveUsersRequest(ctx context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.ListActiveUsersRequest)
+	return req, nil
+}
+
+func EncodeListActiveUsersResponse(ctx context.Context, response interface{}) (interface{}, error) {
+	res := response.(*pb.ListActiveUsersResponse)
+	return res, nil
 }

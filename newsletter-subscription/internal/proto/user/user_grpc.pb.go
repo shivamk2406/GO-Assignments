@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type UserManagementServiceClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
 	AuthenticateUser(ctx context.Context, in *AuthenticateUserRequest, opts ...grpc.CallOption) (*AuthenticateUserResponse, error)
+	ListActiveUsers(ctx context.Context, in *ListActiveUsersRequest, opts ...grpc.CallOption) (*ListActiveUsersResponse, error)
 }
 
 type userManagementServiceClient struct {
@@ -52,12 +53,22 @@ func (c *userManagementServiceClient) AuthenticateUser(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *userManagementServiceClient) ListActiveUsers(ctx context.Context, in *ListActiveUsersRequest, opts ...grpc.CallOption) (*ListActiveUsersResponse, error) {
+	out := new(ListActiveUsersResponse)
+	err := c.cc.Invoke(ctx, "/proto.user.UserManagementService/ListActiveUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserManagementServiceServer is the server API for UserManagementService service.
 // All implementations must embed UnimplementedUserManagementServiceServer
 // for forward compatibility
 type UserManagementServiceServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	AuthenticateUser(context.Context, *AuthenticateUserRequest) (*AuthenticateUserResponse, error)
+	ListActiveUsers(context.Context, *ListActiveUsersRequest) (*ListActiveUsersResponse, error)
 	mustEmbedUnimplementedUserManagementServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedUserManagementServiceServer) CreateUser(context.Context, *Cre
 }
 func (UnimplementedUserManagementServiceServer) AuthenticateUser(context.Context, *AuthenticateUserRequest) (*AuthenticateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateUser not implemented")
+}
+func (UnimplementedUserManagementServiceServer) ListActiveUsers(context.Context, *ListActiveUsersRequest) (*ListActiveUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListActiveUsers not implemented")
 }
 func (UnimplementedUserManagementServiceServer) mustEmbedUnimplementedUserManagementServiceServer() {}
 
@@ -120,6 +134,24 @@ func _UserManagementService_AuthenticateUser_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserManagementService_ListActiveUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListActiveUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserManagementServiceServer).ListActiveUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.user.UserManagementService/ListActiveUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserManagementServiceServer).ListActiveUsers(ctx, req.(*ListActiveUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserManagementService_ServiceDesc is the grpc.ServiceDesc for UserManagementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var UserManagementService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthenticateUser",
 			Handler:    _UserManagementService_AuthenticateUser_Handler,
+		},
+		{
+			MethodName: "ListActiveUsers",
+			Handler:    _UserManagementService_ListActiveUsers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

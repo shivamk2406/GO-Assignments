@@ -7,6 +7,7 @@ option go_package=".;newsletter";
 service UserManagementService{
     rpc CreateUser(CreateUserRequest) returns (User){} 
     rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse){}
+    rpc ListActiveUsers(ListActiveUsersRequest) returns(ListActiveUsersResponse){}
 }
 
 message CreateUserRequest{
@@ -29,3 +30,8 @@ message AuthenticateUserResponse{
     User user=2;
 }
 
+message ListActiveUsersRequest{}
+
+message ListActiveUsersResponse{
+    repeated User activeUsers=1;
+}

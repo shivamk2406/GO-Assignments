@@ -118,6 +118,13 @@ func SetSubsciption(c subspb.SubscriptionManagementServiceClient, ctx context.Co
 }
 
 func Login(u userpb.UserManagementServiceClient, s subspb.SubscriptionManagementServiceClient, n newspb.NewsServiceClient, ctx context.Context) error {
+
+	re, err := u.ListActiveUsers(ctx, &userpb.ListActiveUsersRequest{})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	fmt.Println(re)
 	email := getUserEmail()
 	r, err := u.AuthenticateUser(ctx, &userpb.AuthenticateUserRequest{Email: email})
 	if err != nil {

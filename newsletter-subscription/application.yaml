@@ -11,3 +11,12 @@ database:
 grpc:
   port: 50051
   network: tcp
+kafka:
+  brokers: "localhost:9092"
+producer:
+  bootstrap_servers: ["localhost:9092"]
+  topic: "my-topic"
+consumer:
+  topic: "my-topic"
+  groupID: "news"
+  brokers: ["localhost:9092"]
