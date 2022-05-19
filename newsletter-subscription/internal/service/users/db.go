@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/shivamk2406/newsletter-subscriptions/internal/models"
 	"gorm.io/gorm"
 )
 
@@ -51,7 +50,7 @@ func NewUsersRepo(db *gorm.DB) UsersDB {
 
 func (r Repository) createUser(ctx context.Context, in CreateUserRequest) (NewUser, error) {
 	log.Printf("Received: %v %v", in.Name, in.Email)
-	user := models.User{ID: 1, Email: in.Email, Name: in.Name, Active: false, StartDate: time.Now(), EndDate: time.Now()}
+	user := User{ID: 1, Email: in.Email, Name: in.Name, Active: false, StartDate: time.Now(), EndDate: time.Now()}
 	if err := r.db.Create(&user).Error; err != nil {
 		return NewUser{}, err
 	}
@@ -62,7 +61,7 @@ func (r Repository) createUser(ctx context.Context, in CreateUserRequest) (NewUs
 
 func (r Repository) authenticateUser(ctx context.Context, in AuthenticateUserRequest) (AuthenticateUserResponse, error) {
 
-	var user models.User
+	var user User
 	log.Printf("Received : %v", in.Email)
 	log.Printf("Inside DB: %s", in)
 	if err := r.db.First(&user, "email = ?", in.Email).Error; err != nil {
@@ -72,7 +71,7 @@ func (r Repository) authenticateUser(ctx context.Context, in AuthenticateUserReq
 }
 
 func (r Repository) listActiveUsers(ctx context.Context, in ListActiveUsers) (ListActiveUsersResponse, error) {
-	var activeUsersDB []models.User
+	var activeUsersDB []User
 	r.db.Where("end_time > ?", time.Now()).Find(&activeUsersDB)
 	var activeUsers []NewUser
 

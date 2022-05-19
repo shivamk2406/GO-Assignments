@@ -12,3 +12,8 @@ type Genre struct {
 	Name        string `gorm:"column:name;"`
 	Description string `gorm:"column:description;"`
 }
+
+type SubscriptionGenre struct {
+	SubsID int `gorm:"primary_key;column:subscriptions_id;type:bigint;"`
+	GenID  int `gorm:"primary_key;column:genre_id;type:bigint;"`
+}

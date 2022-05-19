@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/shivamk2406/newsletter-subscriptions/internal/models"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +13,7 @@ type SingleNews struct {
 	description string
 }
 
-type News struct {
+type news struct {
 	Newss []SingleNews
 }
 
@@ -26,8 +26,8 @@ type GetNewsRequest struct {
 }
 
 type NewsDB interface {
-	getNewsByGenre(ctx context.Context, in GetNewsByGenreRequest) (News, error)
-	getNews(ctx context.Context, in GetNewsRequest) (News, error)
+	getNewsByGenre(ctx context.Context, in GetNewsByGenreRequest) (news, error)
+	getNews(ctx context.Context, in GetNewsRequest) (news, error)
 }
 
 type Repository struct {
@@ -38,11 +38,11 @@ func NewNewsRepo(db *gorm.DB) NewsDB {
 	return &Repository{db: db}
 }
 
-func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (News, error) {
+func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (news, error) {
 	log.Printf("Received %v", in.Subsid)
-	var subscriptionGenres []models.SubscriptionGenre
+	var subscriptionGenres []subscriptions.SubscriptionGenre
 	if err := r.db.Where("subscriptions_id = ?", in.Subsid).Find(&subscriptionGenres).Error; err != nil {
-		return News{}, err
+		return news{}, err
 	}
 
 	var genreIds []int
@@ -50,9 +50,9 @@ func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (News, error
 		genreIds = append(genreIds, val.GenID)
 	}
 
-	var newsCollection []models.News
+	var newsCollection []News
 	if err := r.db.Where("genreid IN ?", genreIds).Find(&newsCollection).Error; err != nil {
-		return News{}, nil
+		return news{}, nil
 	}
 
 	var newsString []SingleNews
@@ -60,26 +60,26 @@ func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (News, error
 		newsString = append(newsString, SingleNews{heading: val.Heading, description: val.Description})
 	}
 
-	return News{Newss: newsString}, nil
+	return news{Newss: newsString}, nil
 }
 
-func (r Repository) getNewsByGenre(ctx context.Context, in GetNewsByGenreRequest) (News, error) {
+func (r Repository) getNewsByGenre(ctx context.Context, in GetNewsByGenreRequest) (news, error) {
 	log.Printf("Received %v", in.Genre)
-	var genre models.Genre
+	var genre subscriptions.Genre
 
 	if err := r.db.Where("name = ?", in.Genre).Find(&genre).Error; err != nil {
-		return News{}, err
+		return news{}, err
 	}
 
-	var news []models.News
-	if err := r.db.Where("genreid = ?", genre.ID).Find(&news).Error; err != nil {
-		return News{}, err
+	var newsList []News
+	if err := r.db.Where("genreid = ?", genre.ID).Find(&newsList).Error; err != nil {
+		return news{}, err
 	}
 
 	var newsString []SingleNews
-	for _, val := range news {
+	for _, val := range newsList {
 		newsString = append(newsString, SingleNews{heading: val.Heading, description: val.Description})
 	}
 
-	return News{Newss: newsString}, nil
+	return news{Newss: newsString}, nil
 }

@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/shivamk2406/newsletter-subscriptions/internal/models"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
@@ -58,7 +58,7 @@ func NewSubscriptionRepo(db *gorm.DB) SubscriptionDB {
 }
 
 func (r Repository) getGenresById(id int) []*genre {
-	var subscriptionGenres []models.SubscriptionGenre
+	var subscriptionGenres []SubscriptionGenre
 	r.db.Where("subscriptions_id = ?", id).Find(&subscriptionGenres)
 
 	var genreIds []int
@@ -66,9 +66,9 @@ func (r Repository) getGenresById(id int) []*genre {
 		genreIds = append(genreIds, val.GenID)
 	}
 
-	var genres []models.Genre
+	var genres []Genre
 	for _, val := range genreIds {
-		var genre models.Genre
+		var genre Genre
 		r.db.Where("ID = ?", val).Find(&genre)
 		genres = append(genres, genre)
 	}
@@ -82,7 +82,7 @@ func (r Repository) getGenresById(id int) []*genre {
 }
 
 func (r *Repository) getPlans(ctx context.Context, in GetPlansRequests) (Plans, error) {
-	var subs []models.Subscriptions
+	var subs []Subscriptions
 	if err := r.db.Find(&subs).Error; err != nil {
 		return Plans{}, err
 	}
@@ -97,14 +97,14 @@ func (r *Repository) getPlans(ctx context.Context, in GetPlansRequests) (Plans, 
 
 func (r Repository) getSubscription(ctx context.Context, in SubscriptionRequest) (Subscription, error) {
 	log.Printf("Received : %v", in.Email)
-	var user models.User
+	var user users.User
 	row := r.db.First(&user, "email = ?", in.Email)
 	if err := row.Error; err != nil {
 		log.Println(err)
 		return Subscription{}, fmt.Errorf("You have not Subscribed to any plans")
 	}
 
-	var subs models.Subscriptions
+	var subs Subscriptions
 	if err := r.db.Where("ID = ?", user.SubsID).Find(&subs).Error; err != nil {
 		return Subscription{}, err
 	}
@@ -115,10 +115,10 @@ func (r Repository) getSubscription(ctx context.Context, in SubscriptionRequest)
 
 func (r Repository) setSubscription(ctx context.Context, in SetSubscriptionRequest) (SetSubscriptionResponse, error) {
 	log.Printf("Recieved Email %s and Subsid %d ", in.Email, in.Subsid)
-	var subs models.Subscriptions
+	var subs Subscriptions
 	r.db.Where("ID = ?", in.Subsid).Find(&subs)
 	// Update with conditions
-	if err := r.db.Model(&models.User{}).Where("email = ?", in.Email).
+	if err := r.db.Model(&users.User{}).Where("email = ?", in.Email).
 		Updates(map[string]interface{}{
 			"active":     true,
 			"start_time": time.Now(),
