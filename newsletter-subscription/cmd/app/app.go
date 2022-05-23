@@ -10,6 +10,7 @@ import (
 
 	log "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/robfig/cron"
 	"github.com/shivamk2406/newsletter-subscriptions/cmd/transport"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	newspb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/news"
@@ -81,6 +82,10 @@ func run(ctx context.Context, serv *service.Registry, logger log.Logger) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	c := cron.New()
+	c.AddFunc("@daily", func() { serv.CronService(ctx, *newConsumer) })
+	c.Start()
 	go serv.CronService(ctx, *newConsumer)
 	go func() {
 		grpcListener, err := net.Listen(network, ":"+port)

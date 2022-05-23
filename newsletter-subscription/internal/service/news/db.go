@@ -9,8 +9,8 @@ import (
 )
 
 type SingleNews struct {
-	heading     string
-	description string
+	Heading     string
+	Description string
 }
 
 type news struct {
@@ -57,7 +57,7 @@ func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (news, error
 
 	var newsString []SingleNews
 	for _, val := range newsCollection {
-		newsString = append(newsString, SingleNews{heading: val.Heading, description: val.Description})
+		newsString = append(newsString, SingleNews{Heading: val.Heading, Description: val.Description})
 	}
 
 	return news{Newss: newsString}, nil
@@ -78,7 +78,7 @@ func (r Repository) getNewsByGenre(ctx context.Context, in GetNewsByGenreRequest
 
 	var newsString []SingleNews
 	for _, val := range newsList {
-		newsString = append(newsString, SingleNews{heading: val.Heading, description: val.Description})
+		newsString = append(newsString, SingleNews{Heading: val.Heading, Description: val.Description})
 	}
 
 	return news{Newss: newsString}, nil

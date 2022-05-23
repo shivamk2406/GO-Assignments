@@ -29,7 +29,7 @@ func (r NewsManagementServer) ListNews(ctx context.Context, in *pb.ListNewsReque
 	}
 	var newsString []*pb.News
 	for _, val := range response.Newss {
-		newsString = append(newsString, &pb.News{Heading: val.heading, Description: val.description})
+		newsString = append(newsString, &pb.News{Heading: val.Heading, Description: val.Description})
 	}
 	return &pb.ListNewsResponse{News: newsString}, nil
 }
@@ -42,7 +42,7 @@ func (r NewsManagementServer) ListNewsByGenre(ctx context.Context, in *pb.ListNe
 	}
 	var newsString []*pb.News
 	for _, val := range response.Newss {
-		newsString = append(newsString, &pb.News{Heading: val.heading, Description: val.description})
+		newsString = append(newsString, &pb.News{Heading: val.Heading, Description: val.Description})
 	}
 	return &pb.ListNewsResponse{News: newsString}, nil
 }

@@ -7,6 +7,7 @@ import (
 	newsletter "github.com/shivamk2406/newsletter-subscriptions/internal/proto/news"
 	subspb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/subscriptions"
 	userpb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/user"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/mail"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
@@ -55,8 +56,13 @@ func (r Registry) postConsume(ctx context.Context, b []byte) error {
 	for _, val := range activeUsers {
 		emails = append(emails, val.Email)
 		subs, _ := r.SubscriptionService.GetSubscription(ctx, &subspb.SubscriptionRequest{Email: val.Email})
-		news, _ := r.NewsService.ListNews(ctx, &newsletter.ListNewsRequest{Subsid: subs.Id})
-		fmt.Println(news)
+		newsCollectionResponse, _ := r.NewsService.ListNews(ctx, &newsletter.ListNewsRequest{Subsid: subs.Id})
+		var newsCollection []news.SingleNews
+		for _, val := range newsCollectionResponse.News {
+			newsCollection = append(newsCollection, news.SingleNews{Heading: val.Heading, Description: val.Description})
+		}
+		mailService := mail.NewMailService(val.Email, newsCollection)
+		mailService.SendMail()
 	}
 	return nil
 }

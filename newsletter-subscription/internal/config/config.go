@@ -7,6 +7,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/consumer"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/producer"
+	"github.com/shivamk2406/newsletter-subscriptions/pkg/mail"
 )
 
 type Config struct {
@@ -37,6 +38,12 @@ type Config struct {
 		GroupId string   `yaml:"groupID"`
 		Topic   string   `yaml:"topic"`
 	} `yaml:"consumer"`
+	MailService struct {
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+	} `yaml:"mailservice"`
 }
 
 func LoadDatabaseConfig() (Config, error) {
@@ -83,4 +90,19 @@ func LoadConsumerConfig() (consumer.ConsumerConfig, error) {
 		BootstrapServers: conf.Consumer.Servers,
 		Topic:            conf.Consumer.Topic,
 		Group:            conf.Consumer.GroupId}, nil
+}
+
+func LoadMailService() (mail.MailServiceConfig, error) {
+	var conf Config
+	err := cleanenv.ReadConfig("application.yaml", &conf)
+	if err != nil {
+		fmt.Println(err)
+		return mail.MailServiceConfig{}, err
+	}
+	return mail.MailServiceConfig{
+		Host:     conf.MailService.Host,
+		Port:     conf.MailService.Port,
+		Username: conf.MailService.Username,
+		Password: conf.MailService.Password,
+	}, nil
 }
