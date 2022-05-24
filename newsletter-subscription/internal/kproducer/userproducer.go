@@ -2,7 +2,7 @@ package kproducer
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/user"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/producer"
@@ -21,7 +21,6 @@ func NewUserProducer(p *producer.Producer) UserProducer {
 }
 
 func (up userProducer) Produce(ctx context.Context, value *pb.ListActiveUsersResponse) error {
-	fmt.Println("Items Produced")
-	fmt.Println(value.ActiveUsers)
+	log.Println(value.ActiveUsers)
 	return up.Producer.Produce(ctx, value)
 }

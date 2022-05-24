@@ -17,7 +17,7 @@ func MakeEndpoint(serv UserManagement) Endpoints {
 	return Endpoints{
 		CreateUserEndpoint:       MakeCreateUserEndpoint(serv),
 		AuthenticateUserEndpoint: MakeAuthenticateUserEndpoint(serv),
-		ListActiveUsersEndpoint:  MakeListActiveUserEndpoinr(serv),
+		ListActiveUsersEndpoint:  MakeListActiveUserEndpoint(serv),
 	}
 }
 
@@ -43,7 +43,7 @@ func MakeAuthenticateUserEndpoint(s UserManagement) endpoint.Endpoint {
 	}
 }
 
-func MakeListActiveUserEndpoinr(s UserManagement) endpoint.Endpoint {
+func MakeListActiveUserEndpoint(s UserManagement) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*pb.ListActiveUsersRequest)
 		resp, err := s.ListActiveUsers(ctx, req)

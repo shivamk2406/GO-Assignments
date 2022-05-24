@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/shivamk2406/GO-Assignments/view"
 )
@@ -9,6 +9,6 @@ import (
 func main() {
 	err := view.Initialize()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }

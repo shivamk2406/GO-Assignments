@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	user "github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
@@ -97,7 +97,7 @@ func (r *Repository) getPlans(ctx context.Context, in GetPlansRequests) (Plans, 
 
 func (r Repository) getSubscription(ctx context.Context, in SubscriptionRequest) (Subscription, error) {
 	log.Printf("Received : %v", in.Email)
-	var user users.User
+	var user user.User
 	row := r.db.First(&user, "email = ?", in.Email)
 	if err := row.Error; err != nil {
 		log.Println(err)
@@ -118,7 +118,7 @@ func (r Repository) setSubscription(ctx context.Context, in SetSubscriptionReque
 	var subs Subscriptions
 	r.db.Where("ID = ?", in.Subsid).Find(&subs)
 	// Update with conditions
-	if err := r.db.Model(&users.User{}).Where("email = ?", in.Email).
+	if err := r.db.Model(&user.User{}).Where("email = ?", in.Email).
 		Updates(map[string]interface{}{
 			"active":     true,
 			"start_time": time.Now(),

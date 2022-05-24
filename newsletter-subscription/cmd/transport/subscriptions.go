@@ -5,7 +5,8 @@ import (
 
 	"github.com/go-kit/kit/transport/grpc"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/subscriptions"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service"
+	subscriptions "github.com/shivamk2406/newsletter-subscriptions/internal/service/subscription"
 )
 
 type subscriptionsServer struct {
@@ -15,15 +16,15 @@ type subscriptionsServer struct {
 	CreateSubscriptionHandler grpc.Handler
 }
 
-func NewSubscriptionServer(e subscriptions.Endpoints) pb.SubscriptionManagementServiceServer {
+func NewSubscriptionServer(ctx context.Context, reg service.Registry) pb.SubscriptionManagementServiceServer {
 	return &subscriptionsServer{
-		ListPlansHandler: grpc.NewServer(e.ListPlansEndpoint,
+		ListPlansHandler: grpc.NewServer(subscriptions.MakeGetPlansEndpoint(reg.SubscriptionService),
 			subscriptions.DecodeGetPlansRequest,
 			subscriptions.EncodeGetPlansResponse),
-		GetSubscriptionHandler: grpc.NewServer(e.GetSubscriptionEnpoint,
+		GetSubscriptionHandler: grpc.NewServer(subscriptions.MakeGetSubscriptionEndpoint(reg.SubscriptionService),
 			subscriptions.DecodeGetSubscriptionRequest,
 			subscriptions.EncodeGetSubscriptionResponse),
-		CreateSubscriptionHandler: grpc.NewServer(e.CreateSubscrptionEndpoint,
+		CreateSubscriptionHandler: grpc.NewServer(subscriptions.MakeSetSubscriptionEndpoint(reg.SubscriptionService),
 			subscriptions.DecodeSetSubscriptionRequest,
 			subscriptions.EncodeSetSubscriptionResponse),
 	}

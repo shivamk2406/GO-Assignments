@@ -49,7 +49,7 @@ func (c Consumer) Start(ctx context.Context, postconsume ConsumeFunc) {
 		}
 		err = postconsume(ctx, msg.Value)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 	}
 

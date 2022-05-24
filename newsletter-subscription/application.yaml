@@ -9,7 +9,7 @@ database:
   maxConnectionIdletime: 150s
   disableTLS: true
 grpc:
-  port: 50051
+  port: 6565
   network: tcp
 kafka:
   brokers: "localhost:9092"
@@ -24,4 +24,4 @@ mailservice:
   host: "smtp.gmail.com"
   port: 587
   username: "shivam.1si18cs104@gmail.com"
-  password: ***********
+  password: 8540811725

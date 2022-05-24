@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-kit/kit/transport/grpc"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/news"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
 )
 
@@ -14,14 +15,18 @@ type newsServer struct {
 	ListNewsHandler        grpc.Handler
 }
 
-func NewNewsServer(e news.Endpoints) pb.NewsServiceServer {
+func NewNewsServer(ctx context.Context, reg service.Registry) pb.NewsServiceServer {
 	return &newsServer{
-		ListNewsHandler: grpc.NewServer(e.ListNewsEndpoint,
+		ListNewsHandler: grpc.NewServer(
+			news.MakeGetNewsEndpoint(reg.NewsService),
 			news.DecodeGetNewsRequest,
-			news.EncodeGetNewsResponse),
-		ListNewsByGenreHandler: grpc.NewServer(e.ListNewsByGenreEndpoint,
+			news.EncodeGetNewsResponse,
+		),
+		ListNewsByGenreHandler: grpc.NewServer(
+			news.MakeGetNewsByGenreEndpoint(reg.NewsService),
 			news.DecodeGetNewsByGenreRequest,
-			news.EncodeGetNewsByGenreResponse),
+			news.EncodeGetNewsByGenreResponse,
+		),
 	}
 }
 

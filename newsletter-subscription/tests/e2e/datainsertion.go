@@ -2,7 +2,7 @@ package e2e
 
 import (
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
+	subscriptions "github.com/shivamk2406/newsletter-subscriptions/internal/service/subscription"
 	"gorm.io/gorm"
 )
 

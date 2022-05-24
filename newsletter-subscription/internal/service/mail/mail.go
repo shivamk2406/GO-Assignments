@@ -1,70 +1,49 @@
 package mail
 
 import (
-	"crypto/tls"
 	"fmt"
 	"log"
 
-	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
-	gomail "gopkg.in/mail.v2"
+	"github.com/shivamk2406/newsletter-subscriptions/pkg/mail"
 )
-
-type MailServiceConfig struct {
-	Host     string
-	Port     int
-	Username string
-	Password string
-}
 
 type MailService interface {
 	CreateNewsLetter(news news.SingleNews) string
-	SendMail()
+	CreateMail(To string, From string, subject string, newsCollection []news.SingleNews) mail.NewMail
+	SendMail(m mail.NewMail) error
 }
 
-type mail struct {
-	email string
-	news  []news.SingleNews
+type mailService struct {
+	mailsvc *mail.Mailer
 }
 
-func NewMailService(email string, news []news.SingleNews) MailService {
-	return mail{email: email, news: news}
+func NewMailService(dialer *mail.Mailer) MailService {
+	return mailService{mailsvc: dialer}
 }
 
-func (m mail) SendMail() {
-	conf, err := config.LoadMailService()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	msg := gomail.NewMessage()
-
-	msg.SetHeader("From", "shivam.1si18cs104@gmail.com")
-
-	msg.SetHeader("To", m.email)
-
-	msg.SetHeader("Subject", "Your Daily Feed")
+func (m mailService) CreateMail(to string, from string, subject string, newsCollection []news.SingleNews) mail.NewMail {
 
 	var newsContent string
-	for _, val := range m.news {
+	for _, val := range newsCollection {
 		newsContent = newsContent + m.CreateNewsLetter(val)
 	}
-
-	msg.SetBody("text/plain", newsContent)
-
-	d := gomail.NewDialer(conf.Host, conf.Port, conf.Username, conf.Password)
-
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-
-	if err := d.DialAndSend(msg); err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
-
-	return
+	return mail.NewMail{To: to,
+		From:        from,
+		Subject:     subject,
+		Description: newsContent}
 }
 
-func (m mail) CreateNewsLetter(news news.SingleNews) string {
+func (m mailService) SendMail(mail mail.NewMail) error {
+	err := m.mailsvc.SendMail(mail)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (m mailService) CreateNewsLetter(news news.SingleNews) string {
 	newsContent := fmt.Sprintf("%s\n%s\n-----------------------------------\n", news.Heading, news.Description)
 	fmt.Println(newsContent)
 

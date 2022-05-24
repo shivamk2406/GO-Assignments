@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
+	subscription "github.com/shivamk2406/newsletter-subscriptions/internal/service/subscription"
 	"gorm.io/gorm"
 )
 
@@ -40,7 +40,7 @@ func NewNewsRepo(db *gorm.DB) NewsDB {
 
 func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (news, error) {
 	log.Printf("Received %v", in.Subsid)
-	var subscriptionGenres []subscriptions.SubscriptionGenre
+	var subscriptionGenres []subscription.SubscriptionGenre
 	if err := r.db.Where("subscriptions_id = ?", in.Subsid).Find(&subscriptionGenres).Error; err != nil {
 		return news{}, err
 	}
@@ -65,7 +65,7 @@ func (r Repository) getNews(ctx context.Context, in GetNewsRequest) (news, error
 
 func (r Repository) getNewsByGenre(ctx context.Context, in GetNewsByGenreRequest) (news, error) {
 	log.Printf("Received %v", in.Genre)
-	var genre subscriptions.Genre
+	var genre subscription.Genre
 
 	if err := r.db.Where("name = ?", in.Genre).Find(&genre).Error; err != nil {
 		return news{}, err

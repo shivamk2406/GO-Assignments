@@ -7,8 +7,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	subscription "github.com/shivamk2406/newsletter-subscriptions/internal/service/subscription"
+
+	user "github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -27,8 +28,8 @@ func Open(cfg config.Config) (*gorm.DB, func(), error) {
 		return nil, nil, errors.Wrap(err, "database: could not set sql.DB params")
 	}
 
-	if !db.Migrator().HasTable(&users.User{}) {
-		err := db.AutoMigrate(&users.User{})
+	if !db.Migrator().HasTable(&user.User{}) {
+		err := db.AutoMigrate(&user.User{})
 		if err != nil {
 			return db, nil, err
 		}
@@ -40,20 +41,20 @@ func Open(cfg config.Config) (*gorm.DB, func(), error) {
 			return db, nil, err
 		}
 	}
-	if !db.Migrator().HasTable(&subscriptions.Genre{}) {
-		err := db.AutoMigrate(&subscriptions.Genre{})
+	if !db.Migrator().HasTable(&subscription.Genre{}) {
+		err := db.AutoMigrate(&subscription.Genre{})
 		if err != nil {
 			return db, nil, err
 		}
 	}
-	if !db.Migrator().HasTable(&subscriptions.Subscriptions{}) {
-		err := db.AutoMigrate(&subscriptions.Subscriptions{})
+	if !db.Migrator().HasTable(&subscription.Subscriptions{}) {
+		err := db.AutoMigrate(&subscription.Subscriptions{})
 		if err != nil {
 			return db, nil, err
 		}
 	}
-	if !db.Migrator().HasTable(&subscriptions.SubscriptionGenre{}) {
-		err := db.AutoMigrate(&subscriptions.SubscriptionGenre{})
+	if !db.Migrator().HasTable(&subscription.SubscriptionGenre{}) {
+		err := db.AutoMigrate(&subscription.SubscriptionGenre{})
 		if err != nil {
 			return db, nil, err
 		}

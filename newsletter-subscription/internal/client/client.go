@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	address = "localhost:50051"
+	address = "localhost:6565"
 )
 
 func getUserInput() (userpb.CreateUserRequest, error) {

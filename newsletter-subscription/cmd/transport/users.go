@@ -5,7 +5,8 @@ import (
 
 	"github.com/go-kit/kit/transport/grpc"
 	pb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/user"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service"
+	user "github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 )
 
 type userServer struct {
@@ -15,18 +16,18 @@ type userServer struct {
 	ListActiveUsersHandler  grpc.Handler
 }
 
-func NewUserGrpcServer(e users.Endpoints) pb.UserManagementServiceServer {
+func NewUserGrpcServer(ctx context.Context, reg service.Registry) pb.UserManagementServiceServer {
 	return &userServer{
-		CreateUserHandler: grpc.NewServer(e.CreateUserEndpoint,
-			users.DecodeCreateUserRequest,
-			users.EncodeCreateUserResponse,
+		CreateUserHandler: grpc.NewServer(user.MakeCreateUserEndpoint(reg.UsersService),
+			user.DecodeCreateUserRequest,
+			user.EncodeCreateUserResponse,
 		),
-		AuthenticateUserHandler: grpc.NewServer(e.AuthenticateUserEndpoint,
-			users.DecodeAuthenticateUserRequest,
-			users.EncodeAuthenticateUserResponse),
-		ListActiveUsersHandler: grpc.NewServer(e.ListActiveUsersEndpoint,
-			users.DecodeListActiveUsersRequest,
-			users.EncodeListActiveUsersResponse),
+		AuthenticateUserHandler: grpc.NewServer(user.MakeAuthenticateUserEndpoint(reg.UsersService),
+			user.DecodeAuthenticateUserRequest,
+			user.EncodeAuthenticateUserResponse),
+		ListActiveUsersHandler: grpc.NewServer(user.MakeListActiveUserEndpoint(reg.UsersService),
+			user.DecodeListActiveUsersRequest,
+			user.EncodeListActiveUsersResponse),
 	}
 }
 

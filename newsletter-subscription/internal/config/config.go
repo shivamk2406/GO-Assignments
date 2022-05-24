@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -50,7 +51,7 @@ func LoadDatabaseConfig() (Config, error) {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return conf, err
 	}
 	fmt.Println(conf)
@@ -61,7 +62,7 @@ func LoadGrpcConfig() (string, string, error) {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return "", "", err
 	}
 	return conf.Grpc.Port, conf.Grpc.Network, nil
@@ -71,7 +72,7 @@ func LoadProducerConfig() producer.ProducerConfig {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return producer.ProducerConfig{}
 	}
 	return producer.ProducerConfig{
@@ -83,7 +84,7 @@ func LoadConsumerConfig() (consumer.ConsumerConfig, error) {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return consumer.ConsumerConfig{}, err
 	}
 	return consumer.ConsumerConfig{
@@ -92,17 +93,17 @@ func LoadConsumerConfig() (consumer.ConsumerConfig, error) {
 		Group:            conf.Consumer.GroupId}, nil
 }
 
-func LoadMailService() (mail.MailServiceConfig, error) {
+func LoadMailService() mail.Config {
 	var conf Config
 	err := cleanenv.ReadConfig("application.yaml", &conf)
 	if err != nil {
-		fmt.Println(err)
-		return mail.MailServiceConfig{}, err
+		log.Println(err)
+		return mail.Config{}
 	}
-	return mail.MailServiceConfig{
+	return mail.Config{
 		Host:     conf.MailService.Host,
 		Port:     conf.MailService.Port,
 		Username: conf.MailService.Username,
 		Password: conf.MailService.Password,
-	}, nil
+	}
 }

@@ -3,22 +3,25 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
 
+	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	newsletter "github.com/shivamk2406/newsletter-subscriptions/internal/proto/news"
 	subspb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/subscriptions"
 	userpb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/user"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/mail"
+	mailsvc "github.com/shivamk2406/newsletter-subscriptions/internal/service/mail"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	subscription "github.com/shivamk2406/newsletter-subscriptions/internal/service/subscription"
+	user "github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/consumer"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type Registry struct {
-	SubscriptionService subscriptions.SubscriptionManagement
+	SubscriptionService subscription.SubscriptionManagement
 	NewsService         news.NewsManagement
-	UsersService        users.UserManagement
+	UsersService        user.UserManagement
+	MailService         mailsvc.MailService
 }
 
 var unmarshaller = &protojson.UnmarshalOptions{
@@ -26,28 +29,31 @@ var unmarshaller = &protojson.UnmarshalOptions{
 	DiscardUnknown: true,
 }
 
-func ServiceRegistry(SubsServ subscriptions.SubscriptionManagement,
-	NewsServ news.NewsManagement,
-	UsersServ users.UserManagement) *Registry {
-	return &Registry{SubscriptionService: SubsServ,
-		NewsService:  NewsServ,
-		UsersService: UsersServ}
+func ServiceRegistry(SubsServ subscription.SubscriptionManagement, NewsServ news.NewsManagement,
+	UsersServ user.UserManagement, MailServ mailsvc.MailService) *Registry {
+	return &Registry{
+		SubscriptionService: SubsServ,
+		NewsService:         NewsServ,
+		UsersService:        UsersServ,
+		MailService:         MailServ,
+	}
 }
 
 func (r Registry) CronService(ctx context.Context, consumer consumer.Consumer) {
 	_, err := r.UsersService.ListActiveUsers(ctx, &userpb.ListActiveUsersRequest{})
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	go consumer.Start(ctx, r.postConsume)
 }
 
 func (r Registry) postConsume(ctx context.Context, b []byte) error {
+	cfg := config.LoadMailService()
 	fmt.Println("postConsume")
 	req := userpb.ListActiveUsersResponse{}
 	if err := unmarshaller.Unmarshal(b, &req); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	activeUsers := req.GetActiveUsers()
@@ -61,8 +67,8 @@ func (r Registry) postConsume(ctx context.Context, b []byte) error {
 		for _, val := range newsCollectionResponse.News {
 			newsCollection = append(newsCollection, news.SingleNews{Heading: val.Heading, Description: val.Description})
 		}
-		mailService := mail.NewMailService(val.Email, newsCollection)
-		mailService.SendMail()
+		mail := r.MailService.CreateMail(val.Email, cfg.Username, "Your Daily Feed", newsCollection)
+		r.MailService.SendMail(mail)
 	}
 	return nil
 }

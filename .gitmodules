@@ -1,3 +1,0 @@
-[submodule "newsletter-subscription/proto/googleapis"]
-	path = newsletter-subscription/proto/googleapis
-	url = https://github.com/googleapis/googleapis

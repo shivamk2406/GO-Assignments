@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package proto.v1;
+
+option go_package=".;newsletter";
+
+option java_package = "com.proto.v1";
+option java_multiple_files = true;
+option java_outer_classname = "TypeProto";
+
+
+// A representation of a single news.
+message News{
+    // The heading of the news to be sent.
+    string heading=1;
+
+    //The detailed description for the news. 
+    string description=2;
+}
+
+//ListNewsByGenreRequest returns news depending upon the genre.
+message ListNewsByGenreRequest{
+    //The name of the genre.
+    string parent=1;
+
+    // The maximum number of news to return.
+    int32 page_size=2;
+
+    //The page token received from previous ListNewsByGenreRequest
+    string page_token = 3;
+
+
+}
+
+//ListNewsRequest defines request for ListNews.
+message ListNewsRequest{
+
+    //The subscription-id of the user.
+    string parent=1;
+
+     // The maximum number of news to return.
+     int32 page_size=2;
+
+     //The page token received from previous ListNewsByGenreRequest
+     string page_token = 3;
+}
+
+//ListNewsResponse defines response for ListNews.
+message ListNewsResponse{
+
+    //News for the specific user and their susbcription-id.
+    repeated News news=1;
+
+    // A token that can be sent as `page_token` to retrieve the next page.
+    string next_page_token = 2;
+}
