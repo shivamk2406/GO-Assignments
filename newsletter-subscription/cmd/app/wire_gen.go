@@ -7,15 +7,18 @@
 package app
 
 import (
+	"context"
 	"github.com/go-kit/log"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/config"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/kproducer"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service"
+	mail2 "github.com/shivamk2406/newsletter-subscriptions/internal/service/mail"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscription"
+	"github.com/shivamk2406/newsletter-subscriptions/internal/service/user"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/database"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/producer"
+	"github.com/shivamk2406/newsletter-subscriptions/pkg/mail"
 	"gorm.io/gorm"
 )
 
@@ -46,14 +49,17 @@ func initializeActiveUserProducer() kproducer.UserProducer {
 	return userProducer
 }
 
-func initializeRegistry(db *gorm.DB, log2 log.Logger) *service.Registry {
+func initializeRegistry(ctx context.Context, db *gorm.DB, log2 log.Logger) *service.Registry {
 	subscriptionDB := subscriptions.NewSubscriptionRepo(db)
 	subscriptionManagement := subscriptions.NewSubscriptionService(subscriptionDB, log2)
 	newsDB := news.NewNewsRepo(db)
 	newsManagement := news.NewsManagementService(newsDB, log2)
-	usersDB := users.NewUsersRepo(db)
+	usersDB := users.NewUserRepo(db)
 	userProducer := initializeActiveUserProducer()
 	userManagement := users.UserManagementService(usersDB, log2, userProducer)
-	registry := service.ServiceRegistry(subscriptionManagement, newsManagement, userManagement)
+	mailConfig := config.LoadMailService()
+	dialer := mail.NewMailConn(mailConfig)
+	mailService := mail2.NewMailService(dialer)
+	registry := service.ServiceRegistry(subscriptionManagement, newsManagement, userManagement, mailService)
 	return registry
 }

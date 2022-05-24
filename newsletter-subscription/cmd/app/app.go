@@ -17,15 +17,9 @@ import (
 	subspb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/subscriptions"
 	userpb "github.com/shivamk2406/newsletter-subscriptions/internal/proto/user"
 	"github.com/shivamk2406/newsletter-subscriptions/internal/service"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/news"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/subscriptions"
-	"github.com/shivamk2406/newsletter-subscriptions/internal/service/users"
 	"github.com/shivamk2406/newsletter-subscriptions/pkg/kafka/consumer"
 	"google.golang.org/grpc"
-)
-
-const (
-	port = ":50051"
+	"google.golang.org/grpc/reflection"
 )
 
 func Start() error {
@@ -38,15 +32,17 @@ func Start() error {
 
 	conf, err := InitializeConfig()
 	if err != nil {
-		fmt.Println(err)
+		logger.Log(err)
+		return err
 	}
 
 	db, cleanup, err := initializeDB(conf)
 	if err != nil {
-		fmt.Println(err)
+		logger.Log(err)
+		return err
 	}
 
-	serv := initializeRegistry(db, logger)
+	serv := initializeRegistry(ctx, db, logger)
 
 	run(ctx, serv, logger)
 
@@ -55,13 +51,9 @@ func Start() error {
 }
 
 func run(ctx context.Context, serv *service.Registry, logger log.Logger) {
-	userEndpoint := users.MakeEndpoint(serv.UsersService)
-	newsEndpoint := news.MakeEndpoint(serv.NewsService)
-	subsEndpoint := subscriptions.MakeEndpoint(serv.SubscriptionService)
-
-	userServer := transport.NewUserGrpcServer(userEndpoint)
-	newsServer := transport.NewNewsServer(newsEndpoint)
-	subsServer := transport.NewSubscriptionServer(subsEndpoint)
+	userServer := transport.NewUserGrpcServer(ctx, *serv)
+	newsServer := transport.NewNewsServer(ctx, *serv)
+	subsServer := transport.NewSubscriptionServer(ctx, *serv)
 
 	errs := make(chan error)
 	go func() {
@@ -72,15 +64,16 @@ func run(ctx context.Context, serv *service.Registry, logger log.Logger) {
 
 	port, network, err := config.LoadGrpcConfig()
 	if err != nil {
-		fmt.Println(err)
+		logger.Log(err)
 	}
 	cfg, err := config.LoadConsumerConfig()
 	if err != nil {
-		fmt.Println(err)
+		logger.Log(err)
 	}
 	newConsumer, err := consumer.NewConsumer(ctx, cfg)
 	if err != nil {
-		fmt.Println(err)
+		logger.Log(err)
+
 	}
 
 	c := cron.New()
@@ -99,6 +92,7 @@ func run(ctx context.Context, serv *service.Registry, logger log.Logger) {
 		newspb.RegisterNewsServiceServer(baseServer, newsServer)
 		level.Info(logger).Log("msg", "Server started successfully!!")
 		baseServer.Serve(grpcListener)
+		reflection.Register(baseServer)
 	}()
 
 	level.Error(logger).Log("exit", <-errs)
