@@ -90,9 +90,9 @@ func run(ctx context.Context, serv *service.Registry, logger log.Logger) {
 		userpb.RegisterUserManagementServiceServer(baseServer, userServer)
 		subspb.RegisterSubscriptionManagementServiceServer(baseServer, subsServer)
 		newspb.RegisterNewsServiceServer(baseServer, newsServer)
+		reflection.Register(baseServer)
 		level.Info(logger).Log("msg", "Server started successfully!!")
 		baseServer.Serve(grpcListener)
-		reflection.Register(baseServer)
 	}()
 
 	level.Error(logger).Log("exit", <-errs)
