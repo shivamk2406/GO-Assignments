@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package proto.v1;
+
+option go_package=".;newsletter";
+
+option java_package = "com.proto.v1";
+option java_multiple_files = true;
+option java_outer_classname = "TypeProto";
+
+import "google/protobuf/timestamp.proto";
+
+service 
+
+
+// A representation of a single news.
+message News{
+    // The heading of the news to be sent.
+    string heading=1;
+
+    //The detailed description for the news. 
+    string description=2;
+}
+
+//A representation of user.
+message User{
+    //The name of the user.
+    string name=1;
+
+    //The email of the email.
+    string email=2;
+
+    //Active status of the user whether he has any active plan or not.
+    bool active=3;
+}
+
+// A representation of a single news.
+message Genre{
+     // The name of the genre.
+    string name=1;
+}
+
+//A representation of subscription plan to be subscribed by the user.
+message Plan{
+    //The unique id for the plan.
+    int32 id=1;
+
+    //The name of plan.
+    string name=2;
+
+    //The validity of plan.
+    int32 validity=3;
+
+    //The genres of news included in the plan.
+    repeated Genre genres=4;
+}
+
+//A represenation of List of Plans available for the users to subscribe.
+message Plans{
+    //List of Plans.
+    repeated Plan subs=1;
+}
+
+//CreateUserRequest defines request for creating user.
+message CreateUserRequest{
+    //The name of the user.
+    string name=1;
+
+    //The email of the user.
+    string  email=2;
+}
+
+//Autheticate user request defines request for authenticating user.
+message AuthenticateUserRequest{
+    //The email of the user.
+    string email=1;
+}
+
+//AuthenticateUserResponse defines response for Authenticating user.
+message AuthenticateUserResponse{
+    //Boolean variable to store status of the user.
+    bool is_authenticated=1;
+
+    //The user info for authenticated user.
+    User user=2;
+}
+
+//ListActiveUsersRequest defines request for Active users.
+message ListActiveUsersRequest{
+    // The maximum number of news to return.
+    int32 page_size=1;
+
+    //The page token received from previous ListNewsByGenreRequest
+    string page_token = 2;
+}
+
+// ListActiveUsersResponse defines response for Active users.
+message ListActiveUsersResponse{
+    //List of Active users.
+    repeated User active_users=1;
+
+    // A token that can be sent as `page_token` to retrieve the next page.
+    string next_page_token = 2;
+}
+
+//A Representation of subscription request from user
+message SubscriptionRequest{
+    //User email from which request has been raised
+    string email=1;
+}
+
+//ListNewsByGenreRequest returns news depending upon the genre.
+message ListNewsByGenreRequest{
+    //The name of the genre.
+    string parent=1;
+
+    // The maximum number of news to return.
+    int32 page_size=2;
+
+    //The page token received from previous ListNewsByGenreRequest
+    string page_token = 3;
+}
+
+//ListPlansRequest defines request for ListPlans.
+message ListPlansRequest{
+    // The maximum number of news to return.
+    int32 page_size=1;
+
+    //The page token received from previous ListNewsByGenreRequest
+    string page_token = 2;
+}
+
+//CreateSubscriptionRequest defines request for creating subscription for user.
+message CreateSubscriptionRequest{
+    //The email of the user for which subscription is to be created.
+    string email=1;
+
+    //The subscription id for which subscription is to be generated.
+    int32 subsid=2;
+}
+
+//SubscriptionResponse defines the response for Subscription Request.
+message SubscriptionResponse{
+    //The email for which subscription is made.
+    string email=1;
+
+    //The active status of subscription created.
+    bool active=2;
+
+    //The start time of the subscription.
+    google.protobuf.Timestamp starttime=3;
+
+    //The validity in days of the subscription.
+    int32 validity=4;
+
+    //The endtime of the subscription.
+    google.protobuf.Timestamp endtime=5;
+}
+
+//ListNewsRequest defines request for ListNews.
+message ListNewsRequest{
+
+    //The subscription-id of the user.
+    string parent=1;
+
+     // The maximum number of news to return.
+     int32 page_size=2;
+
+     //The page token received from previous ListNewsByGenreRequest
+     string page_token = 3;
+}
+
+//ListNewsResponse defines response for ListNews.
+message ListNewsResponse{
+
+    //News for the specific user and their susbcription-id.
+    repeated News news=1;
+
+    // A token that can be sent as `page_token` to retrieve the next page.
+    string next_page_token = 2;
+}

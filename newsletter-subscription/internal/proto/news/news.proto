@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package proto.user;
+
+option go_package=".;newsletter";
+
+service NewsService{
+    rpc ListNews(ListNewsRequest) returns (ListNewsResponse){}
+    rpc ListNewsByGenre(ListNewsByGenreRequest) returns (ListNewsResponse){}
+}
+message ListNewsByGenreRequest{
+    string genre=1;
+}
+
+message ListNewsRequest{
+    int32 subsid=1;
+}
+
+message News{
+    string heading=1;
+    string description=2;
+}
+
+message ListNewsResponse{
+    repeated News news=1;
+}

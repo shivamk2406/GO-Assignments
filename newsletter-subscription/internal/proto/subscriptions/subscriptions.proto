@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package proto.subscriptions;
+
+option go_package=".;newsletter";
+
+
+import "google/protobuf/timestamp.proto";
+
+service SubscriptionManagementService{
+    rpc GetSubscription(SubscriptionRequest) returns (Plan){}
+    rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse){}
+    rpc ListPlans(ListPlansRequest)returns (Plans){}
+}
+
+message Genre{
+    string name=1;
+}
+
+//A Representation of subscription request from user
+message SubscriptionRequest{
+    //User email from which request has been raised
+    string email=1;
+}
+
+message ListPlansRequest{}
+
+message Plans{
+    repeated Plan subs=1;
+}
+
+message Plan{
+    int32 id=1;
+    string name=2;
+    int32 validity=3;
+    repeated Genre genres=4;
+}
+
+message CreateSubscriptionRequest{
+    string email=1;
+    int32 subsid=2;
+}
+
+message SubscriptionResponse{
+    string email=1;
+    bool active=2;
+    google.protobuf.Timestamp starttime=3;
+    int32 validity=4;
+    google.protobuf.Timestamp endtime=5;
+}

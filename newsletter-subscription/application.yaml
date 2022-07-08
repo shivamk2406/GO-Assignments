@@ -1,0 +1,27 @@
+database:
+  user: alpha
+  password: alpha
+  host: 127.0.0.1:3306
+  name: newslet
+  maxIdleConnections: 5
+  maxOpenConnections: 5
+  maxConnectionLifetime: 150s
+  maxConnectionIdletime: 150s
+  disableTLS: true
+grpc:
+  port: 6565
+  network: tcp
+kafka:
+  brokers: "localhost:9092"
+producer:
+  bootstrap_servers: ["localhost:9092"]
+  topic: "my-topic"
+consumer:
+  topic: "my-topic"
+  groupID: "news"
+  brokers: ["localhost:9092"]
+mailservice:
+  host: "smtp.gmail.com"
+  port: 587
+  username: "shivam.1si18cs104@gmail.com"
+  password: 8540811725
